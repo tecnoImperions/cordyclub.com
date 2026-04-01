@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Recetario – CordyClub Bolivia | infotiens43</title>
+<meta name="description" content="Recetas de bienestar con productos TIENS Bolivia. CordyClub infotiens43"/>
+<meta name="theme-color" content="#1a5c35"/>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet"/>
+<style>
+:root{
+  --g1:#1a5c35;--g2:#2E8B57;--g3:#3aac6e;
+  --teal:#20B2AA;--gold:#DAA520;--gold-lt:#F0E68C;
+  --bg:#f5fdf8;--text:#1a2e22;--muted:#6b8c78;
+  --card:#ffffff;--border:#d4ede0;--chip:#e6f7ee;
+  --wa:#25d366;
+  --shadow:0 2px 16px rgba(46,139,87,.09);
+  --shadow-lg:0 8px 32px rgba(46,139,87,.15);
+  --tr:all .22s cubic-bezier(.4,0,.2,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-padding-top:64px;}
+body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+a{text-decoration:none;color:inherit;}
+img{display:block;max-width:100%;}
+button{cursor:pointer;border:none;background:none;font-family:inherit;}
+
+/* ─ NAVBAR ─ */
+.navbar{
+  position:fixed;top:0;left:0;right:0;z-index:100;height:62px;
+  background:linear-gradient(135deg,var(--g1) 0%,var(--g2) 60%,var(--g3) 100%);
+  display:flex;align-items:center;padding:0 20px;gap:10px;
+  box-shadow:0 2px 20px rgba(26,92,53,.3);
+}
+.brand{font-size:1.15rem;font-weight:800;color:#fff;flex:1;letter-spacing:-.02em;}
+.nav-actions{display:flex;align-items:center;gap:7px;}
+.nav-btn{
+  width:40px;height:40px;border-radius:11px;
+  background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.2);
+  color:#fff;font-size:1.05rem;
+  display:flex;align-items:center;justify-content:center;
+  transition:var(--tr);
+}
+.nav-btn:hover{background:rgba(255,255,255,.26);transform:scale(1.07);}
+.nav-link-pill{
+  display:flex;align-items:center;gap:5px;
+  color:rgba(255,255,255,.8);font-size:.78rem;font-weight:600;
+  padding:7px 13px;border-radius:10px;
+  border:1px solid rgba(255,255,255,.2);transition:var(--tr);
+}
+.nav-link-pill:hover{color:#fff;background:rgba(255,255,255,.12);}
+.nav-wa{
+  display:flex;align-items:center;gap:5px;
+  background:var(--wa);color:#fff;font-size:.78rem;font-weight:700;
+  padding:8px 14px;border-radius:11px;transition:var(--tr);
+}
+.nav-wa:hover{background:#1aad50;}
+
+/* ─ OVERLAY & DRAWER ─ */
+.overlay{position:fixed;inset:0;z-index:150;background:rgba(10,30,18,.45);backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity .28s;}
+.overlay.open{opacity:1;pointer-events:all;}
+.drawer{position:fixed;top:0;right:-300px;bottom:0;width:280px;z-index:160;background:#fff;border-left:1.5px solid var(--border);box-shadow:-8px 0 40px rgba(26,92,53,.12);transition:right .32s cubic-bezier(.25,.46,.45,.94);display:flex;flex-direction:column;}
+.drawer.open{right:0;}
+.drawer-head{padding:18px 20px;background:linear-gradient(135deg,var(--g1),var(--g2));display:flex;align-items:center;justify-content:space-between;}
+.drawer-brand{font-size:1.05rem;font-weight:700;color:#fff;}
+.d-close{color:rgba(255,255,255,.7);font-size:1.1rem;transition:color .2s;}
+.d-close:hover{color:#fff;}
+.drawer-nav{flex:1;padding:8px 0;overflow-y:auto;}
+.d-link{display:flex;align-items:center;gap:11px;padding:13px 22px;color:#5a7366;font-size:.87rem;font-weight:500;border-left:3px solid transparent;transition:var(--tr);}
+.d-link i{width:17px;color:var(--g2);font-size:.92rem;}
+.d-link:hover,.d-link.active{background:var(--chip);color:var(--g1);border-left-color:var(--g2);padding-left:26px;}
+.d-sep{height:1px;background:var(--border);margin:5px 18px;}
+.drawer-foot{padding:14px 18px;border-top:1px solid var(--border);}
+.d-wa-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:7px;background:var(--wa);color:#fff;font-weight:700;font-size:.84rem;padding:12px;border-radius:11px;transition:var(--tr);}
+.d-wa-btn:hover{background:#1aad50;}
+
+/* ─ HERO ─ */
+.hero{
+  margin-top:62px;
+  background:linear-gradient(135deg,var(--g1) 0%,var(--g2) 55%,var(--teal) 100%);
+  padding:50px 20px 42px;text-align:center;position:relative;overflow:hidden;
+}
+.hero::before{content:'';position:absolute;top:-100px;right:-80px;width:320px;height:320px;border-radius:50%;background:rgba(255,255,255,.04);}
+.hero::after{content:'';position:absolute;bottom:-80px;left:-60px;width:250px;height:250px;border-radius:50%;background:rgba(255,255,255,.03);}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);
+  color:rgba(255,255,255,.9);font-size:.7rem;font-weight:700;
+  padding:5px 14px;border-radius:20px;letter-spacing:.1em;text-transform:uppercase;
+  margin-bottom:14px;
+}
+.hero h1{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(1.9rem,5vw,2.8rem);
+  font-style:italic;color:#fff;margin-bottom:8px;
+  text-shadow:0 2px 14px rgba(0,0,0,.15);
+}
+.hero p{color:rgba(255,255,255,.7);font-size:.88rem;font-weight:300;max-width:340px;margin:0 auto;}
+.hero-stats{
+  display:flex;justify-content:center;gap:28px;margin-top:24px;
+  flex-wrap:wrap;
+}
+.hero-stat{text-align:center;}
+.hero-stat-num{font-size:1.6rem;font-weight:800;color:#fff;line-height:1;}
+.hero-stat-lbl{font-size:.68rem;color:rgba(255,255,255,.55);margin-top:2px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;}
+
+/* ─ FILTERS ─ */
+.filters-bar{
+  position:sticky;top:62px;z-index:80;
+  background:#fff;border-bottom:1.5px solid var(--border);
+  padding:10px 18px;box-shadow:0 2px 10px rgba(46,139,87,.06);
+}
+.filters-row{max-width:960px;margin:0 auto;display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;}
+.filters-row::-webkit-scrollbar{display:none;}
+.f-btn{
+  flex-shrink:0;display:flex;align-items:center;gap:5px;
+  padding:7px 16px;border-radius:22px;
+  font-size:.74rem;font-weight:600;
+  background:var(--chip);color:var(--muted);
+  border:1.5px solid transparent;transition:var(--tr);
+}
+.f-btn:hover{background:#d4ede0;color:var(--g1);}
+.f-btn.active{background:var(--g2);color:#fff;box-shadow:0 3px 12px rgba(46,139,87,.3);}
+
+/* ─ MAIN ─ */
+.main{max-width:980px;margin:0 auto;padding:28px 18px 90px;}
+.section-title{font-size:.9rem;font-weight:700;color:var(--text);margin-bottom:20px;display:flex;align-items:center;gap:7px;}
+.section-count{font-size:.7rem;color:var(--muted);background:var(--chip);padding:3px 10px;border-radius:20px;font-weight:600;border:1px solid var(--border);}
+
+/* ─ RECETA CARD ─ */
+.recetas-grid{display:grid;grid-template-columns:1fr;gap:18px;}
+@media(min-width:640px){.recetas-grid{grid-template-columns:repeat(2,1fr);}}
+@media(min-width:960px){.recetas-grid{grid-template-columns:repeat(3,1fr);}}
+
+.receta-card{
+  background:var(--card);border-radius:20px;overflow:hidden;
+  border:1.5px solid var(--border);box-shadow:var(--shadow);
+  transition:var(--tr);animation:fadeUp .38s ease both;
+  display:flex;flex-direction:column;
+}
+.receta-card:hover{transform:translateY(-5px);box-shadow:var(--shadow-lg);border-color:rgba(46,139,87,.22);}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+
+/* portada */
+.receta-cover{
+  position:relative;height:180px;overflow:hidden;
+  background:linear-gradient(135deg,var(--g1),var(--teal));
+}
+.receta-cover img{width:100%;height:100%;object-fit:cover;transition:transform .45s;}
+.receta-card:hover .receta-cover img{transform:scale(1.07);}
+.receta-cover-placeholder{
+  width:100%;height:100%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:3.5rem;
+}
+.receta-cover-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(10,30,18,.65) 0%,transparent 60%);
+}
+.receta-cover-tags{
+  position:absolute;top:10px;left:10px;
+  display:flex;gap:5px;flex-wrap:wrap;
+}
+.tag-pill{
+  font-size:.6rem;font-weight:700;padding:3px 9px;border-radius:20px;
+  background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.25);
+  color:#fff;text-transform:uppercase;letter-spacing:.05em;
+  backdrop-filter:blur(4px);
+}
+.receta-cover-time{
+  position:absolute;bottom:10px;right:10px;
+  display:flex;align-items:center;gap:5px;
+  background:rgba(10,30,18,.65);backdrop-filter:blur(4px);
+  color:#fff;font-size:.68rem;font-weight:600;
+  padding:3px 9px;border-radius:7px;
+}
+.receta-cover-prod{
+  position:absolute;bottom:10px;left:10px;
+  background:var(--gold);color:#1a1a1a;
+  font-size:.6rem;font-weight:700;
+  padding:3px 9px;border-radius:7px;
+  letter-spacing:.02em;
+}
+
+/* body */
+.receta-body{padding:16px 16px 14px;flex:1;display:flex;flex-direction:column;gap:14px;}
+.receta-title{font-size:.97rem;font-weight:700;color:var(--text);line-height:1.3;letter-spacing:-.01em;}
+.receta-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.receta-meta-item{display:flex;align-items:center;gap:4px;font-size:.7rem;color:var(--muted);font-weight:500;}
+.receta-meta-item i{color:var(--g2);}
+
+/* accordion */
+.accordion-toggle{
+  display:flex;align-items:center;justify-content:space-between;
+  width:100%;padding:9px 12px;border-radius:10px;
+  background:var(--chip);border:1px solid var(--border);
+  color:var(--g1);font-size:.78rem;font-weight:700;
+  transition:var(--tr);
+}
+.accordion-toggle:hover{background:#d4ede0;}
+.accordion-toggle i.chevron{transition:transform .22s;font-size:.75rem;}
+.accordion-toggle.open i.chevron{transform:rotate(180deg);}
+.accordion-body{
+  overflow:hidden;max-height:0;
+  transition:max-height .32s cubic-bezier(.25,.46,.45,.94);
+}
+.accordion-body.open{max-height:600px;}
+.accordion-inner{padding:12px 4px 4px;}
+
+.sec-lbl{font-size:.64rem;font-weight:700;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;}
+.ingr-list{list-style:none;margin-bottom:13px;}
+.ingr-list li{
+  font-size:.77rem;color:#5a7366;padding:4px 0;
+  border-bottom:1px dashed var(--border);
+  display:flex;align-items:center;gap:6px;
+}
+.ingr-list li:last-child{border:none;}
+.ingr-list li::before{content:'·';color:var(--g2);font-weight:700;font-size:1.1rem;flex-shrink:0;}
+.steps-list{list-style:none;counter-reset:steps;}
+.steps-list li{
+  font-size:.77rem;color:var(--text);line-height:1.6;
+  padding:5px 0 5px 24px;position:relative;
+  counter-increment:steps;
+}
+.steps-list li::before{
+  content:counter(steps);position:absolute;left:0;top:7px;
+  width:15px;height:15px;background:var(--g2);color:#fff;
+  border-radius:50%;font-size:.58rem;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+}
+
+/* video link */
+.video-link{
+  display:flex;align-items:center;gap:8px;
+  background:linear-gradient(135deg,var(--g1),var(--teal));
+  color:#fff;font-size:.77rem;font-weight:700;
+  padding:10px 14px;border-radius:11px;
+  transition:var(--tr);
+  text-decoration:none;
+}
+.video-link:hover{opacity:.88;transform:translateY(-1px);}
+.video-link i{font-size:1.05rem;}
+
+/* cta bottom */
+.receta-foot{
+  padding:11px 16px;
+  border-top:1px solid var(--border);
+  background:var(--chip);
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+  flex-wrap:wrap;
+}
+.receta-prod-badge{
+  font-size:.7rem;color:var(--muted);
+  display:flex;align-items:center;gap:4px;flex-wrap:wrap;
+}
+.receta-prod-badge strong{color:var(--g2);}
+.receta-wa-btn{
+  display:flex;align-items:center;gap:5px;
+  background:var(--wa);color:#fff;
+  font-size:.74rem;font-weight:700;
+  padding:7px 13px;border-radius:9px;transition:var(--tr);flex-shrink:0;
+}
+.receta-wa-btn:hover{background:#1aad50;}
+
+/* ─ LOADER / EMPTY ─ */
+.loader{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:70px 0;gap:14px;}
+.loader-ring{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--g2);border-radius:50%;animation:spin 1s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.empty-state{text-align:center;padding:60px 24px;}
+.empty-icon{width:80px;height:80px;border-radius:24px;background:var(--chip);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:2.2rem;margin:0 auto 18px;color:var(--muted);}
+.empty-state h3{font-size:1rem;font-weight:700;margin-bottom:6px;}
+.empty-state p{font-size:.82rem;color:var(--muted);}
+
+/* ─ CTA BAND ─ */
+.cta-band{
+  background:linear-gradient(135deg,var(--g1),var(--g2));
+  border-radius:20px;padding:28px 24px;text-align:center;
+  margin-top:8px;
+}
+.cta-band h3{font-family:'Playfair Display',serif;font-style:italic;font-size:1.4rem;color:#fff;margin-bottom:7px;}
+.cta-band p{color:rgba(255,255,255,.68);font-size:.84rem;margin-bottom:20px;}
+.cta-wa{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--wa);color:#fff;font-weight:700;font-size:.9rem;
+  padding:13px 26px;border-radius:14px;transition:var(--tr);
+  box-shadow:0 4px 18px rgba(37,211,102,.35);
+}
+.cta-wa:hover{background:#1aad50;transform:translateY(-2px);}
+
+/* ─ WA FLOAT ─ */
+.wa-float{position:fixed;bottom:22px;right:18px;z-index:90;width:54px;height:54px;background:var(--wa);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;color:#fff;box-shadow:0 6px 24px rgba(37,211,102,.4);transition:var(--tr);}
+.wa-float:hover{transform:scale(1.1) rotate(-6deg);}
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="index.html" class="brand">CordyClub</a>
+  <div class="nav-actions">
+    <a href="catalogo.html" class="nav-link-pill"><i class="bi bi-grid"></i> Catálogo</a>
+    <a href="https://wa.me/59163488086" target="_blank" class="nav-wa"><i class="bi bi-whatsapp"></i></a>
+    <button class="nav-btn" id="menuBtn"><i class="bi bi-list" id="menuIcon"></i></button>
+  </div>
+</nav>
+
+<div class="overlay" id="menuOverlay"></div>
+<aside class="drawer" id="drawer">
+  <div class="drawer-head">
+    <div class="drawer-brand">CordyClub Bolivia</div>
+    <button class="d-close" id="drawerClose"><i class="bi bi-x-lg"></i></button>
+  </div>
+  <nav class="drawer-nav">
+    <a href="index.html" class="d-link"><i class="bi bi-house"></i> Inicio</a>
+    <a href="catalogo.html" class="d-link"><i class="bi bi-grid-3x3-gap"></i> Catálogo</a>
+    <a href="recetario.html" class="d-link active"><i class="bi bi-journal-bookmark"></i> Recetario</a>
+    <div class="d-sep"></div>
+    <a href="#" class="d-link"><i class="bi bi-info-circle"></i> Sobre nosotros</a>
+    <a href="#" class="d-link"><i class="bi bi-headset"></i> Contacto</a>
+  </nav>
+  <div class="drawer-foot">
+    <a href="https://wa.me/59163488086" target="_blank" class="d-wa-btn"><i class="bi bi-whatsapp"></i> Escribir por WhatsApp</a>
+  </div>
+</aside>
+
+<section class="hero">
+  <div class="hero-eyebrow"><i class="bi bi-stars"></i> Bienestar natural</div>
+  <h1>Recetario CordyClub</h1>
+  <p>Ideas y preparaciones para integrar los productos TIENS en tu rutina diaria</p>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="hero-stat-num" id="statTotal">–</div>
+      <div class="hero-stat-lbl">Recetas</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">6</div>
+      <div class="hero-stat-lbl">Productos</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">🇧🇴</div>
+      <div class="hero-stat-lbl">Bolivia</div>
+    </div>
+  </div>
+</section>
+
+<div class="filters-bar">
+  <div class="filters-row" id="filtros">
+    <button class="f-btn active" data-tag="Todas"><i class="bi bi-grid"></i> Todas</button>
+    <button class="f-btn" data-tag="Energía"><i class="bi bi-lightning"></i> Energía</button>
+    <button class="f-btn" data-tag="Digestión"><i class="bi bi-heart-pulse"></i> Digestión</button>
+    <button class="f-btn" data-tag="Huesos"><i class="bi bi-shield-check"></i> Huesos</button>
+    <button class="f-btn" data-tag="Piel"><i class="bi bi-stars"></i> Piel</button>
+    <button class="f-btn" data-tag="Niños"><i class="bi bi-emoji-smile"></i> Niños</button>
+  </div>
+</div>
+
+<main class="main">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+    <span class="section-title"><i class="bi bi-journal-bookmark-fill" style="color:var(--g2);"></i> Recetas disponibles</span>
+    <span class="section-count" id="countLabel">–</span>
+  </div>
+  <div id="loader" class="loader"><div class="loader-ring"></div><p style="color:var(--muted);font-size:.8rem;">Cargando recetario…</p></div>
+  <div id="grid" class="recetas-grid" style="display:none;"></div>
+  <div id="vacio" style="display:none;">
+    <div class="empty-state">
+      <div class="empty-icon"><i class="bi bi-journal"></i></div>
+      <h3>Sin recetas para esta categoría</h3>
+      <p>Prueba con otra categoría o vuelve pronto</p>
+    </div>
+  </div>
+  <div class="cta-band" style="display:none;" id="ctaBand">
+    <h3>¿Quieres más recetas?</h3>
+    <p>Escríbenos y te enviamos nuestro recetario completo con más preparaciones</p>
+    <a href="https://wa.me/59163488086?text=Hola!%20Quiero%20el%20recetario%20completo%20de%20CordyClub%20infotiens43" target="_blank" class="cta-wa">
+      <i class="bi bi-whatsapp"></i> Pedir recetario completo
+    </a>
+  </div>
+</main>
+
+<a href="https://wa.me/59163488086" target="_blank" class="wa-float"><i class="bi bi-whatsapp"></i></a>
+
+<script type="module">
+const WA='59163488086';
+
+// ─ FALLBACK DATA ─
+const FALLBACK=[
+  {
+    id:1,titulo:'Café Energizante Matutino',
+    icono:'☕',tiempo:'5 min',porciones:1,
+    tags:['Energía'],
+    producto_nombre:'CordyCafé',producto_codigo:'A75',producto_precio:180,
+    imagen_url:null,
+    video_url:null,
+    ingredientes:['1 sobre CordyCafé TIENS','200ml agua caliente (80°C)','1 cucharadita de miel (opcional)','Canela al gusto'],
+    pasos:['Disolver el CordyCafé en agua a 80°C, revolver bien.','Agregar miel y una pizca de canela.','Tomar en ayunas para máximo efecto energizante.'],
+    beneficios:'Energía prolongada, concentración y foco mental.'
+  },
+  {
+    id:2,titulo:'Té Detox de Noche',
+    icono:'🍵',tiempo:'3 min',porciones:1,
+    tags:['Digestión'],
+    producto_nombre:'Té Tianshi',producto_codigo:'A05',producto_precio:300,
+    imagen_url:null,
+    video_url:null,
+    ingredientes:['1 bolsita Té Tianshi A05','250ml agua caliente','Jugo de ½ limón','Jengibre rallado (pizca)'],
+    pasos:['Infusionar el té 5 minutos en agua caliente.','Agregar limón y jengibre fresco rallado.','Tomar 30 min antes de dormir para mejor digestión.'],
+    beneficios:'Digestión suave, desintoxicación y mejor sueño.'
+  },
+  {
+    id:3,titulo:'Batido de Calcio Poderoso',
+    icono:'🥛',tiempo:'5 min',porciones:1,
+    tags:['Huesos'],
+    producto_nombre:'Calcio Nutritivo',producto_codigo:'A01',producto_precio:210,
+    imagen_url:null,
+    video_url:null,
+    ingredientes:['1 medida Calcio Nutritivo A01','200ml leche (o leche vegetal)','1 plátano maduro','1 cucharada de avena'],
+    pasos:['Colocar todos los ingredientes en la licuadora.','Licuar hasta obtener textura suave.','Servir frío o a temperatura ambiente, ideal con el desayuno.'],
+    beneficios:'Huesos fuertes, músculos y energía matutina.'
+  },
+  {
+    id:4,titulo:'Rutina Piel Radiante',
+    icono:'✨',tiempo:'3 min',porciones:1,
+    tags:['Piel'],
+    producto_nombre:'Colágeno Forte',producto_codigo:'A93',producto_precio:400,
+    imagen_url:null,
+    video_url:null,
+    ingredientes:['1 medida Colágeno Forte A93','200ml jugo de naranja natural','½ cdta vitamina C extra (opcional)'],
+    pasos:['Exprimir las naranjas y obtener jugo fresco.','Disolver el colágeno en el jugo revolviendo bien.','Tomar en ayunas o con el desayuno cada mañana.'],
+    beneficios:'Piel joven, elasticidad, uñas y cabello fuertes.'
+  },
+  {
+    id:5,titulo:'Batido Crecer Fuerte',
+    icono:'🌟',tiempo:'5 min',porciones:1,
+    tags:['Niños','Huesos'],
+    producto_nombre:'Calcio para Niños',producto_codigo:'A03',producto_precio:210,
+    imagen_url:null,
+    video_url:null,
+    ingredientes:['1 medida Calcio para Niños A03','200ml leche entera','1 cucharada de cacao puro','1 cucharadita de miel'],
+    pasos:['Mezclar todos los ingredientes en la licuadora.','Servir frío con pajita.','Dar al niño con el desayuno o merienda.'],
+    beneficios:'Crecimiento, defensas y huesos saludables para niños.'
+  },
+  {
+    id:6,titulo:'Infusión Depurativa Total',
+    icono:'🌿',tiempo:'7 min',porciones:1,
+    tags:['Digestión'],
+    producto_nombre:'Té Milenario',producto_codigo:'A39',producto_precio:300,
+    imagen_url:null,
+    video_url:null,
+    ingredientes:['1 bolsita Té Milenario A39','300ml agua caliente','Rodajas de pepino','Hojas de menta fresca'],
+    pasos:['Infusionar el té durante 5–7 minutos.','Agregar las rodajas de pepino y la menta.','Consumir antes de las comidas para mejorar la digestión.'],
+    beneficios:'Depuración, metabolismo acelerado y digestión óptima.'
+  },
+];
+
+let todas=[], tagActual='Todas';
+
+async function cargarRecetas(){
+  try{
+    const {createClient}=await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+    const sb=createClient('https://YOUR_PROJECT.supabase.co','YOUR_ANON_KEY');
+    // Join recetas con productos
+    const {data,error}=await sb
+      .from('recetas')
+      .select(`
+        id, titulo, icono, tiempo, porciones, tags,
+        ingredientes, pasos, beneficios,
+        imagen_url, video_url,
+        producto_id,
+        productos(nombre, codigo, precio)
+      `)
+      .eq('activo', true)
+      .order('id');
+    if(!error&&data&&data.length){
+      todas=data.map(r=>({
+        ...r,
+        producto_nombre:r.productos?.nombre||'',
+        producto_codigo:r.productos?.codigo||'',
+        producto_precio:r.productos?.precio||0,
+        tags:Array.isArray(r.tags)?r.tags:(r.tags?JSON.parse(r.tags):[]),
+        ingredientes:Array.isArray(r.ingredientes)?r.ingredientes:(r.ingredientes?JSON.parse(r.ingredientes):[]),
+        pasos:Array.isArray(r.pasos)?r.pasos:(r.pasos?JSON.parse(r.pasos):[]),
+      }));
+    } else todas=FALLBACK;
+  }catch{todas=FALLBACK;}
+
+  document.getElementById('statTotal').textContent=todas.length;
+  document.getElementById('loader').style.display='none';
+  document.getElementById('grid').style.display='grid';
+  document.getElementById('ctaBand').style.display='block';
+  renderizar();
+}
+
+function renderizar(){
+  const grid=document.getElementById('grid');
+  const vacio=document.getElementById('vacio');
+  const lista=tagActual==='Todas'
+    ?todas
+    :todas.filter(r=>(r.tags||[]).includes(tagActual));
+
+  document.getElementById('countLabel').textContent=`${lista.length} receta${lista.length!==1?'s':''}`;
+  grid.innerHTML='';
+
+  if(!lista.length){vacio.style.display='block';return;}
+  vacio.style.display='none';
+
+  lista.forEach((r,i)=>{
+    const card=document.createElement('div');
+    card.className='receta-card';
+    card.style.animationDelay=`${i*0.055}s`;
+    const tags=(r.tags||[]).map(t=>`<span class="tag-pill">${t}</span>`).join('');
+    const hasVideo=r.video_url&&r.video_url.trim();
+    const hasImg=r.imagen_url&&r.imagen_url.trim();
+    const prodMsg=encodeURIComponent(`Hola! Quiero ${r.producto_nombre} (${r.producto_codigo}) - ${r.producto_precio} Bs. infotiens43`);
+
+    card.innerHTML=`
+      <div class="receta-cover">
+        ${hasImg
+          ?`<img src="${r.imagen_url}" alt="${r.titulo}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+             <div class="receta-cover-placeholder" style="display:none">${r.icono||'🌿'}</div>`
+          :`<div class="receta-cover-placeholder">${r.icono||'🌿'}</div>`
+        }
+        <div class="receta-cover-overlay"></div>
+        ${tags?`<div class="receta-cover-tags">${tags}</div>`:''}
+        ${r.tiempo?`<div class="receta-cover-time"><i class="bi bi-clock"></i>${r.tiempo}</div>`:''}
+        ${r.producto_nombre?`<div class="receta-cover-prod">${r.producto_nombre}</div>`:''}
+      </div>
+      <div class="receta-body">
+        <h3 class="receta-title">${r.titulo}</h3>
+        <div class="receta-meta">
+          ${r.porciones?`<span class="receta-meta-item"><i class="bi bi-person"></i> ${r.porciones} porción</span>`:''}
+          ${r.beneficios?`<span class="receta-meta-item" style="max-width:100%;"><i class="bi bi-stars"></i> ${r.beneficios}</span>`:''}
+        </div>
+
+        <button class="accordion-toggle" id="acc-btn-${r.id}">
+          <span style="display:flex;align-items:center;gap:6px;"><i class="bi bi-list-ul"></i> Ver ingredientes y pasos</span>
+          <i class="bi bi-chevron-down chevron"></i>
+        </button>
+        <div class="accordion-body" id="acc-body-${r.id}">
+          <div class="accordion-inner">
+            <p class="sec-lbl">Ingredientes</p>
+            <ul class="ingr-list">
+              ${(r.ingredientes||[]).map(i=>`<li>${i}</li>`).join('')}
+            </ul>
+            <p class="sec-lbl">Preparación</p>
+            <ol class="steps-list">
+              ${(r.pasos||[]).map(s=>`<li>${s}</li>`).join('')}
+            </ol>
+            ${hasVideo?`
+            <a href="${r.video_url}" target="_blank" class="video-link" style="margin-top:12px;">
+              <i class="bi bi-play-circle-fill"></i>
+              Ver video de preparación
+              <i class="bi bi-arrow-up-right" style="margin-left:auto;font-size:.8rem;opacity:.7;"></i>
+            </a>`:''
+            }
+          </div>
+        </div>
+      </div>
+      <div class="receta-foot">
+        <div class="receta-prod-badge">
+          Producto: <strong>${r.producto_nombre}</strong>
+          ${r.producto_precio?`<span style="color:var(--gold);font-weight:700;">${r.producto_precio} Bs</span>`:''}
+        </div>
+        <a href="https://wa.me/${WA}?text=${prodMsg}" target="_blank" class="receta-wa-btn">
+          <i class="bi bi-whatsapp"></i> Pedir
+        </a>
+      </div>`;
+
+    grid.appendChild(card);
+
+    // Accordion
+    document.getElementById(`acc-btn-${r.id}`).addEventListener('click',function(){
+      const body=document.getElementById(`acc-body-${r.id}`);
+      const isOpen=body.classList.contains('open');
+      // close all
+      document.querySelectorAll('.accordion-body.open').forEach(b=>{b.classList.remove('open');});
+      document.querySelectorAll('.accordion-toggle.open').forEach(b=>{b.classList.remove('open');});
+      if(!isOpen){body.classList.add('open');this.classList.add('open');}
+    });
+  });
+}
+
+// Filtros
+document.querySelectorAll('.f-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.f-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');tagActual=btn.dataset.tag;renderizar();
+  });
+});
+
+// Menu Drawer
+const drawer=document.getElementById('drawer');
+const menuOverlay=document.getElementById('menuOverlay');
+const menuIcon=document.getElementById('menuIcon');
+function openMenu(){drawer.classList.add('open');menuOverlay.classList.add('open');menuIcon.className='bi bi-x-lg';}
+function closeMenu(){drawer.classList.remove('open');menuOverlay.classList.remove('open');menuIcon.className='bi bi-list';}
+document.getElementById('menuBtn').addEventListener('click',openMenu);
+document.getElementById('drawerClose').addEventListener('click',closeMenu);
+menuOverlay.addEventListener('click',closeMenu);
+
+cargarRecetas();
+</script>
+</body>
+</html>

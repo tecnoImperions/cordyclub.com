@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title id="pageTitle">Producto – CordyClub Bolivia | infotiens43</title>
+<meta name="description" id="pageDesc" content="Detalle de producto TIENS Bolivia. infotiens43"/>
+<meta name="theme-color" content="#2E8B57"/>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet"/>
+<style>
+:root{
+  --g1:#1a5c35;--g2:#2E8B57;--g3:#3aac6e;
+  --teal:#20B2AA;--gold:#DAA520;
+  --bg:#f5fdf8;--text:#1a2e22;--muted:#6b8c78;
+  --card:#ffffff;--border:#d4ede0;--chip:#e6f7ee;
+  --wa:#25d366;--shadow:0 2px 16px rgba(46,139,87,.1);
+  --shadow-lg:0 8px 32px rgba(46,139,87,.16);
+  --tr:all .22s cubic-bezier(.4,0,.2,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-padding-top:64px;}
+body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+a{text-decoration:none;color:inherit;}
+img{display:block;max-width:100%;}
+button{cursor:pointer;border:none;background:none;font-family:inherit;}
+.navbar{position:fixed;top:0;left:0;right:0;z-index:100;height:62px;background:linear-gradient(135deg,var(--g1) 0%,var(--g2) 60%,var(--g3) 100%);display:flex;align-items:center;padding:0 20px;gap:10px;box-shadow:0 2px 20px rgba(26,92,53,.3);}
+.brand{font-size:1.1rem;font-weight:800;color:#fff;flex:1;letter-spacing:-.02em;}
+.nav-actions{display:flex;align-items:center;gap:7px;}
+.nav-btn{width:40px;height:40px;border-radius:11px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:1.05rem;display:flex;align-items:center;justify-content:center;transition:var(--tr);position:relative;}
+.nav-btn:hover{background:rgba(255,255,255,.26);transform:scale(1.07);}
+.cart-badge{position:absolute;top:-5px;right:-5px;min-width:17px;height:17px;padding:0 3px;background:var(--gold);color:#1a1a1a;font-size:.56rem;font-weight:700;font-family:'DM Mono',monospace;border-radius:9px;display:flex;align-items:center;justify-content:center;transform:scale(0);transition:transform .22s cubic-bezier(.175,.885,.32,1.275);}
+.cart-badge.visible{transform:scale(1);}
+.nav-back{display:flex;align-items:center;gap:5px;color:rgba(255,255,255,.8);font-size:.78rem;font-weight:600;padding:7px 13px;border-radius:10px;border:1px solid rgba(255,255,255,.2);transition:var(--tr);}
+.nav-back:hover{color:#fff;background:rgba(255,255,255,.12);}
+.nav-wa{display:flex;align-items:center;gap:5px;background:var(--wa);color:#fff;font-size:.78rem;font-weight:700;padding:8px 14px;border-radius:11px;transition:var(--tr);}
+.nav-wa:hover{background:#1aad50;}
+.overlay{position:fixed;inset:0;z-index:150;background:rgba(10,30,18,.45);backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity .28s;}
+.overlay.open{opacity:1;pointer-events:all;}
+.drawer{position:fixed;top:0;right:-300px;bottom:0;width:280px;z-index:160;background:#fff;border-left:1.5px solid var(--border);box-shadow:-8px 0 40px rgba(26,92,53,.12);transition:right .32s cubic-bezier(.25,.46,.45,.94);display:flex;flex-direction:column;}
+.drawer.open{right:0;}
+.drawer-head{padding:18px 20px;background:linear-gradient(135deg,var(--g1),var(--g2));display:flex;align-items:center;justify-content:space-between;}
+.drawer-brand{font-size:1.05rem;font-weight:700;color:#fff;}
+.d-close{color:rgba(255,255,255,.7);font-size:1.1rem;transition:color .2s;}
+.d-close:hover{color:#fff;}
+.drawer-nav{flex:1;padding:8px 0;overflow-y:auto;}
+.d-link{display:flex;align-items:center;gap:11px;padding:13px 22px;color:#5a7366;font-size:.87rem;font-weight:500;border-left:3px solid transparent;transition:var(--tr);}
+.d-link i{width:17px;color:var(--g2);font-size:.92rem;}
+.d-link:hover,.d-link.active{background:var(--chip);color:var(--g1);border-left-color:var(--g2);padding-left:26px;}
+.d-sep{height:1px;background:var(--border);margin:5px 18px;}
+.drawer-foot{padding:14px 18px;border-top:1px solid var(--border);}
+.d-wa-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:7px;background:var(--wa);color:#fff;font-weight:700;font-size:.84rem;padding:12px;border-radius:11px;transition:var(--tr);}
+.d-wa-btn:hover{background:#1aad50;}
+.cart-drawer{position:fixed;top:0;right:-380px;bottom:0;width:360px;z-index:170;background:#fff;border-left:1.5px solid var(--border);box-shadow:-8px 0 40px rgba(26,92,53,.12);transition:right .32s cubic-bezier(.25,.46,.45,.94);display:flex;flex-direction:column;}
+.cart-drawer.open{right:0;}
+.cart-head{padding:18px 20px;background:linear-gradient(135deg,var(--g1),var(--g2));display:flex;align-items:center;justify-content:space-between;}
+.cart-head h2{font-size:.98rem;font-weight:700;color:#fff;display:flex;align-items:center;gap:7px;}
+.cart-body{flex:1;overflow-y:auto;padding:14px;}
+.cart-empty{text-align:center;padding:50px 16px;color:#c0d8c8;}
+.cart-empty i{font-size:3rem;display:block;margin-bottom:10px;opacity:.3;}
+.cart-empty p{font-size:.86rem;font-weight:500;color:#8aad96;}
+.cart-empty small{font-size:.72rem;color:#b0c8b8;}
+.cart-item{display:flex;align-items:center;gap:11px;padding:11px;background:var(--chip);border-radius:12px;margin-bottom:9px;border:1px solid var(--border);animation:slideIn .22s ease;}
+@keyframes slideIn{from{opacity:0;transform:translateX(16px);}to{opacity:1;transform:translateX(0);}}
+.cart-item img{width:50px;height:50px;object-fit:cover;border-radius:9px;flex-shrink:0;}
+.cart-item-info{flex:1;min-width:0;}
+.cart-item-info h4{font-size:.8rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.cart-item-info span{font-size:.74rem;color:var(--g2);font-weight:600;}
+.cart-item-del{color:#d0ddd6;font-size:.88rem;transition:color .2s;}
+.cart-item-del:hover{color:#e74c3c;}
+.cart-foot{padding:14px 16px;border-top:1px solid var(--border);background:var(--chip);}
+.cart-total-row{display:flex;justify-content:space-between;font-weight:700;font-size:.9rem;margin-bottom:12px;}
+.cart-total-row span{color:var(--g2);font-size:1.1rem;}
+.checkout-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:7px;background:var(--wa);color:#fff;font-weight:700;font-size:.88rem;padding:14px;border-radius:12px;transition:var(--tr);}
+.checkout-btn:hover{background:#1aad50;}
+.lightbox{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .28s;}
+.lightbox.open{opacity:1;pointer-events:all;}
+.lightbox img,.lightbox video{max-width:92vw;max-height:88vh;border-radius:12px;object-fit:contain;}
+.lb-close{position:absolute;top:18px;right:18px;color:rgba(255,255,255,.7);font-size:1.8rem;transition:color .2s;}
+.lb-close:hover{color:#fff;}
+.product-wrap{max-width:980px;margin:0 auto;padding:28px 18px 32px;}
+.breadcrumb{font-size:.72rem;color:var(--muted);display:flex;align-items:center;gap:5px;margin-bottom:22px;flex-wrap:wrap;}
+.breadcrumb a{color:var(--g2);}
+.breadcrumb i{font-size:.62rem;}
+.product-grid{display:grid;grid-template-columns:1fr;gap:28px;animation:fadeUp .4s ease both;}
+@media(min-width:700px){.product-grid{grid-template-columns:1fr 1fr;}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+.img-panel{position:relative;border-radius:20px;overflow:hidden;background:linear-gradient(135deg,#e8f7ee,#f0fcf4);box-shadow:var(--shadow-lg);cursor:zoom-in;}
+.img-panel img,.img-panel video{width:100%;aspect-ratio:1/1;object-fit:cover;transition:transform .45s;display:block;}
+@media(min-width:700px){.img-panel img,.img-panel video{aspect-ratio:1/1.1;}}
+.img-panel:hover img,.img-panel:hover video{transform:scale(1.04);}
+.img-badge-cat{position:absolute;top:10px;left:10px;background:var(--g2);color:#fff;font-size:.62rem;font-weight:700;padding:4px 11px;border-radius:20px;text-transform:uppercase;letter-spacing:.05em;}
+.img-badge-code{position:absolute;bottom:10px;right:10px;background:rgba(10,30,18,.65);color:#fff;font-size:.64rem;padding:3px 9px;border-radius:7px;font-family:'DM Mono',monospace;backdrop-filter:blur(6px);}
+.zoom-hint{position:absolute;bottom:10px;left:10px;background:rgba(0,0,0,.42);color:#fff;font-size:.64rem;padding:3px 9px;border-radius:7px;backdrop-filter:blur(4px);display:flex;align-items:center;gap:4px;}
+.info-panel{display:flex;flex-direction:column;gap:18px;}
+.product-name{font-size:clamp(1.3rem,4vw,1.8rem);font-weight:800;color:var(--text);line-height:1.2;letter-spacing:-.03em;}
+.price-row{display:flex;align-items:baseline;gap:7px;}
+.product-price{font-size:2rem;font-weight:800;color:var(--gold);letter-spacing:-.04em;}
+.price-unit{font-size:.82rem;color:var(--muted);}
+.sec-label{font-size:.68rem;font-weight:700;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px;}
+.audio-box{background:linear-gradient(135deg,var(--g1) 0%,var(--teal) 100%);border-radius:16px;padding:16px 18px;}
+.audio-title{font-size:.72rem;font-weight:700;color:rgba(255,255,255,.85);margin-bottom:13px;display:flex;align-items:center;gap:6px;text-transform:uppercase;letter-spacing:.08em;}
+.audio-controls{display:flex;align-items:center;gap:13px;}
+.play-btn{width:46px;height:46px;border-radius:50%;flex-shrink:0;background:rgba(255,255,255,.18);border:2px solid rgba(255,255,255,.3);color:#fff;font-size:1.25rem;display:flex;align-items:center;justify-content:center;transition:var(--tr);}
+.play-btn:hover{background:rgba(255,255,255,.32);transform:scale(1.08);}
+.audio-track{flex:1;}
+.audio-slider{-webkit-appearance:none;appearance:none;width:100%;height:4px;border-radius:2px;background:rgba(255,255,255,.2);outline:none;cursor:pointer;margin-bottom:6px;}
+.audio-slider::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:#fff;cursor:pointer;}
+.audio-times{display:flex;justify-content:space-between;font-size:.66rem;color:rgba(255,255,255,.5);font-family:'DM Mono',monospace;}
+.video-section{margin-top:28px;}
+.video-box{border-radius:18px;overflow:hidden;background:#000;box-shadow:var(--shadow-lg);position:relative;}
+.video-box video{width:100%;display:block;max-height:460px;object-fit:contain;background:#000;}
+.video-overlay-play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.35);transition:opacity .3s;cursor:pointer;}
+.video-overlay-play.hidden{opacity:0;pointer-events:none;}
+.vplay-icon{width:68px;height:68px;border-radius:50%;background:rgba(255,255,255,.9);display:flex;align-items:center;justify-content:center;font-size:1.8rem;color:var(--g1);box-shadow:0 8px 30px rgba(0,0,0,.35);transition:transform .2s;}
+.video-overlay-play:hover .vplay-icon{transform:scale(1.1);}
+.product-desc{font-size:.87rem;color:var(--text);line-height:1.75;font-weight:300;}
+.benefits-list{list-style:none;display:flex;flex-direction:column;gap:7px;}
+.benefit-item{display:flex;align-items:center;gap:10px;font-size:.83rem;color:var(--text);background:var(--chip);padding:10px 13px;border-radius:11px;border:1px solid var(--border);animation:fadeUp .3s ease both;}
+.benefit-item i{color:var(--g2);font-size:.95rem;flex-shrink:0;}
+.btn-row{display:flex;flex-wrap:wrap;gap:9px;margin-top:2px;}
+.btn-pedir{flex:1;min-width:150px;display:flex;align-items:center;justify-content:center;gap:7px;background:var(--wa);color:#fff;font-weight:700;font-size:.9rem;padding:15px 18px;border-radius:13px;transition:var(--tr);box-shadow:0 4px 18px rgba(37,211,102,.3);}
+.btn-pedir:hover{background:#1aad50;transform:translateY(-2px);}
+.btn-cart-add{width:50px;height:50px;border:2px solid var(--border);background:#fff;border-radius:13px;color:var(--g2);font-size:1.1rem;display:flex;align-items:center;justify-content:center;transition:var(--tr);flex-shrink:0;}
+.btn-cart-add:hover{background:var(--g2);color:#fff;border-color:var(--g2);}
+.btn-outline{display:flex;align-items:center;gap:5px;border:2px solid var(--border);color:var(--muted);background:#fff;font-size:.79rem;font-weight:600;padding:12px 15px;border-radius:13px;transition:var(--tr);}
+.btn-outline:hover{border-color:var(--g2);color:var(--g1);background:var(--chip);}
+.divider{max-width:980px;margin:0 auto 32px;height:1.5px;background:var(--border);}
+.recetario-wrap{max-width:980px;margin:0 auto;padding:0 18px 90px;}
+.recetario-wrap h2{font-size:1.2rem;font-weight:800;color:var(--text);margin-bottom:5px;display:flex;align-items:center;gap:9px;letter-spacing:-.02em;}
+.recetario-wrap .sub{font-size:.8rem;color:var(--muted);margin-bottom:22px;}
+.recetas-grid{display:grid;grid-template-columns:1fr;gap:15px;}
+@media(min-width:520px){.recetas-grid{grid-template-columns:repeat(2,1fr);}}
+@media(min-width:840px){.recetas-grid{grid-template-columns:repeat(3,1fr);}}
+.receta-card{background:#fff;border-radius:16px;border:1.5px solid var(--border);overflow:hidden;box-shadow:var(--shadow);transition:var(--tr);animation:fadeUp .36s ease both;}
+.receta-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);}
+.receta-head{background:linear-gradient(135deg,var(--g2),var(--teal));padding:15px 16px;display:flex;align-items:center;gap:12px;}
+.receta-icon{font-size:1.9rem;}
+.receta-head-info h3{font-size:.87rem;font-weight:700;color:#fff;}
+.receta-head-info p{font-size:.7rem;color:rgba(255,255,255,.65);margin-top:2px;display:flex;align-items:center;gap:4px;}
+.receta-body{padding:14px 15px;}
+.sec-label-sm{font-size:.64rem;font-weight:700;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px;}
+.ingr-list{list-style:none;margin-bottom:12px;}
+.ingr-list li{font-size:.77rem;color:#5a7366;padding:3px 0;border-bottom:1px dashed var(--border);display:flex;align-items:center;gap:5px;}
+.ingr-list li:last-child{border:none;}
+.ingr-list li::before{content:"·";color:var(--g2);font-weight:700;font-size:1rem;}
+.steps-list{list-style:none;counter-reset:steps;}
+.steps-list li{font-size:.77rem;color:var(--text);line-height:1.55;padding:5px 0 5px 22px;position:relative;counter-increment:steps;}
+.steps-list li::before{content:counter(steps);position:absolute;left:0;top:6px;width:14px;height:14px;background:var(--g2);color:#fff;border-radius:50%;font-size:.6rem;font-weight:700;display:flex;align-items:center;justify-content:center;}
+.receta-wa-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:6px;background:var(--chip);color:var(--g2);border:1.5px solid var(--border);font-size:.77rem;font-weight:700;padding:10px;border-radius:10px;margin-top:11px;transition:var(--tr);}
+.receta-wa-btn:hover{background:var(--wa);color:#fff;border-color:var(--wa);}
+.page-loader{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:80vh;gap:14px;}
+.loader-ring{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--g2);border-radius:50%;animation:spin 1s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.page-error{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:80vh;text-align:center;padding:24px;}
+.wa-float{position:fixed;bottom:22px;right:18px;z-index:90;width:54px;height:54px;background:var(--wa);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;color:#fff;box-shadow:0 6px 24px rgba(37,211,102,.4);transition:var(--tr);}
+.wa-float:hover{transform:scale(1.1) rotate(-6deg);}
+.toast{position:fixed;bottom:88px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--text);color:#fff;padding:9px 18px;border-radius:50px;font-size:.77rem;font-weight:600;z-index:300;opacity:0;transition:all .26s;white-space:nowrap;box-shadow:0 6px 20px rgba(0,0,0,.25);display:flex;align-items:center;gap:7px;pointer-events:none;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+<nav class="navbar">
+  <a href="index.html" class="brand">CordyClub</a>
+  <div class="nav-actions">
+    <a href="catalogo.html" class="nav-back"><i class="bi bi-arrow-left"></i> Catálogo</a>
+    <button class="nav-btn" id="cartBtn" title="Ver carrito">
+      <i class="bi bi-cart3"></i>
+      <span class="cart-badge" id="cartBadge">0</span>
+    </button>
+    <a href="https://wa.me/59163488086" target="_blank" class="nav-wa"><i class="bi bi-whatsapp"></i></a>
+    <button class="nav-btn" id="menuBtn"><i class="bi bi-list" id="menuIcon"></i></button>
+  </div>
+</nav>
+<div class="overlay" id="menuOverlay"></div>
+<aside class="drawer" id="drawer">
+  <div class="drawer-head"><div class="drawer-brand">CordyClub Bolivia</div><button class="d-close" id="drawerClose"><i class="bi bi-x-lg"></i></button></div>
+  <nav class="drawer-nav">
+    <a href="index.html" class="d-link"><i class="bi bi-house"></i> Inicio</a>
+    <a href="catalogo.html" class="d-link"><i class="bi bi-grid-3x3-gap"></i> Catálogo</a>
+    <a href="recetario.html" class="d-link"><i class="bi bi-journal-bookmark"></i> Recetario</a>
+    <div class="d-sep"></div>
+    <a href="#" class="d-link"><i class="bi bi-info-circle"></i> Sobre nosotros</a>
+  </nav>
+  <div class="drawer-foot"><a href="https://wa.me/59163488086" target="_blank" class="d-wa-btn"><i class="bi bi-whatsapp"></i> Escribir por WhatsApp</a></div>
+</aside>
+<div class="overlay" id="cartOverlay" style="z-index:165;"></div>
+<aside class="cart-drawer" id="cartDrawer">
+  <div class="cart-head">
+    <h2><i class="bi bi-cart3"></i> Mi carrito</h2>
+    <button class="nav-btn" id="cartClose" style="background:rgba(255,255,255,.15);"><i class="bi bi-x-lg"></i></button>
+  </div>
+  <div class="cart-body" id="cartBody">
+    <div class="cart-empty"><i class="bi bi-cart3"></i><p>Tu carrito está vacío</p><small>Agrega productos para pedirlos por WhatsApp</small></div>
+  </div>
+  <div class="cart-foot" id="cartFoot" style="display:none;">
+    <div class="cart-total-row">Total <span id="cartTotal">0 Bs</span></div>
+    <a id="cartCheckout" href="#" target="_blank" class="checkout-btn"><i class="bi bi-whatsapp"></i> Pedir todo por WhatsApp</a>
+  </div>
+</aside>
+<div class="lightbox" id="lightbox">
+  <button class="lb-close" id="lbClose"><i class="bi bi-x-lg"></i></button>
+  <img id="lbImg" src="" alt="" style="display:none;"/>
+  <video id="lbVid" src="" muted controls style="display:none;max-width:92vw;max-height:88vh;border-radius:12px;"></video>
+</div>
+<div id="pageLoader" class="page-loader" style="margin-top:62px;">
+  <div class="loader-ring"></div>
+  <p style="color:var(--muted);font-size:.82rem;">Cargando producto…</p>
+</div>
+<div id="pageError" class="page-error" style="margin-top:62px;">
+  <i class="bi bi-emoji-frown" style="font-size:3.5rem;color:#ccc;display:block;margin-bottom:14px;"></i>
+  <h3 style="font-size:1.2rem;font-weight:700;margin-bottom:6px;">Producto no encontrado</h3>
+  <a href="catalogo.html" style="margin-top:14px;display:inline-flex;align-items:center;gap:7px;background:var(--g2);color:#fff;padding:12px 24px;border-radius:12px;font-weight:700;font-size:.88rem;"><i class="bi bi-arrow-left"></i> Ver catálogo</a>
+</div>
+<div id="contenido" style="display:none;margin-top:62px;">
+  <div class="product-wrap">
+    <nav class="breadcrumb">
+      <a href="index.html">Inicio</a><i class="bi bi-chevron-right"></i>
+      <a href="catalogo.html">Catálogo</a><i class="bi bi-chevron-right"></i>
+      <span id="bcNombre" style="color:var(--text);font-weight:600;"></span>
+    </nav>
+    <div class="product-grid">
+      <div class="img-panel" id="imgPanel"></div>
+      <div class="info-panel">
+        <h1 class="product-name" id="pNombre"></h1>
+        <div class="price-row"><span class="product-price" id="pPrecio"></span><span class="price-unit">bolivianos</span></div>
+        <div id="audioBox" style="display:none;">
+          <div class="audio-box">
+            <p class="audio-title"><i class="bi bi-volume-up-fill"></i> Escucha sobre este producto</p>
+            <div class="audio-controls">
+              <button class="play-btn" id="playBtn"><i class="bi bi-play-fill" id="playIcon"></i></button>
+              <div class="audio-track">
+                <input type="range" class="audio-slider" id="audioProgress" value="0" min="0"/>
+                <div class="audio-times"><span id="timeCur">0:00</span><span id="timeTot">0:00</span></div>
+              </div>
+            </div>
+            <audio id="audioEl" preload="metadata"></audio>
+          </div>
+        </div>
+        <div><p class="sec-label">Descripción</p><p class="product-desc" id="pDesc"></p></div>
+        <div id="beneficiosBox" style="display:none;"><p class="sec-label">Beneficios</p><ul class="benefits-list" id="pBeneficios"></ul></div>
+        <div class="btn-row">
+          <a id="btnWA" href="#" target="_blank" class="btn-pedir"><i class="bi bi-whatsapp" style="font-size:1rem;"></i> Pedir ahora</a>
+          <button id="btnAddCart" class="btn-cart-add" title="Agregar al carrito"><i class="bi bi-cart-plus"></i></button>
+          <a id="btnPDF" href="#" target="_blank" class="btn-outline" style="display:none;"><i class="bi bi-file-pdf"></i> PDF</a>
+          <a id="btnVideoExt" href="#" target="_blank" class="btn-outline" style="display:none;"><i class="bi bi-play-circle"></i> Video</a>
+        </div>
+      </div>
+    </div>
+    <div id="videoSection" class="video-section" style="display:none;">
+      <p class="sec-label">Video del producto</p>
+      <div class="video-box" id="videoBox">
+        <video id="videoEl" preload="metadata" playsinline loop muted autoplay style="width:100%;display:block;max-height:480px;object-fit:contain;background:#000;">Tu navegador no soporta video HTML5.</video>
+        <div class="video-overlay-play" id="videoOverlay"><div class="vplay-icon"><i class="bi bi-play-fill"></i></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="recetario-wrap">
+    <h2><i class="bi bi-journal-bookmark-fill" style="color:var(--g2);"></i> <span id="recetaTitle">Recetas con este producto</span></h2>
+    <p class="sub" id="recetaSub">Formas prácticas de incorporarlo en tu rutina diaria</p>
+    <div id="recetasGrid" class="recetas-grid"></div>
+  </div>
+</div>
+<a id="waFloat" href="https://wa.me/59163488086" target="_blank" class="wa-float"><i class="bi bi-whatsapp"></i></a>
+<div class="toast" id="toast"></div>
+<script type="module">
+const SUPABASE_URL='https://iqloqrnaoxuldtinneqn.supabase.co';
+const SUPABASE_ANON_KEY='sb_publishable_fjYtclIYb_OeECjDf023Tw_DeeMCjXY';
+const WA='59163488086';
+function esVideo(u){return u&&/\.(mp4|webm|ogg)(\?|$)/i.test(u);}
+
+const RECETAS={
+  1:[{titulo:'Batido de Calcio',tiempo:'5 min',icono:'🥛',ingredientes:['1 medida de Calcio Nutritivo TIENS','250 ml leche de almendras','1 plátano maduro'],pasos:['Añade todos los ingredientes a la licuadora.','Licúa 30 segundos a velocidad alta.','Sirve de inmediato, preferiblemente en ayunas.']},{titulo:'Yogur Enriquecido',tiempo:'3 min',icono:'🍦',ingredientes:['1 medida de Calcio Nutritivo TIENS','150 g yogur natural','Frutas de temporada'],pasos:['Mezcla el calcio con el yogur.','Añade las frutas cortadas encima.','Consume como desayuno o merienda.']},{titulo:'Agua Mineralizante',tiempo:'2 min',icono:'💧',ingredientes:['1 medida de Calcio Nutritivo TIENS','400 ml agua tibia','Jugo de medio limón'],pasos:['Disuelve el calcio en el agua tibia.','Agrega el jugo de limón y mezcla.','Toma en ayunas para máxima absorción.']}],
+  2:[{titulo:'Leche Infantil Especial',tiempo:'3 min',icono:'🍼',ingredientes:['1 medida de Calcio para Niños TIENS','200 ml leche entera tibia','1 cucharadita de miel'],pasos:['Calienta la leche sin hervir.','Disuelve el calcio revolviendo bien.','Sirve templado. Ideal como merienda.']},{titulo:'Pudín de Calcio',tiempo:'10 min',icono:'🍮',ingredientes:['1 medida de Calcio para Niños TIENS','200 ml leche','2 cucharadas de maicena','Canela'],pasos:['Mezcla todos en frío.','Cocina a fuego medio revolviendo.','Sirve frío con canela.']},{titulo:'Avena Enriquecida',tiempo:'8 min',icono:'🥣',ingredientes:['1 medida de Calcio para Niños TIENS','4 cucharadas avena','250 ml leche','Miel y frutas'],pasos:['Cocina la avena con la leche 5 min.','Retira y agrega el calcio.','Sirve con miel y frutas.']}],
+  3:[{titulo:'Té Frío Digestivo',tiempo:'10 min',icono:'🍵',ingredientes:['1 bolsita Té Tianshi','300 ml agua caliente','Hielo y limón'],pasos:['Infusiona 5 minutos.','Deja enfriar.','Sirve con hielo y limón.']},{titulo:'Té con Jengibre',tiempo:'8 min',icono:'🫚',ingredientes:['1 bolsita Té Tianshi','250 ml agua','2 rodajas jengibre'],pasos:['Hierve agua con jengibre 3 min.','Añade el té y apaga.','Infusiona 4 min y cuela.']},{titulo:'Infusión Detox',tiempo:'5 min',icono:'🌿',ingredientes:['1 bolsita Té Tianshi','200 ml agua caliente','1 cucharadita miel'],pasos:['Infusiona 5 min tapado.','Añade miel y mezcla.','Toma 30 min antes de comer.']}],
+  4:[{titulo:'Infusión Depurativa',tiempo:'6 min',icono:'🫖',ingredientes:['1 bolsita Té Milenario','300 ml agua caliente','Menta fresca'],pasos:['Vierte agua sobre el té.','Agrega menta y tapa.','Infusiona 5 min. Bebe caliente.']},{titulo:'Té Milenario Frío',tiempo:'15 min',icono:'🧊',ingredientes:['2 bolsitas Té Milenario','500 ml agua caliente','Hielo, limón y stevia'],pasos:['Infusiona 8 min.','Endulza y enfría.','Sirve con hielo.']},{titulo:'Mezcla Energizante',tiempo:'5 min',icono:'⚡',ingredientes:['1 bolsita Té Milenario','200 ml agua caliente','Jugo de naranja natural'],pasos:['Infusiona concentrado 5 min.','Mezcla con jugo de naranja.','Toma en ayunas.']}],
+  5:[{titulo:'CordyCafé Clásico',tiempo:'3 min',icono:'☕',ingredientes:['1 sobre CordyCafé TIENS','180 ml agua caliente','Leche al gusto'],pasos:['Vierte el sobre en la taza.','Agrega agua a 85°C.','Mezcla y añade leche si deseas.']},{titulo:'Frappé de Cordyceps',tiempo:'5 min',icono:'🧋',ingredientes:['1 sobre CordyCafé TIENS','150 ml leche fría','4 cubos de hielo'],pasos:['Disuelve el café en 50 ml agua caliente.','Enfría 2 min.','Licúa con leche y hielo.']},{titulo:'Café Pre-Entreno',tiempo:'4 min',icono:'💪',ingredientes:['1 sobre CordyCafé TIENS','200 ml agua caliente','1 cucharadita miel'],pasos:['Prepara el café.','Disuelve la miel.','Toma 20 min antes de ejercitar.']}],
+  6:[{titulo:'Shot de Colágeno',tiempo:'2 min',icono:'✨',ingredientes:['1 medida Colágeno Forte TIENS','100 ml jugo de naranja','Hielo opcional'],pasos:['Mezcla con el jugo de naranja.','Agita bien hasta disolver.','Toma en ayunas cada mañana.']},{titulo:'Batido de Belleza',tiempo:'5 min',icono:'🌸',ingredientes:['1 medida Colágeno Forte TIENS','1 taza frutos rojos','200 ml agua de coco'],pasos:['Licúa los frutos con agua de coco.','Agrega el colágeno y licúa 10 seg.','Consume de inmediato.']},{titulo:'Limonada de Colágeno',tiempo:'3 min',icono:'🍋',ingredientes:['1 medida Colágeno Forte TIENS','250 ml agua con gas','Jugo de 1 limón y miel'],pasos:['Exprime el limón en el agua.','Agrega miel y mezcla.','Añade el colágeno y sirve con hielo.']}]
+};
+function getRecetas(id){return RECETAS[id]||[{titulo:'Bebida Natural',tiempo:'3 min',icono:'🌿',ingredientes:['1 porción del producto TIENS','250 ml agua tibia','Limón al gusto'],pasos:['Disuelve el producto en el agua.','Agrega el limón.','Consume en ayunas.']},{titulo:'Batido Saludable',tiempo:'5 min',icono:'🥤',ingredientes:['1 porción del producto TIENS','200 ml leche vegetal','1 fruta de preferencia'],pasos:['Coloca todo en la licuadora.','Licúa 30 segundos.','Sirve de inmediato.']},{titulo:'Complemento Diario',tiempo:'2 min',icono:'💊',ingredientes:['1 porción del producto TIENS','Un vaso de agua','Horario de preferencia'],pasos:['Prepara según el envase.','Tómalo a la misma hora cada día.','Complementa con dieta balanceada.']}];}
+
+const FALLBACK=[
+  {id:1,codigo:'A01',nombre:'Calcio Nutritivo en Polvo',descripcion:'Fórmula avanzada con calcio altamente biodisponible y vitamina D para el fortalecimiento de huesos, dientes y una mejora en el metabolismo general.',precio:210,categoria:'Suplementos',imagen:'https://res.cloudinary.com/dv6d41ect/image/upload/v1758840051/A01_zf5hc8.png',audio:'https://res.cloudinary.com/dv6d41ect/video/upload/v1765067251/calcio_q6bih1.mp3',pdf:'https://drive.google.com/file/d/1vPhHwGwj9pO8eRecVejQtPWtEpHLmxhU/view',beneficios:['Fortalece huesos y dientes','Previene osteoporosis','Apoya músculos y corazón','Rica en vitamina D']},
+  {id:2,codigo:'A03',nombre:'Calcio para Niños',descripcion:'Apoya el crecimiento saludable y refuerza el sistema inmune para una etapa de desarrollo óptimo.',precio:210,categoria:'Suplementos',imagen:'https://res.cloudinary.com/dv6d41ect/image/upload/v1758840051/A03_huuq0n.png',audio:'https://res.cloudinary.com/dv6d41ect/video/upload/v1765079654/nene_qqbq5j.mp3',beneficios:['Apoya el crecimiento','Refuerza defensas','Huesos fuertes']},
+  {id:3,codigo:'A05',nombre:'Té Tianshi',descripcion:'Mezcla herbal que mejora la digestión, ayuda a controlar el peso y aporta antioxidantes naturales.',precio:300,categoria:'Tés',imagen:'https://res.cloudinary.com/dv6d41ect/image/upload/v1758840052/A05_eazlgz.png',audio:'https://res.cloudinary.com/dv6d41ect/video/upload/v1765079654/tianshi_wxcf0a.mp3',beneficios:['Ayuda a la digestión','Reduce el colesterol','Control de peso natural']},
+  {id:4,codigo:'A39',nombre:'Té Milenario',descripcion:'Fórmula depurativa basada en plantas ancestrales. Limpia, desintoxica y acelera el metabolismo.',precio:300,categoria:'Tés',imagen:'https://res.cloudinary.com/dv6d41ect/image/upload/v1758840053/A39_ot9ewl.png',audio:'https://res.cloudinary.com/dv6d41ect/video/upload/v1765079654/milenario_xldvxi.mp3',beneficios:['Acelera el metabolismo','Desintoxica el organismo','Favorece la pérdida de peso']},
+  {id:5,codigo:'A75',nombre:'CordyCafé',descripcion:'Café premium con extracto de cordyceps que aumenta la energía, mejora la concentración y cuida la digestión.',precio:180,categoria:'Cafés',imagen:'https://res.cloudinary.com/dv6d41ect/image/upload/v1758840055/A75_vzmmrq.png',audio:'https://res.cloudinary.com/dv6d41ect/video/upload/v1765079654/cafe_or8wt1.mp3',video:'https://res.cloudinary.com/dv6d41ect/video/upload/v1774966537/video-1005263159337962_zpdaac.mp4',beneficios:['Estimula la concentración','Reduce la fatiga','Energía sostenida','Cordyceps natural']},
+  {id:6,codigo:'A93',nombre:'Colágeno Forte + Ginseng',descripcion:'Combinación de colágeno marino y ginseng para piel radiante, articulaciones saludables y músculos tonificados.',precio:400,categoria:'Suplementos',imagen:'https://res.cloudinary.com/dv6d41ect/image/upload/v1758840055/A93_g8qawb.png',audio:'https://res.cloudinary.com/dv6d41ect/video/upload/v1765079655/colageno_q0f0pj.mp3',beneficios:['Mejora la piel y elasticidad','Fortalece articulaciones','Recuperación muscular','Acción antioxidante']},
+];
+
+let cart=JSON.parse(localStorage.getItem('cc_cart')||'[]');
+function saveCart(){localStorage.setItem('cc_cart',JSON.stringify(cart));}
+window._addCart=function(p){const ex=cart.find(c=>c.id===p.id);if(!ex)cart.push({...p,qty:1});else ex.qty++;saveCart();updateCartUI();showToast('bi-check-circle',p.nombre+' agregado');};
+window._removeCart=function(id){cart=cart.filter(c=>c.id!==id);saveCart();updateCartUI();};
+function updateCartUI(){
+  const total=cart.reduce((s,c)=>s+c.precio*c.qty,0);
+  const count=cart.reduce((s,c)=>s+c.qty,0);
+  const badge=document.getElementById('cartBadge');
+  badge.textContent=count;badge.classList.toggle('visible',count>0);
+  const body=document.getElementById('cartBody');
+  const foot=document.getElementById('cartFoot');
+  document.getElementById('cartTotal').textContent=total+' Bs';
+  if(!cart.length){body.innerHTML='<div class="cart-empty"><i class="bi bi-cart3"></i><p>Tu carrito está vacío</p><small>Agrega productos para pedirlos por WhatsApp</small></div>';foot.style.display='none';return;}
+  foot.style.display='block';
+  body.innerHTML=cart.map(c=>'<div class="cart-item"><img src="'+(c.imagen&&!esVideo(c.imagen)?c.imagen:'https://placehold.co/50x50/e8f7ee/2E8B57?text=+')+'" alt="'+c.nombre+'" onerror="this.src=\'https://placehold.co/50x50/e8f7ee/2E8B57?text=+\'"/><div class="cart-item-info"><h4>'+c.nombre+'</h4><span>'+c.precio+' Bs × '+c.qty+' = '+(c.precio*c.qty)+' Bs</span></div><button class="cart-item-del" onclick="window._removeCart('+c.id+')"><i class="bi bi-trash3"></i></button></div>').join('');
+  const lines=cart.map(c=>'• '+c.nombre+' ('+c.codigo+') x'+c.qty+' = '+(c.precio*c.qty)+' Bs').join('\n');
+  const msg=encodeURIComponent('Hola! Quiero hacer este pedido:\n\n'+lines+'\n\nTotal: '+total+' Bs\n\ninfotiens43');
+  document.getElementById('cartCheckout').href='https://wa.me/'+WA+'?text='+msg;
+}
+let toastTimer;
+function showToast(icon,text){const t=document.getElementById('toast');t.innerHTML='<i class="bi '+icon+'"></i> '+text;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2400);}
+const drawer=document.getElementById('drawer');
+const menuOverlay=document.getElementById('menuOverlay');
+const menuIcon=document.getElementById('menuIcon');
+function openMenu(){drawer.classList.add('open');menuOverlay.classList.add('open');menuIcon.className='bi bi-x-lg';}
+function closeMenu(){drawer.classList.remove('open');menuOverlay.classList.remove('open');menuIcon.className='bi bi-list';}
+document.getElementById('menuBtn').addEventListener('click',openMenu);
+document.getElementById('drawerClose').addEventListener('click',closeMenu);
+menuOverlay.addEventListener('click',closeMenu);
+const cartDrawer=document.getElementById('cartDrawer');
+const cartOverlay=document.getElementById('cartOverlay');
+function openCart(){cartDrawer.classList.add('open');cartOverlay.classList.add('open');}
+function closeCart(){cartDrawer.classList.remove('open');cartOverlay.classList.remove('open');}
+document.getElementById('cartBtn').addEventListener('click',openCart);
+document.getElementById('cartClose').addEventListener('click',closeCart);
+cartOverlay.addEventListener('click',closeCart);
+const lightbox=document.getElementById('lightbox');
+const lbImg=document.getElementById('lbImg');
+const lbVid=document.getElementById('lbVid');
+document.getElementById('lbClose').addEventListener('click',()=>{lightbox.classList.remove('open');lbVid.pause();});
+lightbox.addEventListener('click',e=>{if(e.target===lightbox){lightbox.classList.remove('open');lbVid.pause();}});
+function fmtTime(s){if(!s||isNaN(s))return'0:00';return Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0');}
+function initAudio(url){
+  document.getElementById('audioBox').style.display='block';
+  const audio=document.getElementById('audioEl');audio.src=url;
+  const playBtn=document.getElementById('playBtn');const playIcon=document.getElementById('playIcon');const prog=document.getElementById('audioProgress');
+  playBtn.addEventListener('click',()=>audio.paused?audio.play():audio.pause());
+  audio.addEventListener('play',()=>{playIcon.className='bi bi-pause-fill';});
+  audio.addEventListener('pause',()=>{playIcon.className='bi bi-play-fill';});
+  audio.addEventListener('ended',()=>{playIcon.className='bi bi-play-fill';prog.value=0;});
+  audio.addEventListener('loadedmetadata',()=>{document.getElementById('timeTot').textContent=fmtTime(audio.duration);prog.max=Math.floor(audio.duration)||100;});
+  audio.addEventListener('timeupdate',()=>{document.getElementById('timeCur').textContent=fmtTime(audio.currentTime);prog.value=Math.floor(audio.currentTime);});
+  prog.addEventListener('input',()=>{audio.currentTime=prog.value;});
+}
+function initVideo(url){
+  if(esVideo(url)){
+    const section=document.getElementById('videoSection');const vid=document.getElementById('videoEl');const overlay=document.getElementById('videoOverlay');
+    vid.src=url;vid.muted=true;vid.autoplay=true;vid.loop=true;section.style.display='block';
+    overlay.addEventListener('click',()=>{vid.muted=false;vid.loop=false;vid.play();overlay.classList.add('hidden');});
+    vid.addEventListener('click',()=>{if(vid.paused)vid.play();else vid.pause();});
+  }else{const btnV=document.getElementById('btnVideoExt');btnV.href=url;btnV.style.display='flex';}
+}
+function renderRecetas(p){
+  const grid=document.getElementById('recetasGrid');
+  const recetas=getRecetas(p.id);
+  grid.innerHTML='';
+  recetas.forEach((r,i)=>{
+    const card=document.createElement('div');card.className='receta-card';card.style.animationDelay=i*0.09+'s';
+    card.innerHTML='<div class="receta-head"><span class="receta-icon">'+(r.icono||'🌿')+'</span><div class="receta-head-info"><h3>'+r.titulo+'</h3><p><i class="bi bi-clock"></i> '+r.tiempo+'</p></div></div><div class="receta-body"><p class="sec-label-sm">Ingredientes</p><ul class="ingr-list">'+(r.ingredientes||[]).map(i=>'<li>'+i+'</li>').join('')+'</ul><p class="sec-label-sm">Preparación</p><ol class="steps-list">'+(r.pasos||[]).map(s=>'<li>'+s+'</li>').join('')+'</ol><button class="receta-wa-btn" onclick="window._pedirReceta(\''+p.nombre.replace(/'/g,"\\'")+'\',' +'\''+r.titulo.replace(/'/g,"\\'")+'\')"><i class="bi bi-whatsapp"></i> Pedir y recibir receta completa</button></div>';
+    grid.appendChild(card);
+  });
+}
+window._pedirReceta=function(prod,receta){const msg=encodeURIComponent('Hola! Me interesa '+prod+' y quiero más info de la receta: "'+receta+'". infotiens43');window.open('https://wa.me/'+WA+'?text='+msg,'_blank');};
+function renderProducto(p){
+  document.title=p.nombre+' – CordyClub Bolivia | infotiens43';
+  document.getElementById('pageDesc').content=p.descripcion||'';
+  document.getElementById('bcNombre').textContent=p.nombre;
+  document.getElementById('pNombre').textContent=p.nombre;
+  document.getElementById('pPrecio').textContent=p.precio+' Bs';
+  document.getElementById('pDesc').textContent=p.descripcion||'';
+  const imgPanel=document.getElementById('imgPanel');
+  if(esVideo(p.imagen)){
+    imgPanel.innerHTML='<video src="'+p.imagen+'" autoplay muted loop playsinline style="width:100%;aspect-ratio:1/1;object-fit:cover;display:block;"></video><span class="img-badge-cat">'+(p.categoria||'TIENS')+'</span><span class="img-badge-code">'+p.codigo+'</span><span class="zoom-hint"><i class="bi bi-play-circle"></i> Toca para ver con sonido</span>';
+    imgPanel.style.cursor='pointer';
+    imgPanel.addEventListener('click',()=>{lbImg.style.display='none';lbVid.src=p.imagen;lbVid.style.display='block';lbVid.muted=false;lbVid.loop=false;lbVid.controls=true;lightbox.classList.add('open');lbVid.play();});
+  }else{
+    imgPanel.innerHTML='<img src="'+p.imagen+'" alt="'+p.nombre+' TIENS Bolivia infotiens43" width="480" height="480" loading="eager" onerror="this.src=\'https://placehold.co/480x480/e8f7ee/2E8B57?text='+encodeURIComponent(p.nombre)+'\'"/><span class="img-badge-cat">'+(p.categoria||'TIENS')+'</span><span class="img-badge-code">'+p.codigo+'</span><span class="zoom-hint"><i class="bi bi-zoom-in"></i> Ampliar</span>';
+    imgPanel.style.cursor='zoom-in';
+    imgPanel.addEventListener('click',()=>{lbVid.style.display='none';lbImg.src=p.imagen;lbImg.style.display='block';lightbox.classList.add('open');});
+  }
+  const bens=Array.isArray(p.beneficios)?p.beneficios:[];
+  if(bens.length){document.getElementById('beneficiosBox').style.display='block';document.getElementById('pBeneficios').innerHTML=bens.map((b,i)=>'<li class="benefit-item" style="animation-delay:'+(i*0.06)+'s"><i class="bi bi-check-circle-fill"></i>'+b+'</li>').join('');}
+  if(p.audio)initAudio(p.audio);
+  if(p.video)initVideo(p.video);
+  if(p.pdf){const el=document.getElementById('btnPDF');el.href=p.pdf;el.style.display='flex';}
+  const msg=encodeURIComponent('Hola! Me interesa '+p.nombre+' ('+p.codigo+') - '+p.precio+' Bs. infotiens43');
+  document.getElementById('btnWA').href='https://wa.me/'+WA+'?text='+msg;
+  document.getElementById('waFloat').href='https://wa.me/'+WA+'?text='+msg;
+  document.getElementById('btnAddCart').addEventListener('click',()=>window._addCart(p));
+  document.getElementById('recetaTitle').textContent='Recetas con '+p.nombre;
+  document.getElementById('recetaSub').textContent='Formas prácticas de aprovechar '+p.nombre+' cada día';
+  document.getElementById('pageLoader').style.display='none';
+  document.getElementById('contenido').style.display='block';
+  renderRecetas(p);
+}
+async function init(){
+  updateCartUI();
+  const id=Number(new URLSearchParams(location.search).get('id'));
+  let producto=null;
+  try{
+    const {createClient}=await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+    const sb=createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+    const {data}=await sb.from('productos_full').select('*').eq('id',id).single();
+    if(data)producto=data;
+  }catch(e){console.warn('Supabase:',e);}
+  if(!producto)producto=FALLBACK.find(p=>p.id===id);
+  if(!producto){document.getElementById('pageLoader').style.display='none';document.getElementById('pageError').style.display='flex';return;}
+  renderProducto(producto);
+}
+init();
+</script>
+</body>
+</html>
