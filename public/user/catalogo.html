@@ -296,7 +296,7 @@ button{cursor:pointer;border:none;background:none;font-family:inherit;}
 .card-img{
   position:relative;overflow:hidden;
   background:linear-gradient(135deg,#e8f7ee,#f0fcf4);
-  height:220px;
+  height:280px;
 }
 @media(min-width:520px){.card-img{height:195px;}}
 
@@ -479,9 +479,9 @@ button{cursor:pointer;border:none;background:none;font-family:inherit;}
   </div>
   <div class="cart-foot" id="cartFoot" style="display:none;">
     <div class="cart-total">Total <span id="cartTotal">0 Bs</span></div>
-    <a id="cartCheckout" href="#" target="_blank" class="checkout-btn">
+    <button type="button" id="cartCheckout" class="checkout-btn">
       <i class="bi bi-whatsapp"></i> Pedir todo por WhatsApp
-    </a>
+    </button>
   </div>
 </aside>
 
@@ -528,12 +528,12 @@ const WA = '59163488086';
 
 /* ── FALLBACK local (por si Supabase falla) ── */
 const FALLBACK = [
-  {id:1,codigo:'A01',nombre:'Calcio Nutritivo',descripcion:'Huesos fuertes y metabolismo activo. Fórmula con vitamina D.',precio:210,categoria:'Suplementos',imagen:'https://res.cloudinary.com/dv6d41ect/image/upload/v1758840051/A01_zf5hc8.png'},
-  {id:2,codigo:'A03',nombre:'Calcio para Niños',descripcion:'Crecimiento saludable y defensas reforzadas para pequeños.',precio:210,categoria:'Suplementos',imagen:'https://res.cloudinary.com/dv6d41ect/image/upload/v1758840051/A03_huuq0n.png'},
-  {id:3,codigo:'A05',nombre:'Té Tianshi',descripcion:'Mejora la digestión y ayuda a controlar el peso naturalmente.',precio:300,categoria:'Tés',imagen:'https://res.cloudinary.com/dv6d41ect/image/upload/v1758840052/A05_eazlgz.png'},
-  {id:4,codigo:'A39',nombre:'Té Milenario',descripcion:'Desintoxica y apoya la digestión con plantas ancestrales.',precio:300,categoria:'Tés',imagen:'https://res.cloudinary.com/dv6d41ect/image/upload/v1758840053/A39_ot9ewl.png'},
-  {id:5,codigo:'A75',nombre:'CordyCafé',descripcion:'Energía natural con cordyceps. Concentración y bienestar.',precio:180,categoria:'Cafés',imagen:'https://res.cloudinary.com/dv6d41ect/image/upload/v1758840055/A75_vzmmrq.png'},
-  {id:6,codigo:'A93',nombre:'Colágeno Forte',descripcion:'Piel, huesos y articulaciones. Con ginseng y colágeno marino.',precio:400,categoria:'Suplementos',imagen:'https://res.cloudinary.com/dv6d41ect/image/upload/v1758840055/A93_g8qawb.png'},
+  {id:1,codigo:'A01',nombre:'Calcio Nutritivo',descripcion:'Huesos fuertes y metabolismo activo. Fórmula con vitamina D.',precio:210,categoria:'Suplementos',imagen:'https://res.cloudinary.com/dv6d41ect/image/upload/v1758840051/A01_zf5hc8.png',imagen_portada:'https://res.cloudinary.com/dv6d41ect/image/upload/v1758840051/A01_zf5hc8.png'},
+  {id:2,codigo:'A03',nombre:'Calcio para Niños',descripcion:'Crecimiento saludable y defensas reforzadas para pequeños.',precio:210,categoria:'Suplementos',imagen:'https://res.cloudinary.com/dv6d41ect/image/upload/v1758840051/A03_huuq0n.png',imagen_portada:'https://res.cloudinary.com/dv6d41ect/image/upload/v1758840051/A03_huuq0n.png'},
+  {id:3,codigo:'A05',nombre:'Té Tianshi',descripcion:'Mejora la digestión y ayuda a controlar el peso naturalmente.',precio:300,categoria:'Tés',imagen:'https://res.cloudinary.com/dv6d41ect/image/upload/v1758840052/A05_eazlgz.png',imagen_portada:'https://res.cloudinary.com/dv6d41ect/image/upload/v1758840052/A05_eazlgz.png'},
+  {id:4,codigo:'A39',nombre:'Té Milenario',descripcion:'Desintoxica y apoya la digestión con plantas ancestrales.',precio:300,categoria:'Tés',imagen:'https://res.cloudinary.com/dv6d41ect/image/upload/v1758840053/A39_ot9ewl.png',imagen_portada:'https://res.cloudinary.com/dv6d41ect/image/upload/v1758840053/A39_ot9ewl.png'},
+  {id:5,codigo:'A75',nombre:'CordyCafé',descripcion:'Energía natural con cordyceps. Concentración y bienestar.',precio:180,categoria:'Cafés',imagen:'https://res.cloudinary.com/dv6d41ect/image/upload/v1758840055/A75_vzmmrq.png',imagen_portada:'https://res.cloudinary.com/dv6d41ect/image/upload/v1758840055/A75_vzmmrq.png'},
+  {id:6,codigo:'A93',nombre:'Colágeno Forte',descripcion:'Piel, huesos y articulaciones. Con ginseng y colágeno marino.',precio:400,categoria:'Suplementos',imagen:'https://res.cloudinary.com/dv6d41ect/image/upload/v1758840055/A93_g8qawb.png',imagen_portada:'https://res.cloudinary.com/dv6d41ect/image/upload/v1758840055/A93_g8qawb.png'},
 ];
 
 let todos = [], filtroActual = 'Todas', busqueda = '';
@@ -549,7 +549,7 @@ async function cargarProductos() {
   try {
     const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
     const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    const { data, error } = await sb.from('productos_full').select('*');
+    const { data, error } = await sb.from('productos').select('*');
     todos = (!error && data && data.length) ? data : FALLBACK;
   } catch (e) {
     console.warn('Supabase falló, usando FALLBACK:', e);
@@ -682,7 +682,7 @@ function updateCartUI() {
   foot.style.display = 'block';
   body.innerHTML = cart.map(c => `
     <div class="cart-item">
-      <img src="${c.imagen && !esVideo(c.imagen) ? c.imagen : 'https://placehold.co/50x50/e8f7ee/2E8B57?text=▶'}"
+      <img src="${(c.imagen_portada || c.imagen) && !esVideo(c.imagen_portada || c.imagen) ? c.imagen_portada || c.imagen : 'https://placehold.co/50x50/e8f7ee/2E8B57?text=▶'}"
            alt="${c.nombre}" onerror="this.src='https://placehold.co/50x50/e8f7ee/2E8B57?text=+'"/>
       <div class="cart-item-info">
         <h4>${c.nombre}</h4>
@@ -691,9 +691,14 @@ function updateCartUI() {
       <button class="cart-item-del" onclick="window._removeCart(${c.id})"><i class="bi bi-trash3"></i></button>
     </div>`).join('');
 
-  const lines = cart.map(c => `• ${c.nombre} (${c.codigo}) x${c.qty} = ${c.precio * c.qty} Bs`).join('\n');
-  const msg = encodeURIComponent(`Hola! Quiero hacer este pedido:\n\n${lines}\n\nTotal: ${total} Bs\n\ninfotiens43`);
-  document.getElementById('cartCheckout').href = `https://wa.me/${WA}?text=${msg}`;
+  document.getElementById('cartCheckout').onclick = () => {
+    const lines = cart.map(c => `• ${c.nombre} (${c.codigo}) x${c.qty} = ${c.precio * c.qty} Bs`).join('\n');
+    const msg = encodeURIComponent(`Hola! Quiero hacer este pedido:\n\n${lines}\n\nTotal: ${total} Bs\n\ninfotiens43`);
+    cart = [];
+    localStorage.setItem('cc_cart', JSON.stringify(cart));
+    updateCartUI();
+    window.location.href = `https://wa.me/${WA}?text=${msg}`;
+  };
 }
 
 /* ── Toast ── */
