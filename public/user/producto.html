@@ -195,7 +195,7 @@ button{cursor:pointer;border:none;background:none;font-family:inherit;}
   </div>
   <div class="cart-foot" id="cartFoot" style="display:none;">
     <div class="cart-total-row">Total <span id="cartTotal">0 Bs</span></div>
-    <a id="cartCheckout" href="#" target="_blank" class="checkout-btn"><i class="bi bi-whatsapp"></i> Pedir todo por WhatsApp</a>
+    <button type="button" id="cartCheckout" class="checkout-btn"><i class="bi bi-whatsapp"></i> Pedir todo por WhatsApp</button>
   </div>
 </aside>
 <div class="lightbox" id="lightbox">
@@ -303,10 +303,16 @@ function updateCartUI(){
   document.getElementById('cartTotal').textContent=total+' Bs';
   if(!cart.length){body.innerHTML='<div class="cart-empty"><i class="bi bi-cart3"></i><p>Tu carrito está vacío</p><small>Agrega productos para pedirlos por WhatsApp</small></div>';foot.style.display='none';return;}
   foot.style.display='block';
-  body.innerHTML=cart.map(c=>'<div class="cart-item"><img src="'+(c.imagen&&!esVideo(c.imagen)?c.imagen:'https://placehold.co/50x50/e8f7ee/2E8B57?text=+')+'" alt="'+c.nombre+'" onerror="this.src=\'https://placehold.co/50x50/e8f7ee/2E8B57?text=+\'"/><div class="cart-item-info"><h4>'+c.nombre+'</h4><span>'+c.precio+' Bs × '+c.qty+' = '+(c.precio*c.qty)+' Bs</span></div><button class="cart-item-del" onclick="window._removeCart('+c.id+')"><i class="bi bi-trash3"></i></button></div>').join('');
-  const lines=cart.map(c=>'• '+c.nombre+' ('+c.codigo+') x'+c.qty+' = '+(c.precio*c.qty)+' Bs').join('\n');
-  const msg=encodeURIComponent('Hola! Quiero hacer este pedido:\n\n'+lines+'\n\nTotal: '+total+' Bs\n\ninfotiens43');
-  document.getElementById('cartCheckout').href='https://wa.me/'+WA+'?text='+msg;
+  body.innerHTML=cart.map(c=>'<div class="cart-item"><img src="'+((c.imagen_portada || c.imagen)&&!esVideo(c.imagen_portada || c.imagen)?c.imagen_portada || c.imagen:'https://placehold.co/50x50/e8f7ee/2E8B57?text=+')+'" alt="'+c.nombre+'" onerror="this.src=\'https://placehold.co/50x50/e8f7ee/2E8B57?text=+\'"/><div class="cart-item-info"><h4>'+c.nombre+'</h4><span>'+c.precio+' Bs × '+c.qty+' = '+(c.precio*c.qty)+' Bs</span></div><button class="cart-item-del" onclick="window._removeCart('+c.id+')"><i class="bi bi-trash3"></i></button></div>').join('');
+  document.getElementById('cartCheckout').onclick = () => {
+    const total = cart.reduce((a,c)=>a+c.precio*c.qty,0);
+    const lines = cart.map(c => '• ' + c.nombre + ' (' + c.codigo + ') x' + c.qty + ' = ' + (c.precio * c.qty) + ' Bs').join('\n');
+    const msg = encodeURIComponent('Hola! Quiero hacer este pedido:\n\n' + lines + '\n\nTotal: ' + total + ' Bs\n\ninfotiens43');
+    window.location.href = 'https://wa.me/' + WA + '?text=' + msg;
+    cart = [];
+    saveCart();
+    updateCartUI();
+  };
 }
 let toastTimer;
 function showToast(icon,text){const t=document.getElementById('toast');t.innerHTML='<i class="bi '+icon+'"></i> '+text;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2400);}
@@ -401,7 +407,7 @@ async function init(){
   try{
     const {createClient}=await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
     const sb=createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
-    const {data}=await sb.from('productos_full').select('*').eq('id',id).single();
+    const {data}=await sb.from('productos').select('*').eq('id',id).single();
     if(data)producto=data;
   }catch(e){console.warn('Supabase:',e);}
   if(!producto)producto=FALLBACK.find(p=>p.id===id);
