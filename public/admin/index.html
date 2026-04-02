@@ -1,0 +1,1630 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Admin – CordyClub Bolivia</title>
+<meta name="theme-color" content="#1a5c35"/>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet"/>
+<!-- DataTables -->
+<link href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<style>
+:root{
+  --g1:#1a5c35;--g2:#2E8B57;--g3:#3aac6e;
+  --teal:#20B2AA;--gold:#DAA520;--gold-lt:#F0E68C;
+  --bg:#f0faf4;--text:#1a2e22;--muted:#6b8c78;
+  --card:#ffffff;--border:#d4ede0;--chip:#e6f7ee;
+  --wa:#25d366;--danger:#e74c3c;--warn:#f39c12;
+  --shadow:0 2px 16px rgba(46,139,87,.10);
+  --shadow-lg:0 8px 32px rgba(46,139,87,.18);
+  --tr:all .22s cubic-bezier(.4,0,.2,1);
+  --sidebar-w:260px;
+  --topbar-h:62px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;}
+a{text-decoration:none;color:inherit;}
+img,video{display:block;max-width:100%;}
+button{cursor:pointer;border:none;background:none;font-family:inherit;}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:var(--chip);}
+::-webkit-scrollbar-thumb{background:var(--g3);border-radius:3px;}
+
+/* ─── TOPBAR ─── */
+.topbar{
+  position:fixed;top:0;left:0;right:0;height:var(--topbar-h);z-index:200;
+  background:linear-gradient(135deg,var(--g1) 0%,var(--g2) 60%,var(--g3) 100%);
+  display:flex;align-items:center;padding:0 18px;gap:12px;
+  box-shadow:0 2px 20px rgba(26,92,53,.3);
+}
+.topbar-toggle{
+  width:38px;height:38px;border-radius:10px;
+  background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.2);
+  color:#fff;font-size:1.15rem;
+  display:flex;align-items:center;justify-content:center;
+  transition:var(--tr);flex-shrink:0;
+}
+.topbar-toggle:hover{background:rgba(255,255,255,.26);}
+.topbar-brand{
+  font-size:1.05rem;font-weight:800;color:#fff;
+  display:flex;align-items:center;gap:8px;flex:1;letter-spacing:-.02em;
+}
+.topbar-brand .badge-admin{
+  font-size:.55rem;font-weight:700;
+  background:var(--gold);color:#1a1a1a;
+  padding:2px 7px;border-radius:6px;letter-spacing:.06em;text-transform:uppercase;
+}
+.topbar-actions{display:flex;align-items:center;gap:8px;}
+.topbar-btn{
+  width:38px;height:38px;border-radius:10px;
+  background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.2);
+  color:#fff;font-size:.95rem;
+  display:flex;align-items:center;justify-content:center;transition:var(--tr);
+  position:relative;
+}
+.topbar-btn:hover{background:rgba(255,255,255,.26);}
+.topbar-user{
+  display:flex;align-items:center;gap:7px;
+  background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.18);
+  color:#fff;font-size:.74rem;font-weight:600;
+  padding:6px 12px;border-radius:10px;
+  transition:var(--tr);
+}
+.topbar-user:hover{background:rgba(255,255,255,.24);}
+.topbar-avatar{
+  width:26px;height:26px;border-radius:7px;
+  background:var(--gold);color:#1a1a1a;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.75rem;font-weight:800;
+}
+
+/* ─── SIDEBAR ─── */
+.sidebar{
+  position:fixed;top:var(--topbar-h);left:0;bottom:0;
+  width:var(--sidebar-w);z-index:180;
+  background:#fff;border-right:1.5px solid var(--border);
+  box-shadow:2px 0 20px rgba(46,139,87,.07);
+  display:flex;flex-direction:column;
+  transform:translateX(0);transition:transform .32s cubic-bezier(.25,.46,.45,.94);
+  overflow:hidden;
+}
+.sidebar.collapsed{transform:translateX(calc(-1 * var(--sidebar-w)));}
+.sidebar-head{
+  padding:16px 18px 10px;
+  border-bottom:1px solid var(--chip);
+}
+.sidebar-section{
+  font-size:.62rem;font-weight:700;color:var(--muted);
+  letter-spacing:.12em;text-transform:uppercase;
+  padding:10px 18px 4px;
+}
+.nav-item{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 18px;color:#5a7366;
+  font-size:.82rem;font-weight:500;
+  border-left:3px solid transparent;
+  transition:var(--tr);cursor:pointer;position:relative;
+}
+.nav-item i{width:18px;font-size:.9rem;color:var(--g2);flex-shrink:0;}
+.nav-item:hover{background:var(--chip);color:var(--g1);padding-left:22px;}
+.nav-item.active{background:var(--chip);color:var(--g1);border-left-color:var(--g2);padding-left:22px;font-weight:600;}
+.nav-item .nav-badge{
+  margin-left:auto;font-size:.6rem;font-weight:700;
+  background:var(--g2);color:#fff;
+  padding:2px 7px;border-radius:10px;
+  font-family:'DM Mono',monospace;
+}
+.sidebar-sep{height:1px;background:var(--border);margin:6px 16px;}
+.sidebar-foot{
+  margin-top:auto;padding:14px 16px;
+  border-top:1px solid var(--border);background:var(--chip);
+}
+.sidebar-foot-info{font-size:.7rem;color:var(--muted);text-align:center;}
+
+/* ─── SIDEBAR OVERLAY (móvil) ─── */
+.sidebar-overlay{
+  display:none;position:fixed;inset:0;z-index:170;
+  background:rgba(10,30,18,.45);backdrop-filter:blur(4px);
+  opacity:0;pointer-events:none;transition:opacity .28s;
+}
+.sidebar-overlay.open{opacity:1;pointer-events:all;}
+
+/* ─── CONTENT ─── */
+.content{
+  margin-top:var(--topbar-h);
+  margin-left:var(--sidebar-w);
+  min-height:calc(100vh - var(--topbar-h));
+  padding:24px 22px 60px;
+  transition:margin-left .32s cubic-bezier(.25,.46,.45,.94);
+}
+.content.full{margin-left:0;}
+
+/* ─── PAGE SECTIONS ─── */
+.page-section{display:none;}
+.page-section.active{display:block;}
+
+/* ─── STATS ─── */
+.stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:24px;}
+@media(min-width:700px){.stats-grid{grid-template-columns:repeat(4,1fr);}}
+.stat-card{
+  background:#fff;border-radius:16px;padding:18px 16px;
+  border:1.5px solid var(--border);box-shadow:var(--shadow);
+  display:flex;flex-direction:column;gap:6px;transition:var(--tr);
+}
+.stat-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);}
+.stat-icon{
+  width:40px;height:40px;border-radius:11px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.1rem;margin-bottom:4px;
+}
+.stat-icon.green{background:#e6f7ee;color:var(--g2);}
+.stat-icon.gold{background:#fdf8e1;color:var(--gold);}
+.stat-icon.teal{background:#e0f7f6;color:var(--teal);}
+.stat-icon.red{background:#fdecea;color:var(--danger);}
+.stat-value{font-size:1.6rem;font-weight:800;color:var(--text);line-height:1;font-family:'DM Mono',monospace;}
+.stat-label{font-size:.72rem;color:var(--muted);font-weight:500;}
+.stat-delta{font-size:.68rem;color:var(--g2);font-weight:600;display:flex;align-items:center;gap:3px;}
+
+/* ─── PAGE HEADER ─── */
+.page-header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:20px;flex-wrap:wrap;gap:10px;
+}
+.page-header h2{font-size:1.1rem;font-weight:800;color:var(--text);}
+.page-header p{font-size:.76rem;color:var(--muted);margin-top:2px;}
+
+/* ─── BUTTONS ─── */
+.btn-primary{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--g2);color:#fff;font-family:'Sora',sans-serif;
+  font-size:.8rem;font-weight:700;padding:9px 18px;border-radius:10px;
+  border:none;transition:var(--tr);cursor:pointer;
+}
+.btn-primary:hover{background:var(--g1);transform:translateY(-1px);}
+.btn-danger{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--danger);color:#fff;font-family:'Sora',sans-serif;
+  font-size:.8rem;font-weight:700;padding:9px 18px;border-radius:10px;
+  border:none;transition:var(--tr);cursor:pointer;
+}
+.btn-sm{padding:6px 12px;font-size:.72rem;border-radius:8px;}
+.btn-outline{
+  display:inline-flex;align-items:center;gap:5px;
+  background:transparent;color:var(--g2);font-family:'Sora',sans-serif;
+  font-size:.78rem;font-weight:600;padding:7px 14px;border-radius:9px;
+  border:1.5px solid var(--border);transition:var(--tr);cursor:pointer;
+}
+.btn-outline:hover{background:var(--chip);border-color:var(--g2);}
+.btn-icon{
+  width:32px;height:32px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.85rem;transition:var(--tr);cursor:pointer;border:1px solid var(--border);
+  background:var(--chip);color:var(--muted);
+}
+.btn-icon:hover{color:var(--g2);border-color:var(--g2);}
+.btn-icon.del:hover{color:var(--danger);border-color:var(--danger);background:#fdecea;}
+
+/* ─── CARD ─── */
+.panel{
+  background:#fff;border-radius:16px;
+  border:1.5px solid var(--border);box-shadow:var(--shadow);
+  overflow:hidden;margin-bottom:20px;
+}
+.panel-head{
+  padding:14px 18px;border-bottom:1px solid var(--chip);
+  display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;
+}
+.panel-head h3{font-size:.9rem;font-weight:700;color:var(--text);}
+.panel-body{padding:18px;}
+.panel-body.no-pad{padding:0;}
+
+/* ─── DATATABLE ─── */
+.dataTables_wrapper .dataTables_filter input{
+  border-radius:9px!important;border:1.5px solid var(--border)!important;
+  font-family:'Sora',sans-serif!important;font-size:.8rem!important;
+  padding:6px 12px!important;outline:none!important;
+}
+.dataTables_wrapper .dataTables_filter input:focus{border-color:var(--g2)!important;}
+.dataTables_wrapper .dataTables_length select{
+  border-radius:8px!important;border:1.5px solid var(--border)!important;
+  font-family:'Sora',sans-serif!important;font-size:.78rem!important;
+}
+table.dataTable thead th{
+  font-size:.75rem!important;font-weight:700!important;
+  color:var(--muted)!important;text-transform:uppercase;letter-spacing:.06em;
+  background:var(--chip)!important;border-bottom:1.5px solid var(--border)!important;
+}
+table.dataTable tbody td{font-size:.8rem!important;vertical-align:middle!important;}
+table.dataTable tbody tr:hover td{background:var(--chip)!important;}
+.page-link{color:var(--g2)!important;}
+.page-item.active .page-link{background:var(--g2)!important;border-color:var(--g2)!important;}
+
+/* ─── DRAWER (panel derecho) ─── */
+.drawer{
+  position:fixed;top:0;right:-480px;bottom:0;width:460px;z-index:300;
+  background:#fff;border-left:1.5px solid var(--border);
+  box-shadow:-8px 0 48px rgba(26,92,53,.14);
+  display:flex;flex-direction:column;
+  transition:right .35s cubic-bezier(.25,.46,.45,.94);
+}
+.drawer.open{right:0;}
+.drawer-backdrop{
+  position:fixed;inset:0;z-index:290;
+  background:rgba(10,30,18,.4);backdrop-filter:blur(5px);
+  opacity:0;pointer-events:none;transition:opacity .3s;
+}
+.drawer-backdrop.open{opacity:1;pointer-events:all;}
+.drawer-top{
+  padding:18px 20px;
+  background:linear-gradient(135deg,var(--g1),var(--g2));
+  display:flex;align-items:center;gap:10px;flex-shrink:0;
+}
+.drawer-top h3{font-size:.98rem;font-weight:700;color:#fff;flex:1;}
+.drawer-close{
+  width:34px;height:34px;border-radius:9px;
+  background:rgba(255,255,255,.15);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1rem;transition:var(--tr);
+}
+.drawer-close:hover{background:rgba(255,255,255,.28);}
+.drawer-body{flex:1;overflow-y:auto;padding:20px;}
+.drawer-foot{
+  padding:14px 18px;border-top:1px solid var(--border);
+  background:var(--chip);display:flex;gap:10px;flex-shrink:0;
+}
+
+@media(max-width:520px){
+  .drawer{width:100%;right:-100%;}
+  .sidebar{width:var(--sidebar-w);}
+}
+
+/* ─── FORM ─── */
+.form-group{margin-bottom:16px;}
+.form-group label{
+  display:block;font-size:.76rem;font-weight:600;color:var(--text);margin-bottom:6px;
+}
+.form-group label span.req{color:var(--danger);margin-left:2px;}
+.form-control{
+  width:100%;padding:9px 12px;
+  border:1.5px solid var(--border);border-radius:10px;
+  font-family:'Sora',sans-serif;font-size:.82rem;color:var(--text);
+  background:#fff;outline:none;transition:var(--tr);
+}
+.form-control:focus{border-color:var(--g2);box-shadow:0 0 0 3px rgba(46,139,87,.1);}
+.form-control::placeholder{color:#b0c8b8;}
+textarea.form-control{resize:vertical;min-height:80px;}
+select.form-control{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236b8c78'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(max-width:480px){.form-row{grid-template-columns:1fr;}}
+
+/* ─── UPLOAD ZONE ─── */
+.upload-zone{
+  border:2px dashed var(--border);border-radius:14px;
+  padding:28px 20px;text-align:center;
+  background:var(--chip);transition:var(--tr);cursor:pointer;
+  position:relative;overflow:hidden;
+}
+.upload-zone:hover,.upload-zone.drag{border-color:var(--g2);background:#e0f7ea;}
+.upload-zone i{font-size:2rem;color:var(--g2);display:block;margin-bottom:8px;}
+.upload-zone p{font-size:.78rem;color:var(--muted);font-weight:500;}
+.upload-zone small{font-size:.68rem;color:#b0c8b8;}
+.upload-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.upload-progress{
+  height:5px;border-radius:3px;background:var(--border);
+  margin-top:10px;overflow:hidden;display:none;
+}
+.upload-progress-bar{height:100%;background:var(--g2);transition:width .3s;border-radius:3px;}
+.upload-preview{
+  margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;
+}
+.upload-thumb{
+  position:relative;width:80px;height:80px;border-radius:10px;overflow:hidden;
+  border:2px solid var(--border);background:var(--chip);
+}
+.upload-thumb img,.upload-thumb video{width:100%;height:100%;object-fit:cover;}
+.upload-thumb .rm{
+  position:absolute;top:3px;right:3px;
+  width:18px;height:18px;border-radius:4px;
+  background:rgba(231,76,60,.8);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.6rem;cursor:pointer;
+}
+
+/* ─── PRODUCTO CARD ─── */
+.prod-thumb{width:48px;height:48px;object-fit:cover;border-radius:9px;border:1px solid var(--border);}
+.badge-cat{
+  font-size:.62rem;font-weight:700;padding:3px 9px;border-radius:20px;
+  text-transform:uppercase;letter-spacing:.05em;
+  background:var(--chip);color:var(--g2);border:1px solid var(--border);
+}
+.badge-cat.Tés{background:#e0f7f6;color:var(--teal);}
+.badge-cat.Cafés{background:#fdf8e1;color:#b8860b;}
+
+/* ─── TOAST ─── */
+.toast-stack{position:fixed;bottom:20px;right:20px;z-index:500;display:flex;flex-direction:column;gap:8px;}
+.toast-item{
+  display:flex;align-items:center;gap:9px;
+  background:var(--text);color:#fff;
+  padding:10px 16px;border-radius:12px;
+  font-size:.78rem;font-weight:600;
+  box-shadow:0 6px 24px rgba(0,0,0,.22);
+  animation:toastIn .3s ease;
+  max-width:320px;
+}
+.toast-item.success{background:#1a5c35;}
+.toast-item.error{background:var(--danger);}
+.toast-item.warn{background:var(--warn);}
+@keyframes toastIn{from{opacity:0;transform:translateX(30px);}to{opacity:1;transform:translateX(0);}}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:768px){
+  :root{--sidebar-w:260px;}
+  .sidebar{transform:translateX(calc(-1 * var(--sidebar-w)));z-index:181;}
+  .sidebar.open{transform:translateX(0);}
+  .sidebar-overlay{display:block;}
+  .content{margin-left:0!important;}
+  .stats-grid{grid-template-columns:repeat(2,1fr);}
+}
+@media(max-width:480px){
+  .topbar-brand .badge-admin{display:none;}
+  .topbar-user span{display:none;}
+}
+
+/* ─── AVATAR INICIAL ─── */
+.artist-avatar{width:38px;height:38px;object-fit:cover;border-radius:9px;}
+.ini{
+  width:38px;height:38px;border-radius:9px;
+  background:var(--g2);color:#fff;font-weight:700;font-size:.85rem;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+
+/* ─── LOADER ─── */
+.tbl-loader{padding:40px;text-align:center;color:var(--muted);}
+.tbl-loader .ring{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--g2);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 10px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* ─── SWITCH ─── */
+.switch-label{display:flex;align-items:center;gap:10px;cursor:pointer;}
+.switch{position:relative;display:inline-block;width:42px;height:24px;}
+.switch input{opacity:0;width:0;height:0;}
+.slider{position:absolute;inset:0;background:#d4ede0;border-radius:24px;transition:.3s;}
+.slider:before{
+  position:absolute;content:'';width:18px;height:18px;
+  left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.3s;
+  box-shadow:0 1px 4px rgba(0,0,0,.15);
+}
+.switch input:checked + .slider{background:var(--g2);}
+.switch input:checked + .slider:before{transform:translateX(18px);}
+.switch-text{font-size:.8rem;font-weight:500;color:var(--text);}
+</style>
+</head>
+<body>
+
+<!-- ═══ TOPBAR ═══ -->
+<header class="topbar">
+  <button class="topbar-toggle" id="sidebarToggle"><i class="bi bi-layout-sidebar-reverse"></i></button>
+  <div class="topbar-brand">
+    <i class="bi bi-shield-check" style="color:var(--gold-lt);"></i>
+    CordyClub Admin
+    <span class="badge-admin">Panel</span>
+  </div>
+  <div class="topbar-actions">
+    <button class="topbar-btn" title="Ir al catálogo" onclick="window.open('../catalogo.html','_blank')">
+      <i class="bi bi-box-arrow-up-right"></i>
+    </button>
+    <div class="topbar-user">
+      <div class="topbar-avatar">A</div>
+      <span>Admin</span>
+    </div>
+  </div>
+</header>
+
+<!-- ═══ SIDEBAR OVERLAY ═══ -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- ═══ SIDEBAR ═══ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-head">
+    <div style="font-size:.7rem;color:var(--muted);font-weight:600;">
+      <i class="bi bi-circle-fill" style="color:var(--g3);font-size:.5rem;vertical-align:middle;"></i>
+      Sistema activo
+    </div>
+  </div>
+
+  <p class="sidebar-section">Principal</p>
+  <div class="nav-item active" data-page="dashboard">
+    <i class="bi bi-grid-1x2"></i> Dashboard
+  </div>
+
+  <p class="sidebar-section">Catálogo</p>
+  <div class="nav-item" data-page="productos">
+    <i class="bi bi-box-seam"></i> Productos
+    <span class="nav-badge" id="nb-productos">–</span>
+  </div>
+  <div class="nav-item" data-page="categorias">
+    <i class="bi bi-tags"></i> Categorías
+  </div>
+  <div class="nav-item" data-page="artistas">
+    <i class="bi bi-person-badge"></i> Artistas / Marcas
+  </div>
+
+  <div class="sidebar-sep"></div>
+  <p class="sidebar-section">Multimedia</p>
+  <div class="nav-item" data-page="media">
+    <i class="bi bi-images"></i> Imágenes &amp; Videos
+  </div>
+  <div class="nav-item" data-page="videos">
+    <i class="bi bi-camera-video"></i> Videos destacados
+  </div>
+
+  <div class="sidebar-sep"></div>
+  <p class="sidebar-section">Música / Canciones</p>
+  <div class="nav-item" data-page="songs">
+    <i class="bi bi-music-note-beamed"></i> Canciones
+  </div>
+  <div class="nav-item" data-page="playlists">
+    <i class="bi bi-collection-play"></i> Playlists
+  </div>
+
+  <div class="sidebar-sep"></div>
+  <p class="sidebar-section">Usuarios</p>
+  <div class="nav-item" data-page="usuarios">
+    <i class="bi bi-people"></i> Usuarios
+    <span class="nav-badge" id="nb-usuarios">–</span>
+  </div>
+
+  <div class="sidebar-foot">
+    <div class="sidebar-foot-info">
+      <i class="bi bi-cloud-check" style="color:var(--g2);"></i>
+      Supabase conectado<br>
+      <span style="font-family:'DM Mono',monospace;">iqloqrnaoxul…</span>
+    </div>
+  </div>
+</aside>
+
+<!-- ═══ CONTENT ═══ -->
+<main class="content" id="content">
+
+  <!-- ── DASHBOARD ── -->
+  <section class="page-section active" id="page-dashboard">
+    <div class="page-header">
+      <div>
+        <h2>Dashboard</h2>
+        <p>Resumen del sistema · <span id="fecha-hoy"></span></p>
+      </div>
+      <button class="btn-primary" onclick="openDrawer('producto')">
+        <i class="bi bi-plus-lg"></i> Nuevo producto
+      </button>
+    </div>
+
+    <div class="stats-grid" id="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon green"><i class="bi bi-box-seam"></i></div>
+        <div class="stat-value" id="st-productos">–</div>
+        <div class="stat-label">Productos</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon gold"><i class="bi bi-people"></i></div>
+        <div class="stat-value" id="st-usuarios">–</div>
+        <div class="stat-label">Usuarios</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon teal"><i class="bi bi-music-note-list"></i></div>
+        <div class="stat-value" id="st-songs">–</div>
+        <div class="stat-label">Canciones</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon red"><i class="bi bi-camera-video"></i></div>
+        <div class="stat-value" id="st-videos">–</div>
+        <div class="stat-label">Videos</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <h3><i class="bi bi-clock-history" style="color:var(--g2);"></i> Últimos productos agregados</h3>
+        <button class="btn-outline" onclick="navigate('productos')"><i class="bi bi-arrow-right"></i> Ver todos</button>
+      </div>
+      <div class="panel-body no-pad">
+        <div id="dash-recent-prod"><div class="tbl-loader"><div class="ring"></div><p>Cargando…</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PRODUCTOS ── -->
+  <section class="page-section" id="page-productos">
+    <div class="page-header">
+      <div><h2>Productos</h2><p>Gestión completa del catálogo</p></div>
+      <button class="btn-primary" onclick="openDrawer('producto')">
+        <i class="bi bi-plus-lg"></i> Agregar producto
+      </button>
+    </div>
+    <div class="panel">
+      <div class="panel-body no-pad">
+        <div id="tabla-productos-wrap" style="padding:14px;">
+          <div class="tbl-loader"><div class="ring"></div><p>Cargando productos…</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CATEGORIAS ── -->
+  <section class="page-section" id="page-categorias">
+    <div class="page-header">
+      <div><h2>Categorías</h2><p>Gestión de géneros / categorías</p></div>
+      <button class="btn-primary" onclick="openDrawer('categoria')">
+        <i class="bi bi-plus-lg"></i> Nueva categoría
+      </button>
+    </div>
+    <div class="panel">
+      <div class="panel-body no-pad">
+        <div id="tabla-categorias-wrap" style="padding:14px;">
+          <div class="tbl-loader"><div class="ring"></div><p>Cargando…</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── ARTISTAS ── -->
+  <section class="page-section" id="page-artistas">
+    <div class="page-header">
+      <div><h2>Artistas / Marcas</h2><p>Gestión de artistas y marcas</p></div>
+      <button class="btn-primary" onclick="openDrawer('artista')">
+        <i class="bi bi-plus-lg"></i> Nuevo artista
+      </button>
+    </div>
+    <div class="panel">
+      <div class="panel-body no-pad">
+        <div id="tabla-artistas-wrap" style="padding:14px;">
+          <div class="tbl-loader"><div class="ring"></div><p>Cargando…</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── MEDIA ── -->
+  <section class="page-section" id="page-media">
+    <div class="page-header">
+      <div><h2>Imágenes &amp; Videos</h2><p>Sube archivos a Cloudinary</p></div>
+    </div>
+    <div class="panel">
+      <div class="panel-head"><h3>Subir archivo</h3></div>
+      <div class="panel-body">
+        <div class="upload-zone" id="media-zone">
+          <i class="bi bi-cloud-arrow-up"></i>
+          <p>Arrastra o haz click para subir imagen / video</p>
+          <small>JPG, PNG, WEBP, MP4, WEBM · Máx 50 MB</small>
+          <input type="file" id="media-input" accept="image/*,video/*" multiple/>
+        </div>
+        <div class="upload-progress" id="media-progress"><div class="upload-progress-bar" id="media-bar"></div></div>
+        <div class="upload-preview" id="media-preview"></div>
+      </div>
+    </div>
+    <div class="panel" id="media-urls-panel" style="display:none;">
+      <div class="panel-head"><h3>URLs generadas</h3><button class="btn-outline btn-sm" onclick="document.getElementById('media-urls-list').innerHTML='';document.getElementById('media-urls-panel').style.display='none'"><i class="bi bi-trash3"></i> Limpiar</button></div>
+      <div class="panel-body">
+        <div id="media-urls-list" style="display:flex;flex-direction:column;gap:8px;"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── VIDEOS ── -->
+  <section class="page-section" id="page-videos">
+    <div class="page-header">
+      <div><h2>Videos destacados</h2><p>Tabla de videos (tabla videos)</p></div>
+      <button class="btn-primary" onclick="openDrawer('video')">
+        <i class="bi bi-plus-lg"></i> Agregar video
+      </button>
+    </div>
+    <div class="panel">
+      <div class="panel-body no-pad">
+        <div id="tabla-videos-wrap" style="padding:14px;">
+          <div class="tbl-loader"><div class="ring"></div><p>Cargando…</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SONGS ── -->
+  <section class="page-section" id="page-songs">
+    <div class="page-header">
+      <div><h2>Canciones</h2><p>Tabla songs de Supabase</p></div>
+      <button class="btn-primary" onclick="openDrawer('song')">
+        <i class="bi bi-plus-lg"></i> Nueva canción
+      </button>
+    </div>
+    <div class="panel">
+      <div class="panel-body no-pad">
+        <div id="tabla-songs-wrap" style="padding:14px;">
+          <div class="tbl-loader"><div class="ring"></div><p>Cargando…</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PLAYLISTS ── -->
+  <section class="page-section" id="page-playlists">
+    <div class="page-header">
+      <div><h2>Playlists</h2><p>Playlists de usuarios</p></div>
+    </div>
+    <div class="panel">
+      <div class="panel-body no-pad">
+        <div id="tabla-playlists-wrap" style="padding:14px;">
+          <div class="tbl-loader"><div class="ring"></div><p>Cargando…</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── USUARIOS ── -->
+  <section class="page-section" id="page-usuarios">
+    <div class="page-header">
+      <div><h2>Usuarios</h2><p>Perfiles registrados</p></div>
+    </div>
+    <div class="panel">
+      <div class="panel-body no-pad">
+        <div id="tabla-usuarios-wrap" style="padding:14px;">
+          <div class="tbl-loader"><div class="ring"></div><p>Cargando…</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ═══ DRAWERS ═══ -->
+<div class="drawer-backdrop" id="drawerBackdrop"></div>
+
+<!-- DRAWER: Producto -->
+<aside class="drawer" id="drawer-producto">
+  <div class="drawer-top">
+    <i class="bi bi-box-seam" style="color:rgba(255,255,255,.7);"></i>
+    <h3 id="drawer-prod-title">Nuevo producto</h3>
+    <button class="drawer-close" onclick="closeDrawer('producto')"><i class="bi bi-x-lg"></i></button>
+  </div>
+  <div class="drawer-body">
+    <input type="hidden" id="prod-id"/>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Nombre <span class="req">*</span></label>
+        <input type="text" id="prod-nombre" class="form-control" placeholder="Calcio Nutritivo"/>
+      </div>
+      <div class="form-group">
+        <label>Código</label>
+        <input type="text" id="prod-codigo" class="form-control" placeholder="A01"/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Descripción</label>
+      <textarea id="prod-desc" class="form-control" placeholder="Descripción breve del producto…"></textarea>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Precio (Bs) <span class="req">*</span></label>
+        <input type="number" id="prod-precio" class="form-control" placeholder="210"/>
+      </div>
+      <div class="form-group">
+        <label>Categoría <span class="req">*</span></label>
+        <select id="prod-cat" class="form-control">
+          <option value="">Seleccionar…</option>
+          <option>Suplementos</option>
+          <option>Tés</option>
+          <option>Cafés</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Imagen / portada</label>
+      <div class="upload-zone" id="prod-img-zone">
+        <i class="bi bi-image"></i>
+        <p>Imagen o video del producto</p>
+        <small>JPG, PNG, WEBP, MP4</small>
+        <input type="file" id="prod-img-input" accept="image/*,video/*"/>
+      </div>
+      <div class="upload-progress" id="prod-img-progress"><div class="upload-progress-bar" id="prod-img-bar"></div></div>
+      <div class="upload-preview" id="prod-img-preview"></div>
+      <div class="form-group" style="margin-top:8px;">
+        <label>O pega URL directa</label>
+        <input type="text" id="prod-img-url" class="form-control" placeholder="https://res.cloudinary.com/…"/>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Imagen portada (thumbnail)</label>
+      <input type="text" id="prod-thumb-url" class="form-control" placeholder="URL de imagen portada (opcional)"/>
+    </div>
+  </div>
+  <div class="drawer-foot">
+    <button class="btn-primary" style="flex:1;" onclick="guardarProducto()">
+      <i class="bi bi-check-lg"></i> Guardar producto
+    </button>
+    <button class="btn-outline" onclick="closeDrawer('producto')">Cancelar</button>
+  </div>
+</aside>
+
+<!-- DRAWER: Artista -->
+<aside class="drawer" id="drawer-artista">
+  <div class="drawer-top">
+    <i class="bi bi-person-badge" style="color:rgba(255,255,255,.7);"></i>
+    <h3 id="drawer-artist-title">Nuevo artista</h3>
+    <button class="drawer-close" onclick="closeDrawer('artista')"><i class="bi bi-x-lg"></i></button>
+  </div>
+  <div class="drawer-body">
+    <input type="hidden" id="artist-id"/>
+    <div class="form-group">
+      <label>Nombre <span class="req">*</span></label>
+      <input type="text" id="artist-nombre" class="form-control" placeholder="Nombre del artista o marca"/>
+    </div>
+    <div class="form-group">
+      <label>Bio</label>
+      <textarea id="artist-bio" class="form-control" placeholder="Breve descripción…"></textarea>
+    </div>
+    <div class="form-group">
+      <label>Avatar / logo</label>
+      <div class="upload-zone" id="artist-img-zone">
+        <i class="bi bi-person-circle"></i>
+        <p>Foto o logo del artista</p>
+        <small>JPG, PNG, WEBP · Máx 5 MB</small>
+        <input type="file" id="artist-img-input" accept="image/*"/>
+      </div>
+      <div class="upload-progress" id="artist-img-progress"><div class="upload-progress-bar" id="artist-img-bar"></div></div>
+      <div class="upload-preview" id="artist-img-preview"></div>
+      <div class="form-group" style="margin-top:8px;">
+        <label>O URL directa</label>
+        <input type="text" id="artist-avatar-url" class="form-control" placeholder="https://…"/>
+      </div>
+    </div>
+  </div>
+  <div class="drawer-foot">
+    <button class="btn-primary" style="flex:1;" onclick="guardarArtista()">
+      <i class="bi bi-check-lg"></i> Guardar artista
+    </button>
+    <button class="btn-outline" onclick="closeDrawer('artista')">Cancelar</button>
+  </div>
+</aside>
+
+<!-- DRAWER: Categoría -->
+<aside class="drawer" id="drawer-categoria">
+  <div class="drawer-top">
+    <i class="bi bi-tags" style="color:rgba(255,255,255,.7);"></i>
+    <h3>Nueva categoría</h3>
+    <button class="drawer-close" onclick="closeDrawer('categoria')"><i class="bi bi-x-lg"></i></button>
+  </div>
+  <div class="drawer-body">
+    <input type="hidden" id="cat-id"/>
+    <div class="form-group">
+      <label>Nombre de la categoría <span class="req">*</span></label>
+      <input type="text" id="cat-nombre" class="form-control" placeholder="Suplementos, Tés, Cafés…"/>
+    </div>
+  </div>
+  <div class="drawer-foot">
+    <button class="btn-primary" style="flex:1;" onclick="guardarCategoria()">
+      <i class="bi bi-check-lg"></i> Guardar
+    </button>
+    <button class="btn-outline" onclick="closeDrawer('categoria')">Cancelar</button>
+  </div>
+</aside>
+
+<!-- DRAWER: Video -->
+<aside class="drawer" id="drawer-video">
+  <div class="drawer-top">
+    <i class="bi bi-camera-video" style="color:rgba(255,255,255,.7);"></i>
+    <h3 id="drawer-video-title">Nuevo video</h3>
+    <button class="drawer-close" onclick="closeDrawer('video')"><i class="bi bi-x-lg"></i></button>
+  </div>
+  <div class="drawer-body">
+    <input type="hidden" id="video-id"/>
+    <div class="form-group">
+      <label>Título <span class="req">*</span></label>
+      <input type="text" id="video-titulo" class="form-control" placeholder="Título del video"/>
+    </div>
+    <div class="form-group">
+      <label>Artista</label>
+      <select id="video-artist" class="form-control"><option value="">Sin artista</option></select>
+    </div>
+    <div class="form-group">
+      <label>Video</label>
+      <div class="upload-zone" id="video-file-zone">
+        <i class="bi bi-camera-video"></i>
+        <p>Sube el archivo de video</p>
+        <small>MP4, WEBM · Máx 100 MB</small>
+        <input type="file" id="video-file-input" accept="video/*"/>
+      </div>
+      <div class="upload-progress" id="video-file-progress"><div class="upload-progress-bar" id="video-file-bar"></div></div>
+      <div class="upload-preview" id="video-file-preview"></div>
+      <div class="form-group" style="margin-top:8px;">
+        <label>O URL del video</label>
+        <input type="text" id="video-url" class="form-control" placeholder="https://res.cloudinary.com/…/video.mp4"/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Thumbnail URL</label>
+      <input type="text" id="video-thumb" class="form-control" placeholder="URL imagen miniatura"/>
+    </div>
+  </div>
+  <div class="drawer-foot">
+    <button class="btn-primary" style="flex:1;" onclick="guardarVideo()">
+      <i class="bi bi-check-lg"></i> Guardar video
+    </button>
+    <button class="btn-outline" onclick="closeDrawer('video')">Cancelar</button>
+  </div>
+</aside>
+
+<!-- DRAWER: Song -->
+<aside class="drawer" id="drawer-song">
+  <div class="drawer-top">
+    <i class="bi bi-music-note-beamed" style="color:rgba(255,255,255,.7);"></i>
+    <h3 id="drawer-song-title">Nueva canción</h3>
+    <button class="drawer-close" onclick="closeDrawer('song')"><i class="bi bi-x-lg"></i></button>
+  </div>
+  <div class="drawer-body">
+    <input type="hidden" id="song-id"/>
+    <div class="form-group">
+      <label>Título <span class="req">*</span></label>
+      <input type="text" id="song-titulo" class="form-control" placeholder="Nombre de la canción"/>
+    </div>
+    <div class="form-group">
+      <label>Artista</label>
+      <select id="song-artist" class="form-control"><option value="">Sin artista</option></select>
+    </div>
+    <div class="form-group">
+      <label>Duración (segundos)</label>
+      <input type="number" id="song-dur" class="form-control" placeholder="240"/>
+    </div>
+    <div class="form-group">
+      <label>Audio <span class="req">*</span></label>
+      <div class="upload-zone" id="song-audio-zone">
+        <i class="bi bi-music-note-beamed"></i>
+        <p>Sube el audio</p>
+        <small>MP3, WAV, OGG · Máx 50 MB</small>
+        <input type="file" id="song-audio-input" accept="audio/*"/>
+      </div>
+      <div class="upload-progress" id="song-audio-progress"><div class="upload-progress-bar" id="song-audio-bar"></div></div>
+      <div class="form-group" style="margin-top:8px;">
+        <label>O URL del audio</label>
+        <input type="text" id="song-audio-url" class="form-control" placeholder="https://…/audio.mp3"/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Video (opcional)</label>
+      <input type="text" id="song-video-url" class="form-control" placeholder="https://…/video.mp4"/>
+    </div>
+    <div class="form-group">
+      <label>Thumbnail URL</label>
+      <input type="text" id="song-thumb" class="form-control" placeholder="URL miniatura"/>
+    </div>
+  </div>
+  <div class="drawer-foot">
+    <button class="btn-primary" style="flex:1;" onclick="guardarSong()">
+      <i class="bi bi-check-lg"></i> Guardar canción
+    </button>
+    <button class="btn-outline" onclick="closeDrawer('song')">Cancelar</button>
+  </div>
+</aside>
+
+<!-- TOAST STACK -->
+<div class="toast-stack" id="toastStack"></div>
+
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script type="module">
+/* ══════════════════════════════════════════
+   IMPORTS
+══════════════════════════════════════════ */
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+const SUPABASE_URL      = 'https://iqloqrnaoxuldtinneqn.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_fjYtclIYb_OeECjDf023Tw_DeeMCjXY';
+const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const CLOUD_NAME    = 'dv6d41ect';
+const UPLOAD_PRESET = 'ml_default';
+
+/* ── globales ── */
+let dtProductos, dtArtistas, dtCategorias, dtVideos, dtSongs, dtPlaylists, dtUsuarios;
+let artistasList = [];
+
+/* ══════════════════════════════════════════
+   TOAST
+══════════════════════════════════════════ */
+window.showToast = function(msg, type='success', duration=3200) {
+  const icons = {success:'bi-check-circle-fill',error:'bi-exclamation-triangle-fill',warn:'bi-exclamation-circle-fill',info:'bi-info-circle-fill'};
+  const stack = document.getElementById('toastStack');
+  const el = document.createElement('div');
+  el.className = `toast-item ${type}`;
+  el.innerHTML = `<i class="bi ${icons[type]||icons.info}"></i> ${msg}`;
+  stack.appendChild(el);
+  setTimeout(() => { el.style.opacity='0'; el.style.transform='translateX(30px)'; el.style.transition='all .3s'; setTimeout(()=>el.remove(),310); }, duration);
+};
+
+/* ══════════════════════════════════════════
+   CLOUDINARY UPLOAD
+══════════════════════════════════════════ */
+async function uploadToCloudinary(file, folder='admin', onProgress=null) {
+  const rt = file.type.startsWith('video') ? 'video' : (file.type.startsWith('audio') ? 'video' : 'image');
+  const fd = new FormData();
+  fd.append('file', file);
+  fd.append('upload_preset', UPLOAD_PRESET);
+  fd.append('folder', folder);
+  return new Promise((res, rej) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/${rt}/upload`);
+    if (onProgress) xhr.upload.addEventListener('progress', e => { if(e.lengthComputable) onProgress(Math.round(e.loaded/e.total*100)); });
+    xhr.onload = () => {
+      if (xhr.status >= 200 && xhr.status < 300) { const d = JSON.parse(xhr.responseText); res({ secure_url: d.secure_url, public_id: d.public_id, resource_type: rt }); }
+      else rej(new Error(`Cloudinary ${xhr.status}`));
+    };
+    xhr.onerror = () => rej(new Error('Network error'));
+    xhr.send(fd);
+  });
+}
+
+function setupUploadZone(zoneId, inputId, progressId, barId, previewId, folder, onUploaded) {
+  const zone = document.getElementById(zoneId);
+  const inp  = document.getElementById(inputId);
+  const prog = document.getElementById(progressId);
+  const bar  = document.getElementById(barId);
+  const prev = document.getElementById(previewId);
+  if (!zone || !inp) return;
+
+  ['dragover','dragleave','drop'].forEach(ev => zone.addEventListener(ev, e => { e.preventDefault(); zone.classList.toggle('drag', ev==='dragover'); }));
+  zone.addEventListener('drop', e => handleFiles(e.dataTransfer.files));
+  inp.addEventListener('change', () => handleFiles(inp.files));
+
+  async function handleFiles(files) {
+    for (const f of files) {
+      prog.style.display = 'block'; bar.style.width = '0%';
+      try {
+        const r = await uploadToCloudinary(f, folder, pct => { bar.style.width = pct + '%'; });
+        bar.style.width = '100%';
+        showToast('Archivo subido correctamente', 'success');
+        if (prev) {
+          const thumb = document.createElement('div');
+          thumb.className = 'upload-thumb';
+          thumb.innerHTML = f.type.startsWith('video')
+            ? `<video src="${r.secure_url}" muted></video>`
+            : `<img src="${r.secure_url}" alt=""/>`;
+          thumb.innerHTML += `<span class="rm" onclick="this.parentElement.remove()"><i class="bi bi-x"></i></span>`;
+          prev.appendChild(thumb);
+        }
+        if (onUploaded) onUploaded(r.secure_url);
+        setTimeout(() => { prog.style.display='none'; bar.style.width='0%'; }, 1200);
+      } catch(err) {
+        showToast('Error al subir: ' + err.message, 'error');
+        prog.style.display = 'none';
+      }
+    }
+  }
+}
+
+/* ══════════════════════════════════════════
+   NAVEGACIÓN
+══════════════════════════════════════════ */
+const pages = {};
+document.querySelectorAll('.page-section').forEach(s => pages[s.id.replace('page-','')] = s);
+document.querySelectorAll('.nav-item').forEach(it => {
+  it.addEventListener('click', () => navigate(it.dataset.page));
+});
+
+window.navigate = function(page) {
+  document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+  const section = document.getElementById('page-'+page);
+  if (section) { section.classList.add('active'); loadPage(page); }
+  const navItem = document.querySelector(`.nav-item[data-page="${page}"]`);
+  if (navItem) navItem.classList.add('active');
+  if (window.innerWidth <= 768) closeSidebar();
+};
+
+/* ══════════════════════════════════════════
+   SIDEBAR TOGGLE
+══════════════════════════════════════════ */
+const sidebar = document.getElementById('sidebar');
+const sOverlay = document.getElementById('sidebarOverlay');
+const content  = document.getElementById('content');
+let sidebarOpen = window.innerWidth > 768;
+
+function openSidebar()  { sidebar.classList.add('open'); sOverlay.classList.add('open'); }
+function closeSidebar() { sidebar.classList.remove('open'); sOverlay.classList.remove('open'); }
+function toggleSidebar() {
+  if (window.innerWidth <= 768) { sidebar.classList.contains('open') ? closeSidebar() : openSidebar(); }
+  else {
+    sidebarOpen = !sidebarOpen;
+    sidebar.classList.toggle('collapsed', !sidebarOpen);
+    content.classList.toggle('full', !sidebarOpen);
+  }
+}
+document.getElementById('sidebarToggle').addEventListener('click', toggleSidebar);
+sOverlay.addEventListener('click', closeSidebar);
+
+/* ══════════════════════════════════════════
+   DRAWERS
+══════════════════════════════════════════ */
+window.openDrawer = function(name, data=null) {
+  document.getElementById('drawerBackdrop').classList.add('open');
+  const drawer = document.getElementById('drawer-'+name);
+  if (!drawer) return;
+  drawer.classList.add('open');
+  resetDrawer(name, data);
+};
+window.closeDrawer = function(name) {
+  document.getElementById('drawerBackdrop').classList.remove('open');
+  document.querySelectorAll('.drawer').forEach(d => d.classList.remove('open'));
+};
+document.getElementById('drawerBackdrop').addEventListener('click', () => {
+  document.querySelectorAll('.drawer').forEach(d => d.classList.remove('open'));
+  document.getElementById('drawerBackdrop').classList.remove('open');
+});
+
+function resetDrawer(name, data) {
+  if (name === 'producto') {
+    document.getElementById('prod-id').value = data?.id || '';
+    document.getElementById('prod-nombre').value = data?.nombre || '';
+    document.getElementById('prod-codigo').value = data?.codigo || '';
+    document.getElementById('prod-desc').value = data?.descripcion || '';
+    document.getElementById('prod-precio').value = data?.precio || '';
+    document.getElementById('prod-cat').value = data?.categoria || '';
+    document.getElementById('prod-img-url').value = data?.imagen || '';
+    document.getElementById('prod-thumb-url').value = data?.imagen_portada || '';
+    document.getElementById('prod-img-preview').innerHTML = '';
+    document.getElementById('drawer-prod-title').textContent = data ? 'Editar producto' : 'Nuevo producto';
+  }
+  if (name === 'artista') {
+    document.getElementById('artist-id').value = data?.id || '';
+    document.getElementById('artist-nombre').value = data?.name || '';
+    document.getElementById('artist-bio').value = data?.bio || '';
+    document.getElementById('artist-avatar-url').value = data?.avatar_url || '';
+    document.getElementById('artist-img-preview').innerHTML = '';
+    document.getElementById('drawer-artist-title').textContent = data ? 'Editar artista' : 'Nuevo artista';
+  }
+  if (name === 'video') {
+    document.getElementById('video-id').value = data?.id || '';
+    document.getElementById('video-titulo').value = data?.titulo || '';
+    document.getElementById('video-url').value = data?.video_url || '';
+    document.getElementById('video-thumb').value = data?.thumbnail_url || '';
+    document.getElementById('video-file-preview').innerHTML = '';
+    fillArtistSelect('video-artist', data?.artist_id);
+  }
+  if (name === 'song') {
+    document.getElementById('song-id').value = data?.id || '';
+    document.getElementById('song-titulo').value = data?.titulo || '';
+    document.getElementById('song-dur').value = data?.duracion_segundos || '';
+    document.getElementById('song-audio-url').value = data?.audio_url || '';
+    document.getElementById('song-video-url').value = data?.video_url || '';
+    document.getElementById('song-thumb').value = data?.thumbnail_url || '';
+    fillArtistSelect('song-artist', data?.artist_id);
+  }
+  if (name === 'categoria') {
+    document.getElementById('cat-id').value = data?.id || '';
+    document.getElementById('cat-nombre').value = data?.name || '';
+  }
+}
+
+function fillArtistSelect(selectId, selectedId='') {
+  const sel = document.getElementById(selectId);
+  if (!sel) return;
+  sel.innerHTML = '<option value="">Sin artista</option>';
+  artistasList.forEach(a => {
+    const opt = document.createElement('option');
+    opt.value = a.id; opt.textContent = a.name;
+    if (a.id === selectedId) opt.selected = true;
+    sel.appendChild(opt);
+  });
+}
+
+/* ══════════════════════════════════════════
+   GUARDAR PRODUCTO
+══════════════════════════════════════════ */
+window.guardarProducto = async function() {
+  const id      = document.getElementById('prod-id').value;
+  const nombre  = document.getElementById('prod-nombre').value.trim();
+  const codigo  = document.getElementById('prod-codigo').value.trim();
+  const desc    = document.getElementById('prod-desc').value.trim();
+  const precio  = parseFloat(document.getElementById('prod-precio').value);
+  const cat     = document.getElementById('prod-cat').value;
+  const imgUrl  = document.getElementById('prod-img-url').value.trim();
+  const thumbUrl= document.getElementById('prod-thumb-url').value.trim();
+
+  if (!nombre || !precio || !cat) { showToast('Completa los campos requeridos', 'warn'); return; }
+
+  const payload = { nombre, codigo, descripcion: desc, precio, categoria: cat, imagen: imgUrl, imagen_portada: thumbUrl || imgUrl };
+
+  const { error } = id
+    ? await sb.from('productos').update(payload).eq('id', id)
+    : await sb.from('productos').insert([payload]);
+
+  if (error) {
+    Swal.fire({ icon:'error', title:'Error al guardar', text: error.message, confirmButtonColor:'#2E8B57' });
+  } else {
+    Swal.fire({ icon:'success', title: id ? 'Producto actualizado' : '¡Producto creado!', text: `"${nombre}" se guardó correctamente.`, confirmButtonColor:'#2E8B57', timer:2200, showConfirmButton:false });
+    closeDrawer('producto');
+    loadTablaProductos();
+    loadStats();
+  }
+};
+
+/* ══════════════════════════════════════════
+   GUARDAR ARTISTA
+══════════════════════════════════════════ */
+window.guardarArtista = async function() {
+  const id     = document.getElementById('artist-id').value;
+  const name   = document.getElementById('artist-nombre').value.trim();
+  const bio    = document.getElementById('artist-bio').value.trim();
+  const avatar = document.getElementById('artist-avatar-url').value.trim();
+  if (!name) { showToast('El nombre es requerido', 'warn'); return; }
+  const payload = { name, bio, avatar_url: avatar };
+  const { error } = id
+    ? await sb.from('artists').update(payload).eq('id', id)
+    : await sb.from('artists').insert([payload]);
+  if (error) {
+    Swal.fire({ icon:'error', title:'Error', text: error.message, confirmButtonColor:'#2E8B57' });
+  } else {
+    Swal.fire({ icon:'success', title: id ? 'Artista actualizado' : 'Artista creado', confirmButtonColor:'#2E8B57', timer:2000, showConfirmButton:false });
+    closeDrawer('artista');
+    loadTablaArtistas();
+    loadArtistas();
+  }
+};
+
+/* ══════════════════════════════════════════
+   GUARDAR CATEGORIA (genres)
+══════════════════════════════════════════ */
+window.guardarCategoria = async function() {
+  const id   = document.getElementById('cat-id').value;
+  const name = document.getElementById('cat-nombre').value.trim();
+  if (!name) { showToast('El nombre es requerido', 'warn'); return; }
+  const { error } = id
+    ? await sb.from('genres').update({ name }).eq('id', id)
+    : await sb.from('genres').insert([{ name }]);
+  if (error) {
+    Swal.fire({ icon:'error', title:'Error', text: error.message, confirmButtonColor:'#2E8B57' });
+  } else {
+    Swal.fire({ icon:'success', title:'Categoría guardada', confirmButtonColor:'#2E8B57', timer:2000, showConfirmButton:false });
+    closeDrawer('categoria');
+    loadTablaCategorias();
+  }
+};
+
+/* ══════════════════════════════════════════
+   GUARDAR VIDEO
+══════════════════════════════════════════ */
+window.guardarVideo = async function() {
+  const id      = document.getElementById('video-id').value;
+  const titulo  = document.getElementById('video-titulo').value.trim();
+  const vid_url = document.getElementById('video-url').value.trim();
+  const thumb   = document.getElementById('video-thumb').value.trim();
+  const artId   = document.getElementById('video-artist').value || null;
+  if (!titulo || !vid_url) { showToast('Título y URL de video son requeridos', 'warn'); return; }
+  const payload = { titulo, video_url: vid_url, thumbnail_url: thumb || null, artist_id: artId };
+  const { error } = id
+    ? await sb.from('videos').update(payload).eq('id', id)
+    : await sb.from('videos').insert([payload]);
+  if (error) {
+    Swal.fire({ icon:'error', title:'Error', text: error.message, confirmButtonColor:'#2E8B57' });
+  } else {
+    Swal.fire({ icon:'success', title: id ? 'Video actualizado' : 'Video creado', confirmButtonColor:'#2E8B57', timer:2000, showConfirmButton:false });
+    closeDrawer('video');
+    loadTablaVideos();
+    loadStats();
+  }
+};
+
+/* ══════════════════════════════════════════
+   GUARDAR SONG
+══════════════════════════════════════════ */
+window.guardarSong = async function() {
+  const id       = document.getElementById('song-id').value;
+  const titulo   = document.getElementById('song-titulo').value.trim();
+  const audio_url= document.getElementById('song-audio-url').value.trim();
+  const video_url= document.getElementById('song-video-url').value.trim();
+  const thumb    = document.getElementById('song-thumb').value.trim();
+  const artId    = document.getElementById('song-artist').value || null;
+  const dur      = parseInt(document.getElementById('song-dur').value) || null;
+  if (!titulo || !audio_url) { showToast('Título y audio URL son requeridos', 'warn'); return; }
+  const payload = { titulo, audio_url, video_url: video_url||null, thumbnail_url: thumb||null, artist_id: artId, duracion_segundos: dur };
+  const { error } = id
+    ? await sb.from('songs').update(payload).eq('id', id)
+    : await sb.from('songs').insert([payload]);
+  if (error) {
+    Swal.fire({ icon:'error', title:'Error', text: error.message, confirmButtonColor:'#2E8B57' });
+  } else {
+    Swal.fire({ icon:'success', title: id ? 'Canción actualizada' : 'Canción creada', confirmButtonColor:'#2E8B57', timer:2000, showConfirmButton:false });
+    closeDrawer('song');
+    loadTablaSongs();
+    loadStats();
+  }
+};
+
+/* ══════════════════════════════════════════
+   ELIMINAR genérico
+══════════════════════════════════════════ */
+async function confirmarEliminar(tabla, id, nombre) {
+  const result = await Swal.fire({
+    icon:'warning', title:'¿Eliminar?',
+    text: `Se eliminará "${nombre}" permanentemente.`,
+    showCancelButton: true,
+    confirmButtonText: 'Sí, eliminar',
+    cancelButtonText: 'Cancelar',
+    confirmButtonColor: '#e74c3c',
+    cancelButtonColor: '#2E8B57',
+  });
+  if (!result.isConfirmed) return false;
+  const { error } = await sb.from(tabla).delete().eq('id', id);
+  if (error) { Swal.fire({ icon:'error', title:'Error', text: error.message }); return false; }
+  return true;
+}
+
+/* ══════════════════════════════════════════
+   STATS
+══════════════════════════════════════════ */
+async function loadStats() {
+  const tables = ['productos','profiles','songs','videos'];
+  const ids    = ['st-productos','st-usuarios','st-songs','st-videos'];
+  const nbIds  = ['nb-productos',null,null,null,'nb-usuarios'];
+  for (let i=0; i<tables.length; i++) {
+    const { count } = await sb.from(tables[i]).select('*', { count:'exact', head:true });
+    const el = document.getElementById(ids[i]);
+    if (el) el.textContent = count ?? '–';
+    if (i===0) { const nb=document.getElementById('nb-productos'); if(nb) nb.textContent=count??'–'; }
+    if (i===1) { const nb=document.getElementById('nb-usuarios');  if(nb) nb.textContent=count??'–'; }
+  }
+}
+
+/* ══════════════════════════════════════════
+   DATATABLE helpers
+══════════════════════════════════════════ */
+function dtOpts(extra={}) {
+  return {
+    language: { url:'https://cdn.datatables.net/plug-ins/1.13.8/i18n/es-ES.json' },
+    pageLength: 10, responsive: true,
+    dom: "<'row align-items-center mb-2'<'col-sm-6'l><'col-sm-6 text-end'f>>" +
+         "<'row'<'col-12'tr>>" +
+         "<'row mt-2'<'col-sm-5'i><'col-sm-7'p>>",
+    ...extra
+  };
+}
+function destroyDT(dt) { if (dt && $.fn.DataTable.isDataTable($(dt.table().node()))) dt.destroy(); }
+
+/* ══════════════════════════════════════════
+   TABLA PRODUCTOS
+══════════════════════════════════════════ */
+async function loadTablaProductos() {
+  const wrap = document.getElementById('tabla-productos-wrap');
+  wrap.innerHTML = '<div class="tbl-loader"><div class="ring"></div><p>Cargando…</p></div>';
+  const { data: prods, error } = await sb.from('productos').select('*').order('created_at', { ascending: false });
+  if (error) { wrap.innerHTML = `<p style="color:red;padding:20px">${error.message}</p>`; return; }
+
+  wrap.innerHTML = `<table id="tbl-productos" class="table table-hover" style="width:100%">
+    <thead><tr>
+      <th>Imagen</th><th>Nombre</th><th>Código</th>
+      <th>Categoría</th><th>Precio</th><th>Acciones</th>
+    </tr></thead>
+    <tbody>${(prods||[]).map(p => `
+      <tr>
+        <td><img class="prod-thumb" src="${p.imagen_portada||p.imagen||'https://placehold.co/48x48/e8f7ee/2E8B57?text=+'}" onerror="this.src='https://placehold.co/48x48/e8f7ee/2E8B57?text=+'"/></td>
+        <td><strong>${p.nombre}</strong></td>
+        <td><span style="font-family:'DM Mono',monospace;font-size:.76rem;">${p.codigo||'–'}</span></td>
+        <td><span class="badge-cat ${p.categoria}">${p.categoria||'–'}</span></td>
+        <td><strong>${p.precio} Bs</strong></td>
+        <td>
+          <div style="display:flex;gap:5px;">
+            <button class="btn-icon" title="Editar" onclick='window._editProd(${JSON.stringify(p).replace(/'/g,"&apos;")})'><i class="bi bi-pencil"></i></button>
+            <button class="btn-icon del" title="Eliminar" onclick="window._delProd('${p.id}','${p.nombre.replace(/'/g,"\\'")}')"><i class="bi bi-trash3"></i></button>
+          </div>
+        </td>
+      </tr>`).join('')}
+    </tbody>
+  </table>`;
+
+  if (dtProductos) destroyDT(dtProductos);
+  dtProductos = $('#tbl-productos').DataTable(dtOpts());
+}
+
+window._editProd = function(p) { openDrawer('producto', p); };
+window._delProd  = async function(id, nombre) {
+  if (await confirmarEliminar('productos', id, nombre)) { loadTablaProductos(); loadStats(); }
+};
+
+/* ══════════════════════════════════════════
+   TABLA ARTISTAS
+══════════════════════════════════════════ */
+async function loadTablaArtistas() {
+  const wrap = document.getElementById('tabla-artistas-wrap');
+  wrap.innerHTML = '<div class="tbl-loader"><div class="ring"></div><p>Cargando…</p></div>';
+  const { data, error } = await sb.from('artists').select('*').order('name');
+  if (error) { wrap.innerHTML = `<p style="color:red;padding:20px">${error.message}</p>`; return; }
+
+  wrap.innerHTML = `<table id="tbl-artistas" class="table table-hover" style="width:100%">
+    <thead><tr><th>Avatar</th><th>Nombre</th><th>Bio</th><th>Acciones</th></tr></thead>
+    <tbody>${(data||[]).map(a => `
+      <tr>
+        <td>${a.avatar_url ? `<img class="artist-avatar" src="${a.avatar_url}" onerror="this.outerHTML='<div class=ini>${a.name[0]}</div>'"/>` : `<div class="ini">${a.name[0]}</div>`}</td>
+        <td><strong>${a.name}</strong></td>
+        <td style="font-size:.76rem;color:#6b8c78;max-width:200px;">${(a.bio||'–').substring(0,60)}${a.bio?.length>60?'…':''}</td>
+        <td><div style="display:flex;gap:5px;">
+          <button class="btn-icon" onclick='window._editArtist(${JSON.stringify(a).replace(/'/g,"&apos;")})'><i class="bi bi-pencil"></i></button>
+          <button class="btn-icon del" onclick="window._delArtist('${a.id}','${a.name.replace(/'/g,"\\'")}')"><i class="bi bi-trash3"></i></button>
+        </div></td>
+      </tr>`).join('')}
+    </tbody>
+  </table>`;
+  if (dtArtistas) destroyDT(dtArtistas);
+  dtArtistas = $('#tbl-artistas').DataTable(dtOpts());
+}
+window._editArtist = p => openDrawer('artista', p);
+window._delArtist  = async (id, n) => { if(await confirmarEliminar('artists',id,n)) { loadTablaArtistas(); loadArtistas(); } };
+
+/* ══════════════════════════════════════════
+   TABLA CATEGORIAS (genres)
+══════════════════════════════════════════ */
+async function loadTablaCategorias() {
+  const wrap = document.getElementById('tabla-categorias-wrap');
+  wrap.innerHTML = '<div class="tbl-loader"><div class="ring"></div><p>Cargando…</p></div>';
+  const { data, error } = await sb.from('genres').select('*').order('name');
+  if (error) { wrap.innerHTML = `<p style="color:red;padding:20px">${error.message}</p>`; return; }
+
+  wrap.innerHTML = `<table id="tbl-categorias" class="table table-hover" style="width:100%">
+    <thead><tr><th>Nombre</th><th>Creada</th><th>Acciones</th></tr></thead>
+    <tbody>${(data||[]).map(c => `
+      <tr>
+        <td><strong>${c.name}</strong></td>
+        <td style="font-size:.76rem;color:#6b8c78;">${new Date(c.created_at).toLocaleDateString('es-BO')}</td>
+        <td><div style="display:flex;gap:5px;">
+          <button class="btn-icon" onclick='window._editCat(${JSON.stringify(c).replace(/'/g,"&apos;")})'><i class="bi bi-pencil"></i></button>
+          <button class="btn-icon del" onclick="window._delCat('${c.id}','${c.name}')"><i class="bi bi-trash3"></i></button>
+        </div></td>
+      </tr>`).join('')}
+    </tbody>
+  </table>`;
+  if (dtCategorias) destroyDT(dtCategorias);
+  dtCategorias = $('#tbl-categorias').DataTable(dtOpts());
+}
+window._editCat = c => openDrawer('categoria', c);
+window._delCat  = async (id, n) => { if(await confirmarEliminar('genres',id,n)) loadTablaCategorias(); };
+
+/* ══════════════════════════════════════════
+   TABLA VIDEOS
+══════════════════════════════════════════ */
+async function loadTablaVideos() {
+  const wrap = document.getElementById('tabla-videos-wrap');
+  wrap.innerHTML = '<div class="tbl-loader"><div class="ring"></div><p>Cargando…</p></div>';
+  const { data, error } = await sb.from('videos').select('*, artists(name)').order('created_at', { ascending: false });
+  if (error) { wrap.innerHTML = `<p style="color:red;padding:20px">${error.message}</p>`; return; }
+
+  wrap.innerHTML = `<table id="tbl-videos" class="table table-hover" style="width:100%">
+    <thead><tr><th>Thumbnail</th><th>Título</th><th>Artista</th><th>Acciones</th></tr></thead>
+    <tbody>${(data||[]).map(v => `
+      <tr>
+        <td>${v.thumbnail_url ? `<img class="prod-thumb" src="${v.thumbnail_url}" onerror="this.src='https://placehold.co/48x48/e0f7f6/20B2AA?text=▶'"/>` : `<div class="ini" style="background:var(--teal)"><i class="bi bi-camera-video" style="font-size:.8rem"></i></div>`}</td>
+        <td><strong>${v.titulo}</strong></td>
+        <td style="font-size:.78rem;color:#6b8c78;">${v.artists?.name||'–'}</td>
+        <td><div style="display:flex;gap:5px;">
+          <a href="${v.video_url}" target="_blank" class="btn-icon" title="Ver video"><i class="bi bi-play-circle"></i></a>
+          <button class="btn-icon" onclick='window._editVideo(${JSON.stringify(v).replace(/'/g,"&apos;")})'><i class="bi bi-pencil"></i></button>
+          <button class="btn-icon del" onclick="window._delVideo('${v.id}','${v.titulo.replace(/'/g,"\\'")}')"><i class="bi bi-trash3"></i></button>
+        </div></td>
+      </tr>`).join('')}
+    </tbody>
+  </table>`;
+  if (dtVideos) destroyDT(dtVideos);
+  dtVideos = $('#tbl-videos').DataTable(dtOpts());
+}
+window._editVideo = v => openDrawer('video', v);
+window._delVideo  = async (id,n) => { if(await confirmarEliminar('videos',id,n)) { loadTablaVideos(); loadStats(); } };
+
+/* ══════════════════════════════════════════
+   TABLA SONGS
+══════════════════════════════════════════ */
+async function loadTablaSongs() {
+  const wrap = document.getElementById('tabla-songs-wrap');
+  wrap.innerHTML = '<div class="tbl-loader"><div class="ring"></div><p>Cargando…</p></div>';
+  const { data, error } = await sb.from('songs').select('*, artists(name)').order('created_at', { ascending: false });
+  if (error) { wrap.innerHTML = `<p style="color:red;padding:20px">${error.message}</p>`; return; }
+
+  wrap.innerHTML = `<table id="tbl-songs" class="table table-hover" style="width:100%">
+    <thead><tr><th>Thumb</th><th>Título</th><th>Artista</th><th>Duración</th><th>Acciones</th></tr></thead>
+    <tbody>${(data||[]).map(s => {
+      const min = Math.floor((s.duracion_segundos||0)/60);
+      const sec = String((s.duracion_segundos||0)%60).padStart(2,'0');
+      return `
+      <tr>
+        <td>${s.thumbnail_url ? `<img class="prod-thumb" src="${s.thumbnail_url}" onerror="this.src='https://placehold.co/48x48/e6f7ee/2E8B57?text=♪'"/>` : `<div class="ini"><i class="bi bi-music-note" style="font-size:.8rem"></i></div>`}</td>
+        <td><strong>${s.titulo}</strong></td>
+        <td style="font-size:.78rem;color:#6b8c78;">${s.artists?.name||'–'}</td>
+        <td style="font-family:'DM Mono',monospace;font-size:.76rem;">${s.duracion_segundos ? `${min}:${sec}` : '–'}</td>
+        <td><div style="display:flex;gap:5px;">
+          ${s.audio_url ? `<a href="${s.audio_url}" target="_blank" class="btn-icon" title="Escuchar"><i class="bi bi-play-circle"></i></a>` : ''}
+          <button class="btn-icon" onclick='window._editSong(${JSON.stringify(s).replace(/'/g,"&apos;")})'><i class="bi bi-pencil"></i></button>
+          <button class="btn-icon del" onclick="window._delSong('${s.id}','${s.titulo.replace(/'/g,"\\'")}')"><i class="bi bi-trash3"></i></button>
+        </div></td>
+      </tr>`;
+    }).join('')}
+    </tbody>
+  </table>`;
+  if (dtSongs) destroyDT(dtSongs);
+  dtSongs = $('#tbl-songs').DataTable(dtOpts());
+}
+window._editSong = s => openDrawer('song', s);
+window._delSong  = async (id,n) => { if(await confirmarEliminar('songs',id,n)) { loadTablaSongs(); loadStats(); } };
+
+/* ══════════════════════════════════════════
+   TABLA PLAYLISTS
+══════════════════════════════════════════ */
+async function loadTablaPlaylists() {
+  const wrap = document.getElementById('tabla-playlists-wrap');
+  wrap.innerHTML = '<div class="tbl-loader"><div class="ring"></div><p>Cargando…</p></div>';
+  const { data, error } = await sb.from('playlists').select('*, profiles(username)').order('created_at', { ascending: false });
+  if (error) { wrap.innerHTML = `<p style="color:red;padding:20px">${error.message}</p>`; return; }
+
+  wrap.innerHTML = `<table id="tbl-playlists" class="table table-hover" style="width:100%">
+    <thead><tr><th>Nombre</th><th>Usuario</th><th>Pública</th><th>Creada</th><th>Acciones</th></tr></thead>
+    <tbody>${(data||[]).map(pl => `
+      <tr>
+        <td><strong>${pl.nombre}</strong><br><span style="font-size:.7rem;color:#6b8c78;">${(pl.descripcion||'').substring(0,40)}</span></td>
+        <td style="font-size:.78rem;">${pl.profiles?.username||'–'}</td>
+        <td>${pl.is_public ? '<span style="color:var(--g2);font-size:.8rem;font-weight:600;"><i class="bi bi-globe2"></i> Sí</span>' : '<span style="color:#aaa;font-size:.8rem;"><i class="bi bi-lock"></i> No</span>'}</td>
+        <td style="font-size:.76rem;color:#6b8c78;">${new Date(pl.created_at).toLocaleDateString('es-BO')}</td>
+        <td><button class="btn-icon del" onclick="window._delPlaylist('${pl.id}','${pl.nombre.replace(/'/g,"\\'")}')"><i class="bi bi-trash3"></i></button></td>
+      </tr>`).join('')}
+    </tbody>
+  </table>`;
+  if (dtPlaylists) destroyDT(dtPlaylists);
+  dtPlaylists = $('#tbl-playlists').DataTable(dtOpts());
+}
+window._delPlaylist = async (id,n) => { if(await confirmarEliminar('playlists',id,n)) loadTablaPlaylists(); };
+
+/* ══════════════════════════════════════════
+   TABLA USUARIOS
+══════════════════════════════════════════ */
+async function loadTablaUsuarios() {
+  const wrap = document.getElementById('tabla-usuarios-wrap');
+  wrap.innerHTML = '<div class="tbl-loader"><div class="ring"></div><p>Cargando…</p></div>';
+  const { data, error } = await sb.from('profiles').select('*').order('created_at', { ascending: false });
+  if (error) { wrap.innerHTML = `<p style="color:red;padding:20px">${error.message}</p>`; return; }
+
+  wrap.innerHTML = `<table id="tbl-usuarios" class="table table-hover" style="width:100%">
+    <thead><tr><th>Avatar</th><th>Username</th><th>Email</th><th>Admin</th><th>Bloqueado</th><th>Registro</th><th>Acciones</th></tr></thead>
+    <tbody>${(data||[]).map(u => `
+      <tr>
+        <td>${u.avatar_url ? `<img class="artist-avatar" src="${u.avatar_url}" onerror="this.outerHTML='<div class=ini>${(u.username||'?')[0].toUpperCase()}</div>'"/>` : `<div class="ini">${(u.username||'?')[0].toUpperCase()}</div>`}</td>
+        <td><strong>${u.username||'–'}</strong></td>
+        <td style="font-size:.75rem;">${u.email||'–'}</td>
+        <td>${u.is_admin ? '<i class="bi bi-shield-fill-check" style="color:var(--g2);"></i>' : '<i class="bi bi-dash" style="color:#ccc;"></i>'}</td>
+        <td>${u.is_blocked ? '<span style="color:var(--danger);font-size:.75rem;font-weight:600;"><i class="bi bi-slash-circle"></i> Sí</span>' : '<i class="bi bi-check-circle" style="color:var(--g2);"></i>'}</td>
+        <td style="font-size:.75rem;color:#6b8c78;">${new Date(u.created_at).toLocaleDateString('es-BO')}</td>
+        <td><div style="display:flex;gap:5px;">
+          <button class="btn-icon ${u.is_blocked?'del':''}" title="${u.is_blocked?'Desbloquear':'Bloquear'}" onclick="window._toggleBlock('${u.id}',${u.is_blocked})">
+            <i class="bi bi-${u.is_blocked?'unlock':'slash-circle'}"></i>
+          </button>
+          <button class="btn-icon" title="Toggle admin" onclick="window._toggleAdmin('${u.id}',${u.is_admin})">
+            <i class="bi bi-shield${u.is_admin?'-fill-check':''}"></i>
+          </button>
+        </div></td>
+      </tr>`).join('')}
+    </tbody>
+  </table>`;
+  if (dtUsuarios) destroyDT(dtUsuarios);
+  dtUsuarios = $('#tbl-usuarios').DataTable(dtOpts());
+}
+
+window._toggleBlock = async function(id, isBlocked) {
+  const { error } = await sb.from('profiles').update({ is_blocked: !isBlocked }).eq('id', id);
+  if (error) showToast(error.message,'error');
+  else { showToast(isBlocked ? 'Usuario desbloqueado' : 'Usuario bloqueado', isBlocked?'success':'warn'); loadTablaUsuarios(); }
+};
+window._toggleAdmin = async function(id, isAdmin) {
+  const result = await Swal.fire({
+    icon:'question', title: isAdmin ? '¿Quitar admin?' : '¿Hacer admin?',
+    showCancelButton:true, confirmButtonColor:isAdmin?'#e74c3c':'#2E8B57',
+    confirmButtonText: isAdmin ? 'Sí, quitar' : 'Sí, hacer admin'
+  });
+  if (!result.isConfirmed) return;
+  const { error } = await sb.from('profiles').update({ is_admin: !isAdmin }).eq('id', id);
+  if (error) showToast(error.message,'error');
+  else { showToast('Perfil actualizado','success'); loadTablaUsuarios(); }
+};
+
+/* ══════════════════════════════════════════
+   DASHBOARD RECIENTES
+══════════════════════════════════════════ */
+async function loadDashRecientes() {
+  const { data } = await sb.from('productos').select('*').order('created_at', { ascending: false }).limit(5);
+  const wrap = document.getElementById('dash-recent-prod');
+  if (!data?.length) { wrap.innerHTML = '<p style="padding:20px;color:#6b8c78;font-size:.8rem;">Sin productos aún.</p>'; return; }
+  wrap.innerHTML = `<table class="table" style="margin:0;font-size:.8rem;">
+    <thead><tr><th style="padding:10px 16px;">Nombre</th><th>Categoría</th><th>Precio</th><th>Fecha</th></tr></thead>
+    <tbody>${data.map(p=>`<tr style="border-bottom:1px solid var(--chip);">
+      <td style="padding:10px 16px;"><strong>${p.nombre}</strong></td>
+      <td><span class="badge-cat ${p.categoria}">${p.categoria||'–'}</span></td>
+      <td><strong>${p.precio} Bs</strong></td>
+      <td style="color:#6b8c78;">${new Date(p.created_at).toLocaleDateString('es-BO')}</td>
+    </tr>`).join('')}</tbody>
+  </table>`;
+}
+
+/* ══════════════════════════════════════════
+   MEDIA UPLOAD PAGE
+══════════════════════════════════════════ */
+function setupMediaPage() {
+  setupUploadZone('media-zone','media-input','media-progress','media-bar','media-preview','general', url => {
+    const panel = document.getElementById('media-urls-panel');
+    const list  = document.getElementById('media-urls-list');
+    panel.style.display = 'block';
+    const row = document.createElement('div');
+    row.style.cssText = 'display:flex;align-items:center;gap:8px;background:var(--chip);border-radius:9px;padding:8px 12px;border:1px solid var(--border);';
+    row.innerHTML = `<input type="text" value="${url}" readonly style="flex:1;border:none;background:transparent;font-family:'DM Mono',monospace;font-size:.74rem;color:var(--text);outline:none;"/>
+      <button class="btn-icon" onclick="navigator.clipboard.writeText('${url}');window.showToast('URL copiada','success')" title="Copiar"><i class="bi bi-clipboard"></i></button>`;
+    list.prepend(row);
+  });
+}
+
+/* ══════════════════════════════════════════
+   LOAD PAGE (lazy)
+══════════════════════════════════════════ */
+const loaded = {};
+function loadPage(page) {
+  if (loaded[page]) return;
+  loaded[page] = true;
+  if (page==='productos') loadTablaProductos();
+  if (page==='artistas')  loadTablaArtistas();
+  if (page==='categorias') loadTablaCategorias();
+  if (page==='videos')    loadTablaVideos();
+  if (page==='songs')     loadTablaSongs();
+  if (page==='playlists') loadTablaPlaylists();
+  if (page==='usuarios')  loadTablaUsuarios();
+  if (page==='media')     setupMediaPage();
+}
+
+/* ══════════════════════════════════════════
+   DRAWER UPLOAD ZONES (product, artist, video, song)
+══════════════════════════════════════════ */
+function initDrawerUploads() {
+  setupUploadZone('prod-img-zone','prod-img-input','prod-img-progress','prod-img-bar','prod-img-preview','productos', url => {
+    document.getElementById('prod-img-url').value = url;
+  });
+  setupUploadZone('artist-img-zone','artist-img-input','artist-img-progress','artist-img-bar','artist-img-preview','artistas', url => {
+    document.getElementById('artist-avatar-url').value = url;
+  });
+  setupUploadZone('video-file-zone','video-file-input','video-file-progress','video-file-bar','video-file-preview','videos', url => {
+    document.getElementById('video-url').value = url;
+  });
+  setupUploadZone('song-audio-zone','song-audio-input','song-audio-progress','song-audio-bar',null,'songs', url => {
+    document.getElementById('song-audio-url').value = url;
+  });
+}
+
+/* ══════════════════════════════════════════
+   LOAD ARTISTAS para selects
+══════════════════════════════════════════ */
+async function loadArtistas() {
+  const { data } = await sb.from('artists').select('id, name').order('name');
+  artistasList = data || [];
+}
+
+/* ══════════════════════════════════════════
+   INIT
+══════════════════════════════════════════ */
+async function init() {
+  document.getElementById('fecha-hoy').textContent =
+    new Date().toLocaleDateString('es-BO', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+
+  await loadArtistas();
+  await loadStats();
+  await loadDashRecientes();
+  initDrawerUploads();
+}
+init();
+</script>
+</body>
+</html>
