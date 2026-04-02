@@ -4,8 +4,22 @@
 // ═══════════════════════════════════════
 
 const CLOUDINARY_CLOUD = 'dv6d41ect'; // 👉 tu cloud name
+const CLOUDINARY_PRESET = 'tienda';    // 👉 el nombre que pusiste en "Nombre del preajuste de carga"
 
 const Cloudinary = {
+  // Función para subir archivos (La que conecta con tu API)
+  async upload(file) {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', CLOUDINARY_PRESET);
+
+    const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`, {
+      method: 'POST',
+      body: formData
+    });
+    return await response.json();
+  },
+
   // URL de imagen optimizada
   image(publicId, opts = {}) {
     const { w = 400, q = 'auto', f = 'auto' } = opts;
