@@ -1,7 +1,6 @@
 User-agent: *
 Allow: /
-
-Disallow: /assets/
 Disallow: /node_modules/
+Disallow: /admin/
 
 Sitemap: https://tecnoimperions.github.io/cordyclub.com/sitemap.xml
