@@ -1,13 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
-  <!-- LANDING USUARIO -->
+  <!-- Página principal -->
   <url>
-    <loc>https://tecnoimperions.github.io/cordyclub.com/public/user/index.html</loc>
-    <lastmod>2026-04-02</lastmod>
+    <loc>https://tecnoimperions.github.io/cordyclub.com/</loc>
+    <lastmod>2026-04-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
 
+  <!-- Catálogo -->
+  <url>
+    <loc>https://tecnoimperions.github.io/cordyclub.com/public/user/catalogo.html</loc>
+    <lastmod>2026-04-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Recetario -->
+  <url>
+    <loc>https://tecnoimperions.github.io/cordyclub.com/public/user/recetario.html</loc>
+    <lastmod>2026-04-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Producto: Calcio Nutritivo -->
+  <url>
+    <loc>https://tecnoimperions.github.io/cordyclub.com/public/user/producto.html?id=1</loc>
+    <lastmod>2026-04-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Producto: CordyCafé -->
+  <url>
+    <loc>https://tecnoimperions.github.io/cordyclub.com/public/user/producto.html?id=5</loc>
+    <lastmod>2026-04-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Producto: Colágeno Forte -->
+  <url>
+    <loc>https://tecnoimperions.github.io/cordyclub.com/public/user/producto.html?id=6</loc>
+    <lastmod>2026-04-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Producto: Té Tianshi -->
+  <url>
+    <loc>https://tecnoimperions.github.io/cordyclub.com/public/user/producto.html?id=3</loc>
+    <lastmod>2026-04-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
 
 </urlset>
