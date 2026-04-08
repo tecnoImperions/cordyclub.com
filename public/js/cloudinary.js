@@ -2,7 +2,7 @@
 // ─────────────────────────────────────────────
 // Cloudinary upload helper  (unsigned preset)
 // ─────────────────────────────────────────────
-export const CLOUD_NAME   = 'dv6d41ect';          // tu cloud name
+export const CLOUD_NAME   = 'dkz78oljz';          // tu cloud name
 export const UPLOAD_PRESET = 'tienda';         // preset sin firma (unsigned)
 export const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}`;
 
