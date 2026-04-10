@@ -574,8 +574,6 @@ select.form-control{appearance:none;background-image:url("data:image/svg+xml,%3C
   </div>
 </aside>
 
-<!-- STOCK EDIT MODAL (inline SweetAlert) -->
-
 <!-- TOAST -->
 <div class="toast-stack" id="toastStack"></div>
 
@@ -592,8 +590,76 @@ const SUPABASE_URL      = 'https://iqloqrnaoxuldtinneqn.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_fjYtclIYb_OeECjDf023Tw_DeeMCjXY';
 const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+// ─── CLOUDINARY CONFIG ────────────────────────────────────────────────────────
 const CLOUD_NAME    = 'dkz78oljz';
 const UPLOAD_PRESET = 'tienda';
+
+/**
+ * Detecta la carpeta de Cloudinary según el tipo MIME del archivo.
+ * Estructura resultante en Cloudinary:
+ *   cordyclub/imagenes/
+ *   cordyclub/videos/
+ *   cordyclub/musicas/
+ *   cordyclub/pdf/
+ *   cordyclub/otros/
+ */
+function getFolderByType(file) {
+  const type = file.type;
+  if (type.startsWith('image/'))       return 'cordyclub/imagenes';
+  if (type.startsWith('video/'))       return 'cordyclub/videos';
+  if (type.startsWith('audio/'))       return 'cordyclub/musicas';
+  if (type === 'application/pdf')      return 'cordyclub/pdf';
+  return 'cordyclub/otros';
+}
+
+/**
+ * Sube un archivo a Cloudinary.
+ * - La carpeta se detecta automáticamente por tipo MIME (getFolderByType).
+ * - resource_type: 'video' para video y audio, 'image' para imagen y PDF.
+ * - NUNCA agregar Content-Type header manualmente — fetch/XHR lo pone solo con el boundary correcto.
+ */
+async function uploadToCloudinary(file, onProgress = null) {
+  const folder = getFolderByType(file);
+
+  // Cloudinary usa resource_type 'video' para audio también
+  const rt = (file.type.startsWith('video/') || file.type.startsWith('audio/'))
+    ? 'video'
+    : 'image'; // imagen y PDF van como 'image'
+
+  const fd = new FormData();
+  fd.append('file',          file);
+  fd.append('upload_preset', UPLOAD_PRESET);
+  fd.append('folder',        folder);
+
+  return new Promise((res, rej) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/${rt}/upload`);
+    if (onProgress) {
+      xhr.upload.addEventListener('progress', e => {
+        if (e.lengthComputable) onProgress(Math.round(e.loaded / e.total * 100));
+      });
+    }
+    xhr.onload = () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        const d = JSON.parse(xhr.responseText);
+        res({
+          secure_url:        d.secure_url,
+          public_id:         d.public_id,
+          resource_type:     rt,
+          format:            d.format,
+          bytes:             d.bytes,
+          original_filename: d.original_filename,
+          folder:            folder   // útil para debug / saveMediaToLib
+        });
+      } else {
+        rej(new Error(`Cloudinary ${xhr.status}: ${xhr.responseText}`));
+      }
+    };
+    xhr.onerror = () => rej(new Error('Network error'));
+    xhr.send(fd);
+  });
+}
+// ─────────────────────────────────────────────────────────────────────────────
 
 let dtProductos, dtStock, dtCategorias, dtCombos, dtRecetas, dtBeneficios;
 let productosList = [];
@@ -613,69 +679,60 @@ window.showToast = (msg, type='success', dur=3200) => {
   setTimeout(() => { el.style.opacity='0'; el.style.transform='translateX(30px)'; el.style.transition='all .3s'; setTimeout(()=>el.remove(),310); }, dur);
 };
 
-/* ══ CLOUDINARY ══ */
-async function uploadToCloudinary(file, folder='admin', onProgress=null) {
-  const rt = file.type.startsWith('video') ? 'video' : file.type.startsWith('audio') ? 'video' : 'image';
-  const fd = new FormData();
-  fd.append('file', file); fd.append('upload_preset', UPLOAD_PRESET); fd.append('folder', folder);
-  return new Promise((res, rej) => {
-    const xhr = new XMLHttpRequest();
-    xhr.open('POST', `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/${rt}/upload`);
-    if (onProgress) xhr.upload.addEventListener('progress', e => { if(e.lengthComputable) onProgress(Math.round(e.loaded/e.total*100)); });
-    xhr.onload = () => {
-      if (xhr.status >= 200 && xhr.status < 300) { const d = JSON.parse(xhr.responseText); res({ secure_url:d.secure_url, public_id:d.public_id, resource_type:rt, format:d.format, bytes:d.bytes, original_filename:d.original_filename }); }
-      else rej(new Error(`Cloudinary ${xhr.status}`));
-    };
-    xhr.onerror = () => rej(new Error('Network error'));
-    xhr.send(fd);
-  });
-}
-
-function setupUploadZone(zoneId, inputId, progressId, barId, previewId, folder, onUploaded) {
+/* ══ UPLOAD ZONES ══ */
+function setupUploadZone(zoneId, inputId, progressId, barId, previewId, onUploaded) {
   const zone = document.getElementById(zoneId);
   const inp  = document.getElementById(inputId);
   const prog = document.getElementById(progressId);
   const bar  = document.getElementById(barId);
   const prev = previewId ? document.getElementById(previewId) : null;
   if (!zone || !inp) return;
-  ['dragover','dragleave','drop'].forEach(ev => zone.addEventListener(ev, e => { e.preventDefault(); zone.classList.toggle('drag', ev==='dragover'); }));
+
+  ['dragover','dragleave','drop'].forEach(ev =>
+    zone.addEventListener(ev, e => { e.preventDefault(); zone.classList.toggle('drag', ev==='dragover'); })
+  );
   zone.addEventListener('drop', e => handleFiles(e.dataTransfer.files));
   inp.addEventListener('change', () => handleFiles(inp.files));
+
   async function handleFiles(files) {
     for (const f of files) {
-      prog.style.display='block'; bar.style.width='0%';
+      prog.style.display = 'block'; bar.style.width = '0%';
       try {
-        const r = await uploadToCloudinary(f, folder, pct => { bar.style.width=pct+'%'; });
-        bar.style.width='100%';
-        showToast('✓ Archivo subido', 'success');
+        // ← carpeta detectada automáticamente dentro de uploadToCloudinary
+        const r = await uploadToCloudinary(f, pct => { bar.style.width = pct + '%'; });
+        bar.style.width = '100%';
+        showToast(`✓ Subido → ${r.folder}`, 'success');
         if (prev) {
-          const thumb = document.createElement('div'); thumb.className='upload-thumb';
-          thumb.innerHTML = f.type.startsWith('video') ? `<video src="${r.secure_url}" muted></video>` : `<img src="${r.secure_url}" alt=""/>`;
+          const thumb = document.createElement('div'); thumb.className = 'upload-thumb';
+          thumb.innerHTML = f.type.startsWith('video')
+            ? `<video src="${r.secure_url}" muted></video>`
+            : `<img src="${r.secure_url}" alt=""/>`;
           thumb.innerHTML += `<span class="rm" onclick="this.parentElement.remove()"><i class="bi bi-x"></i></span>`;
           prev.appendChild(thumb);
         }
-        // Save to media library in Supabase if possible
         await saveMediaToLib(r, f.name);
         if (onUploaded) onUploaded(r.secure_url);
-        setTimeout(() => { prog.style.display='none'; bar.style.width='0%'; }, 1200);
-      } catch(err) { showToast('Error: ' + err.message, 'error'); prog.style.display='none'; }
+        setTimeout(() => { prog.style.display = 'none'; bar.style.width = '0%'; }, 1200);
+      } catch(err) {
+        showToast('Error: ' + err.message, 'error');
+        prog.style.display = 'none';
+      }
     }
   }
 }
 
-/* ══ MEDIA LIBRARY (Supabase tabla: media_library si existe, sino localStorage fallback) ══ */
+/* ══ MEDIA LIBRARY ══ */
 async function saveMediaToLib(cloudResult, originalName) {
-  // Try to save to supabase; if table doesn't exist, use in-memory + localStorage
   const item = {
-    url: cloudResult.secure_url,
-    public_id: cloudResult.public_id,
+    url:           cloudResult.secure_url,
+    public_id:     cloudResult.public_id,
     resource_type: cloudResult.resource_type,
-    format: cloudResult.format,
-    bytes: cloudResult.bytes,
-    name: originalName || cloudResult.original_filename || 'archivo',
-    created_at: new Date().toISOString()
+    format:        cloudResult.format,
+    bytes:         cloudResult.bytes,
+    folder:        cloudResult.folder || '',
+    name:          originalName || cloudResult.original_filename || 'archivo',
+    created_at:    new Date().toISOString()
   };
-  // In-memory fallback
   mediaLibrary.unshift(item);
   try {
     const saved = JSON.parse(localStorage.getItem('cc_media') || '[]');
@@ -688,8 +745,7 @@ async function saveMediaToLib(cloudResult, originalName) {
 
 async function loadMediaLibrary() {
   try {
-    const stored = JSON.parse(localStorage.getItem('cc_media') || '[]');
-    mediaLibrary = stored;
+    mediaLibrary = JSON.parse(localStorage.getItem('cc_media') || '[]');
   } catch(e) { mediaLibrary = []; }
 }
 
@@ -698,7 +754,9 @@ window.filterMedia = function(type) {
   mediaFilter = type;
   ['all','img','vid'].forEach(t => {
     const el = document.getElementById('media-filter-'+t);
-    if (el) el.classList.toggle('active', (t==='img'&&type==='image')||(t==='vid'&&type==='video')||(t==='all'&&type==='all'));
+    if (el) el.classList.toggle('active',
+      (t==='img'&&type==='image') || (t==='vid'&&type==='video') || (t==='all'&&type==='all')
+    );
   });
   renderMediaGrid();
 };
@@ -706,7 +764,9 @@ window.filterMedia = function(type) {
 function renderMediaGrid() {
   const wrap = document.getElementById('media-grid-wrap');
   if (!wrap) return;
-  const items = mediaFilter === 'all' ? mediaLibrary : mediaLibrary.filter(m => m.resource_type === mediaFilter);
+  const items = mediaFilter === 'all'
+    ? mediaLibrary
+    : mediaLibrary.filter(m => m.resource_type === mediaFilter);
   document.getElementById('media-count-lbl').textContent = `Archivos guardados (${items.length})`;
   if (!items.length) {
     wrap.innerHTML = '<p style="color:var(--muted);font-size:.8rem;">Sin archivos todavía. Sube uno arriba ↑</p>';
@@ -717,7 +777,7 @@ function renderMediaGrid() {
       ${m.resource_type==='video'
         ? `<video src="${m.url}" muted style="width:100%;height:100px;object-fit:cover;"></video><span class="media-type-badge">video</span>`
         : `<img src="${m.url}" alt="${m.name}" loading="lazy"/>`}
-      <div class="media-info">${m.name||'archivo'}</div>
+      <div class="media-info" title="${m.folder||''}">${m.name||'archivo'}</div>
       <div class="media-check"><i class="bi bi-check-lg"></i></div>
       <div class="media-actions">
         <button class="media-action-btn" title="Copiar URL" onclick="copyMediaUrl('${m.url}')"><i class="bi bi-clipboard"></i></button>
@@ -732,7 +792,7 @@ window.copyMediaUrl = function(url) {
 window.removeMediaItem = function(i) {
   Swal.fire({ icon:'warning', title:'¿Eliminar?', text:'Se eliminará de la biblioteca (no de Cloudinary).', showCancelButton:true, confirmButtonColor:'#e74c3c', cancelButtonColor:'#2E8B57', confirmButtonText:'Sí, eliminar', cancelButtonText:'Cancelar' }).then(r => {
     if (!r.isConfirmed) return;
-    mediaLibrary.splice(i,1);
+    mediaLibrary.splice(i, 1);
     try { localStorage.setItem('cc_media', JSON.stringify(mediaLibrary)); } catch(e) {}
     renderMediaGrid();
   });
@@ -741,10 +801,15 @@ window.removeMediaItem = function(i) {
 function renderLibPicker(targetInput) {
   const wrap = document.getElementById('prod-lib-picker');
   if (!wrap) return;
-  if (!mediaLibrary.length) { wrap.innerHTML = '<p style="font-size:.75rem;color:var(--muted);">Sin archivos en biblioteca. Ve a Multimedia para subir.</p>'; return; }
-  wrap.innerHTML = `<div class="media-grid">${mediaLibrary.map((m,i) => `
+  if (!mediaLibrary.length) {
+    wrap.innerHTML = '<p style="font-size:.75rem;color:var(--muted);">Sin archivos en biblioteca. Ve a Multimedia para subir.</p>';
+    return;
+  }
+  wrap.innerHTML = `<div class="media-grid">${mediaLibrary.map(m => `
     <div class="media-card" onclick="selectLibItem('${m.url}','${targetInput||'prod-img-url'}')">
-      ${m.resource_type==='video' ? `<video src="${m.url}" muted style="width:100%;height:80px;object-fit:cover;"></video>` : `<img src="${m.url}" alt="" style="height:80px;"/>`}
+      ${m.resource_type==='video'
+        ? `<video src="${m.url}" muted style="width:100%;height:80px;object-fit:cover;"></video>`
+        : `<img src="${m.url}" alt="" style="height:80px;"/>`}
       <div class="media-info">${m.name||'archivo'}</div>
     </div>`).join('')}</div>`;
 }
@@ -757,7 +822,10 @@ window.selectLibItem = function(url, targetId) {
 window.switchTab = function(group, tab) {
   document.querySelectorAll(`[id^="${group}-tab-"]`).forEach(el => el.classList.remove('active'));
   document.getElementById(`${group}-tab-${tab}`).classList.add('active');
-  document.querySelectorAll(`[onclick*="switchTab('${group}'"]`).forEach(btn => { btn.classList.remove('active'); if(btn.getAttribute('onclick').includes(`'${tab}'`)) btn.classList.add('active'); });
+  document.querySelectorAll(`[onclick*="switchTab('${group}'"]`).forEach(btn => {
+    btn.classList.remove('active');
+    if (btn.getAttribute('onclick').includes(`'${tab}'`)) btn.classList.add('active');
+  });
   if (tab === 'library') renderLibPicker('prod-img-url');
 };
 
@@ -771,25 +839,30 @@ window.navigate = function(page) {
   if (window.innerWidth <= 768) closeSidebar();
 };
 function loadPage(page) {
-  if (page==='productos') loadTablaProductos();
-  if (page==='stock') loadTablaStock();
+  if (page==='productos')  loadTablaProductos();
+  if (page==='stock')      loadTablaStock();
   if (page==='categorias') loadTablaCategorias();
-  if (page==='combos') loadTablaCombos();
-  if (page==='recetas') loadTablaRecetas();
+  if (page==='combos')     loadTablaCombos();
+  if (page==='recetas')    loadTablaRecetas();
   if (page==='beneficios') loadTablaBeneficios();
-  if (page==='media') { loadMediaLibrary().then(renderMediaGrid); setupMediaLibPage(); }
+  if (page==='media')      { loadMediaLibrary().then(renderMediaGrid); setupMediaLibPage(); }
 }
 document.querySelectorAll('.nav-item').forEach(it => it.addEventListener('click', () => navigate(it.dataset.page)));
 
 /* ══ SIDEBAR ══ */
-const sidebar = document.getElementById('sidebar');
+const sidebar  = document.getElementById('sidebar');
 const sOverlay = document.getElementById('sidebarOverlay');
 let sidebarOpen = window.innerWidth > 768;
-function openSidebar() { sidebar.classList.add('open'); sOverlay.classList.add('open'); }
+function openSidebar()  { sidebar.classList.add('open');    sOverlay.classList.add('open'); }
 function closeSidebar() { sidebar.classList.remove('open'); sOverlay.classList.remove('open'); }
 window.toggleSidebar = function() {
-  if (window.innerWidth <= 768) { sidebar.classList.contains('open') ? closeSidebar() : openSidebar(); }
-  else { sidebarOpen = !sidebarOpen; sidebar.classList.toggle('collapsed', !sidebarOpen); document.getElementById('content').classList.toggle('full', !sidebarOpen); }
+  if (window.innerWidth <= 768) {
+    sidebar.classList.contains('open') ? closeSidebar() : openSidebar();
+  } else {
+    sidebarOpen = !sidebarOpen;
+    sidebar.classList.toggle('collapsed', !sidebarOpen);
+    document.getElementById('content').classList.toggle('full', !sidebarOpen);
+  }
 };
 document.getElementById('sidebarToggle').addEventListener('click', toggleSidebar);
 sOverlay.addEventListener('click', closeSidebar);
@@ -809,33 +882,33 @@ document.getElementById('drawerBackdrop').addEventListener('click', closeDrawer)
 
 function resetDrawer(name, data) {
   if (name === 'producto') {
-    document.getElementById('prod-id').value = data?.id || '';
-    document.getElementById('prod-nombre').value = data?.nombre || '';
-    document.getElementById('prod-codigo').value = data?.codigo || '';
-    document.getElementById('prod-desc').value = data?.descripcion || '';
-    document.getElementById('prod-precio').value = data?.precio || '';
-    document.getElementById('prod-img-url').value = data?.imagen || '';
-    document.getElementById('prod-thumb-url').value = data?.imagen_portada || '';
-    document.getElementById('prod-video-url').value = data?.video || '';
-    document.getElementById('prod-audio-url').value = data?.audio || '';
-    document.getElementById('prod-pdf-url').value = data?.pdf || '';
-    document.getElementById('prod-stock').value = data?.stock ?? 0;
-    document.getElementById('prod-stock-min').value = data?.stock_minimo ?? 5;
-    document.getElementById('prod-activo').checked = data ? !!data.activo : true;
-    document.getElementById('prod-combo').checked = !!data?.combo;
+    document.getElementById('prod-id').value         = data?.id || '';
+    document.getElementById('prod-nombre').value     = data?.nombre || '';
+    document.getElementById('prod-codigo').value     = data?.codigo || '';
+    document.getElementById('prod-desc').value       = data?.descripcion || '';
+    document.getElementById('prod-precio').value     = data?.precio || '';
+    document.getElementById('prod-img-url').value    = data?.imagen || '';
+    document.getElementById('prod-thumb-url').value  = data?.imagen_portada || '';
+    document.getElementById('prod-video-url').value  = data?.video || '';
+    document.getElementById('prod-audio-url').value  = data?.audio || '';
+    document.getElementById('prod-pdf-url').value    = data?.pdf || '';
+    document.getElementById('prod-stock').value      = data?.stock ?? 0;
+    document.getElementById('prod-stock-min').value  = data?.stock_minimo ?? 5;
+    document.getElementById('prod-activo').checked   = data ? !!data.activo : true;
+    document.getElementById('prod-combo').checked    = !!data?.combo;
     document.getElementById('prod-img-preview').innerHTML = '';
     document.getElementById('prod-vid-preview').innerHTML = '';
     document.getElementById('drawer-prod-title').textContent = data ? 'Editar producto' : 'Nuevo producto';
     fillCatSelect('prod-cat', data?.categoria_id);
   }
   if (name === 'categoria') {
-    document.getElementById('cat-id').value = data?.id || '';
+    document.getElementById('cat-id').value     = data?.id || '';
     document.getElementById('cat-nombre').value = data?.nombre || '';
   }
   if (name === 'combo') {
-    document.getElementById('combo-id').value = data?.id || '';
+    document.getElementById('combo-id').value     = data?.id || '';
     document.getElementById('combo-nombre').value = data?.nombre || '';
-    document.getElementById('combo-desc').value = data?.descripcion || '';
+    document.getElementById('combo-desc').value   = data?.descripcion || '';
     document.getElementById('combo-precio').value = data?.precio || '';
     document.getElementById('combo-activo').checked = data ? !!data.activo : true;
     document.getElementById('drawer-combo-title').textContent = data ? 'Editar combo' : 'Nuevo combo';
@@ -844,27 +917,26 @@ function resetDrawer(name, data) {
     else { addComboItem(); }
   }
   if (name === 'receta') {
-    document.getElementById('receta-id').value = data?.id || '';
-    document.getElementById('receta-titulo').value = data?.titulo || '';
-    document.getElementById('receta-icono').value = data?.icono || '🌿';
-    document.getElementById('receta-tiempo').value = data?.tiempo || '';
-    document.getElementById('receta-porciones').value = data?.porciones || '';
+    document.getElementById('receta-id').value         = data?.id || '';
+    document.getElementById('receta-titulo').value     = data?.titulo || '';
+    document.getElementById('receta-icono').value      = data?.icono || '🌿';
+    document.getElementById('receta-tiempo').value     = data?.tiempo || '';
+    document.getElementById('receta-porciones').value  = data?.porciones || '';
     document.getElementById('receta-beneficios').value = data?.beneficios || '';
-    document.getElementById('receta-img-url').value = data?.imagen_url || '';
-    document.getElementById('receta-video-url').value = data?.video_url || '';
-    document.getElementById('receta-activo').checked = data ? !!data.activo : true;
+    document.getElementById('receta-img-url').value    = data?.imagen_url || '';
+    document.getElementById('receta-video-url').value  = data?.video_url || '';
+    document.getElementById('receta-activo').checked   = data ? !!data.activo : true;
     fillProdSelect('receta-prod', data?.producto_id);
-    // ingredientes / pasos
     document.getElementById('receta-ingredientes').innerHTML = '';
     document.getElementById('receta-pasos').innerHTML = '';
     (data?.ingredientes||[]).forEach(v => addDynRow('receta-ingredientes','',false,v));
     (data?.pasos||[]).forEach(v => addDynRow('receta-pasos','',true,v));
     if (!(data?.ingredientes?.length)) addDynRow('receta-ingredientes','Ingrediente…');
-    if (!(data?.pasos?.length)) addDynRow('receta-pasos','Paso…',true);
+    if (!(data?.pasos?.length))        addDynRow('receta-pasos','Paso…',true);
     document.getElementById('drawer-receta-title').textContent = data ? 'Editar receta' : 'Nueva receta';
   }
   if (name === 'beneficio') {
-    document.getElementById('ben-id').value = data?.id || '';
+    document.getElementById('ben-id').value   = data?.id || '';
     document.getElementById('ben-desc').value = data?.descripcion || '';
     fillProdSelect('ben-prod', data?.producto_id);
     document.getElementById('drawer-ben-title').textContent = data ? 'Editar beneficio' : 'Nuevo beneficio';
@@ -931,8 +1003,8 @@ function dtOpts(extra={}) {
 function destroyDT(dt) { try { if(dt && $.fn.DataTable.isDataTable($(dt.table().node()))) dt.destroy(); } catch(e){} }
 function stockBadge(stock, minStock=5) {
   if (stock === null || stock === undefined) return '<span class="stock-badge" style="background:#f0f0f0;color:#999;">–</span>';
-  if (stock <= 0) return `<span class="stock-badge out"><i class="bi bi-x-circle-fill"></i> Agotado</span>`;
-  if (stock <= minStock) return `<span class="stock-badge low"><i class="bi bi-exclamation-triangle-fill"></i> ${stock} ud.</span>`;
+  if (stock <= 0)          return `<span class="stock-badge out"><i class="bi bi-x-circle-fill"></i> Agotado</span>`;
+  if (stock <= minStock)   return `<span class="stock-badge low"><i class="bi bi-exclamation-triangle-fill"></i> ${stock} ud.</span>`;
   return `<span class="stock-badge ok"><i class="bi bi-check-circle-fill"></i> ${stock} ud.</span>`;
 }
 
@@ -940,15 +1012,14 @@ function stockBadge(stock, minStock=5) {
 async function loadStats() {
   const [rProd, rCombo, rRec] = await Promise.all([
     sb.from('productos').select('*', { count:'exact', head:false }).eq('activo', true),
-    sb.from('combos').select('*', { count:'exact', head:false }).eq('activo', true),
-    sb.from('recetas').select('*', { count:'exact', head:false }).eq('activo', true),
+    sb.from('combos').select('*',   { count:'exact', head:false }).eq('activo', true),
+    sb.from('recetas').select('*',  { count:'exact', head:false }).eq('activo', true),
   ]);
   document.getElementById('st-productos').textContent = rProd.count ?? '–';
-  document.getElementById('st-combos').textContent = rCombo.count ?? '–';
-  document.getElementById('st-recetas').textContent = rRec.count ?? '–';
+  document.getElementById('st-combos').textContent    = rCombo.count ?? '–';
+  document.getElementById('st-recetas').textContent   = rRec.count ?? '–';
   document.getElementById('nb-productos').textContent = rProd.count ?? '–';
 
-  // Stock alerts
   const { data: allProds } = await sb.from('productos').select('id,nombre,stock,stock_minimo').eq('activo', true);
   const lowItems = (allProds||[]).filter(p => p.stock !== null && p.stock <= (p.stock_minimo ?? 5));
   document.getElementById('st-stock-low').textContent = lowItems.length;
@@ -986,8 +1057,8 @@ async function loadTablaProductos() {
   destroyDT(dtProductos);
   dtProductos = $('#tbl-productos').DataTable(dtOpts());
 }
-window._editProd = p => openDrawer('producto', typeof p === 'string' ? JSON.parse(p) : p);
-window._delProd  = async (id, n) => { if(await confirmarEliminar('productos',id,n)) { loadTablaProductos(); loadStats(); } };
+window._editProd  = p => openDrawer('producto', typeof p === 'string' ? JSON.parse(p) : p);
+window._delProd   = async (id, n) => { if(await confirmarEliminar('productos',id,n)) { loadTablaProductos(); loadStats(); } };
 window._editStock = async (id, nombre, current) => {
   const { value } = await Swal.fire({
     title: `Stock: ${nombre}`, input:'number', inputValue: current,
@@ -999,7 +1070,7 @@ window._editStock = async (id, nombre, current) => {
   if (value === undefined) return;
   const { error } = await sb.from('productos').update({ stock: parseInt(value) }).eq('id', id);
   if (error) showToast(error.message,'error');
-  else { showToast(`Stock de "${nombre}" actualizado a ${value} ud.`, 'success'); loadTablaProductos(); loadStats(); if(loaded['stock']) loadTablaStock(); }
+  else { showToast(`Stock de "${nombre}" → ${value} ud.`, 'success'); loadTablaProductos(); loadStats(); if(loaded['stock']) loadTablaStock(); }
 };
 
 /* ══ TABLA STOCK ══ */
@@ -1036,21 +1107,21 @@ window._addStock = async (id, nombre, current) => {
 
 /* ══ GUARDAR PRODUCTO ══ */
 window.guardarProducto = async function() {
-  const id      = document.getElementById('prod-id').value;
-  const nombre  = document.getElementById('prod-nombre').value.trim();
-  const codigo  = document.getElementById('prod-codigo').value.trim();
-  const desc    = document.getElementById('prod-desc').value.trim();
-  const precio  = parseFloat(document.getElementById('prod-precio').value);
-  const cat     = document.getElementById('prod-cat').value;
-  const imgUrl  = document.getElementById('prod-img-url').value.trim();
-  const thumb   = document.getElementById('prod-thumb-url').value.trim();
-  const vidUrl  = document.getElementById('prod-video-url').value.trim();
-  const audUrl  = document.getElementById('prod-audio-url').value.trim();
-  const pdfUrl  = document.getElementById('prod-pdf-url').value.trim();
-  const stock   = parseInt(document.getElementById('prod-stock').value) || 0;
-  const stockMin= parseInt(document.getElementById('prod-stock-min').value) || 5;
-  const activo  = document.getElementById('prod-activo').checked;
-  const combo   = document.getElementById('prod-combo').checked;
+  const id       = document.getElementById('prod-id').value;
+  const nombre   = document.getElementById('prod-nombre').value.trim();
+  const codigo   = document.getElementById('prod-codigo').value.trim();
+  const desc     = document.getElementById('prod-desc').value.trim();
+  const precio   = parseFloat(document.getElementById('prod-precio').value);
+  const cat      = document.getElementById('prod-cat').value;
+  const imgUrl   = document.getElementById('prod-img-url').value.trim();
+  const thumb    = document.getElementById('prod-thumb-url').value.trim();
+  const vidUrl   = document.getElementById('prod-video-url').value.trim();
+  const audUrl   = document.getElementById('prod-audio-url').value.trim();
+  const pdfUrl   = document.getElementById('prod-pdf-url').value.trim();
+  const stock    = parseInt(document.getElementById('prod-stock').value) || 0;
+  const stockMin = parseInt(document.getElementById('prod-stock-min').value) || 5;
+  const activo   = document.getElementById('prod-activo').checked;
+  const combo    = document.getElementById('prod-combo').checked;
   if (!nombre || !codigo || isNaN(precio) || !cat) { showToast('Completa nombre, código, precio y categoría', 'warn'); return; }
   const payload = { nombre, codigo, descripcion:desc, precio, categoria_id:parseInt(cat)||null, imagen:imgUrl||null, imagen_portada:thumb||imgUrl||null, video:vidUrl||null, audio:audUrl||null, pdf:pdfUrl||null, stock, stock_minimo:stockMin, activo, combo };
   const { error } = id ? await sb.from('productos').update(payload).eq('id',id) : await sb.from('productos').insert([payload]);
@@ -1085,7 +1156,7 @@ window._editCat = c => openDrawer('categoria', typeof c==='string'?JSON.parse(c)
 window._delCat  = async (id, n) => { if(await confirmarEliminar('categorias',id,n)) { loadTablaCategorias(); loadCategorias(); } };
 
 window.guardarCategoria = async function() {
-  const id   = document.getElementById('cat-id').value;
+  const id     = document.getElementById('cat-id').value;
   const nombre = document.getElementById('cat-nombre').value.trim();
   if (!nombre) { showToast('El nombre es requerido','warn'); return; }
   const { error } = id ? await sb.from('categorias').update({ nombre }).eq('id',id) : await sb.from('categorias').insert([{ nombre }]);
@@ -1131,9 +1202,8 @@ window.guardarCombo = async function() {
   const precio = parseFloat(document.getElementById('combo-precio').value);
   const activo = document.getElementById('combo-activo').checked;
   if (!nombre || isNaN(precio)) { showToast('Nombre y precio son requeridos','warn'); return; }
-  // gather items
-  const sels = document.querySelectorAll('#combo-items-list .combo-prod-sel');
-  const qtys = document.querySelectorAll('#combo-items-list .combo-qty');
+  const sels  = document.querySelectorAll('#combo-items-list .combo-prod-sel');
+  const qtys  = document.querySelectorAll('#combo-items-list .combo-qty');
   const items = Array.from(sels).map((s,i) => ({ producto_id: parseInt(s.value)||null, cantidad: parseInt(qtys[i]?.value)||1 })).filter(it => it.producto_id);
   let comboId = id;
   if (id) {
@@ -1178,18 +1248,18 @@ window._editReceta = r => openDrawer('receta', typeof r==='string'?JSON.parse(r)
 window._delReceta  = async (id, n) => { if(await confirmarEliminar('recetas',id,n)) loadTablaRecetas(); };
 
 window.guardarReceta = async function() {
-  const id      = document.getElementById('receta-id').value;
-  const titulo  = document.getElementById('receta-titulo').value.trim();
-  const icono   = document.getElementById('receta-icono').value.trim();
-  const tiempo  = document.getElementById('receta-tiempo').value.trim();
-  const porciones = parseInt(document.getElementById('receta-porciones').value) || 1;
-  const prodId  = document.getElementById('receta-prod').value || null;
+  const id         = document.getElementById('receta-id').value;
+  const titulo     = document.getElementById('receta-titulo').value.trim();
+  const icono      = document.getElementById('receta-icono').value.trim();
+  const tiempo     = document.getElementById('receta-tiempo').value.trim();
+  const porciones  = parseInt(document.getElementById('receta-porciones').value) || 1;
+  const prodId     = document.getElementById('receta-prod').value || null;
   const beneficios = document.getElementById('receta-beneficios').value.trim();
-  const imgUrl  = document.getElementById('receta-img-url').value.trim();
-  const vidUrl  = document.getElementById('receta-video-url').value.trim();
-  const activo  = document.getElementById('receta-activo').checked;
+  const imgUrl     = document.getElementById('receta-img-url').value.trim();
+  const vidUrl     = document.getElementById('receta-video-url').value.trim();
+  const activo     = document.getElementById('receta-activo').checked;
   const ingredientes = Array.from(document.querySelectorAll('#receta-ingredientes .dynamic-item input')).map(i=>i.value.trim()).filter(Boolean);
-  const pasos = Array.from(document.querySelectorAll('#receta-pasos .dynamic-item textarea')).map(i=>i.value.trim()).filter(Boolean);
+  const pasos        = Array.from(document.querySelectorAll('#receta-pasos .dynamic-item textarea')).map(i=>i.value.trim()).filter(Boolean);
   if (!titulo) { showToast('El título es requerido','warn'); return; }
   const payload = { titulo, icono:icono||'🌿', tiempo:tiempo||null, porciones, producto_id:prodId?parseInt(prodId):null, beneficios:beneficios||null, imagen_url:imgUrl||null, video_url:vidUrl||null, activo, ingredientes, pasos };
   const { error } = id ? await sb.from('recetas').update(payload).eq('id',id) : await sb.from('recetas').insert([payload]);
@@ -1221,9 +1291,9 @@ window._editBen = b => openDrawer('beneficio', typeof b==='string'?JSON.parse(b)
 window._delBen  = async (id, n) => { if(await confirmarEliminar('beneficios',id,n)) loadTablaBeneficios(); };
 
 window.guardarBeneficio = async function() {
-  const id   = document.getElementById('ben-id').value;
+  const id     = document.getElementById('ben-id').value;
   const prodId = document.getElementById('ben-prod').value;
-  const desc = document.getElementById('ben-desc').value.trim();
+  const desc   = document.getElementById('ben-desc').value.trim();
   if (!prodId || !desc) { showToast('Selecciona producto e ingresa descripción','warn'); return; }
   const payload = { producto_id: parseInt(prodId), descripcion: desc };
   const { error } = id ? await sb.from('beneficios').update(payload).eq('id',id) : await sb.from('beneficios').insert([payload]);
@@ -1246,7 +1316,6 @@ async function loadDashRecientes() {
       <td style="color:#6b8c78;">${new Date(p.created_at).toLocaleDateString('es-BO')}</td>
     </tr>`).join('')}</tbody>
   </table>`;
-  // Low stock list
   const { data: lowData } = await sb.from('productos').select('id,nombre,stock,stock_minimo').eq('activo',true).order('stock',{ascending:true}).limit(8);
   const low = (lowData||[]).filter(p => p.stock !== null && p.stock <= (p.stock_minimo ?? 5));
   const wrapLow = document.getElementById('dash-stock-low');
@@ -1264,7 +1333,8 @@ async function loadDashRecientes() {
 
 /* ══ MEDIA LIB PAGE UPLOAD ══ */
 function setupMediaLibPage() {
-  setupUploadZone('lib-zone','lib-input','lib-progress','lib-bar',null,'cordyclub', url => {
+  // La zona de la biblioteca también usa detección automática de carpeta
+  setupUploadZone('lib-zone', 'lib-input', 'lib-progress', 'lib-bar', null, () => {
     loadMediaLibrary().then(renderMediaGrid);
   });
 }
@@ -1287,20 +1357,21 @@ async function init() {
   await loadProductos();
   await loadStats();
   await loadDashRecientes();
-  // Setup upload zones for drawers
-  setupUploadZone('prod-img-zone','prod-img-input','prod-img-progress','prod-img-bar','prod-img-preview','productos', url => {
+
+  // Zonas de upload — ya NO se pasa carpeta, se detecta automáticamente por tipo MIME
+  setupUploadZone('prod-img-zone', 'prod-img-input', 'prod-img-progress', 'prod-img-bar', 'prod-img-preview', url => {
     document.getElementById('prod-img-url').value = url;
   });
-  setupUploadZone('prod-vid-zone','prod-vid-input','prod-vid-progress','prod-vid-bar','prod-vid-preview','productos', url => {
+  setupUploadZone('prod-vid-zone', 'prod-vid-input', 'prod-vid-progress', 'prod-vid-bar', 'prod-vid-preview', url => {
     document.getElementById('prod-video-url').value = url;
   });
-  setupUploadZone('prod-aud-zone','prod-aud-input','prod-aud-progress','prod-aud-bar',null,'productos', url => {
+  setupUploadZone('prod-aud-zone', 'prod-aud-input', 'prod-aud-progress', 'prod-aud-bar', null, url => {
     document.getElementById('prod-audio-url').value = url;
   });
-  setupUploadZone('prod-pdf-zone','prod-pdf-input','prod-pdf-progress','prod-pdf-bar',null,'productos', url => {
+  setupUploadZone('prod-pdf-zone', 'prod-pdf-input', 'prod-pdf-progress', 'prod-pdf-bar', null, url => {
     document.getElementById('prod-pdf-url').value = url;
   });
-  setupUploadZone('receta-img-zone','receta-img-input','receta-img-progress','receta-img-bar',null,'recetas', url => {
+  setupUploadZone('receta-img-zone', 'receta-img-input', 'receta-img-progress', 'receta-img-bar', null, url => {
     document.getElementById('receta-img-url').value = url;
   });
 }
