@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title id="pageTitle">Producto – CordyClub Bolivia | infotiens43</title>
-<meta name="description" id="pageDesc" content="Detalle de producto TIENS Bolivia. infotiens43"/>
+<title id="pageTitle">Producto – CordyClub Bolivia</title>
+<meta name="description" id="pageDesc" content="Detalle de producto CordyClub Bolivia."/>
 <meta name="theme-color" content="#2E8B57"/>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet"/>
@@ -33,8 +33,32 @@ button{cursor:pointer;border:none;background:none;font-family:inherit;}
 .cart-badge.visible{transform:scale(1);}
 .nav-back{display:flex;align-items:center;gap:5px;color:rgba(255,255,255,.8);font-size:.78rem;font-weight:600;padding:7px 13px;border-radius:10px;border:1px solid rgba(255,255,255,.2);transition:var(--tr);}
 .nav-back:hover{color:#fff;background:rgba(255,255,255,.12);}
-.nav-wa{display:flex;align-items:center;gap:5px;background:var(--wa);color:#fff;font-size:.78rem;font-weight:700;padding:8px 14px;border-radius:11px;transition:var(--tr);}
-.nav-wa:hover{background:#1aad50;}
+
+/* BANNER DISTRIBUIDOR ACTIVO */
+.dist-bar{
+  display:none;
+  position:sticky;top:62px;z-index:80;
+  background:linear-gradient(135deg,#052e16,#14532d);
+  padding:8px 20px;
+  align-items:center;gap:9px;
+  font-size:.74rem;font-weight:600;color:rgba(255,255,255,.9);
+}
+.dist-bar i{color:#4ade80;font-size:.85rem;flex-shrink:0;}
+.dist-bar .db-name{font-weight:800;color:#fff;}
+.dist-bar a{margin-left:auto;font-size:.7rem;color:rgba(255,255,255,.6);text-decoration:underline;font-weight:600;white-space:nowrap;}
+
+/* CHIP DISTRIBUIDOR en info del producto */
+.dist-chip{
+  display:inline-flex;align-items:center;gap:6px;
+  background:#e6f7ee;color:#14532d;
+  border:1.5px solid #bbf7d0;border-radius:10px;
+  padding:7px 12px;font-size:.76rem;font-weight:700;
+  margin-bottom:10px;cursor:pointer;transition:var(--tr);
+}
+.dist-chip:hover{background:#bbf7d0;}
+.dist-chip i{font-size:.8rem;}
+.dist-chip.master{background:#f0fdf4;color:#4d7c5d;border-color:#d4ede0;}
+
 .overlay{position:fixed;inset:0;z-index:150;background:rgba(10,30,18,.45);backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity .28s;}
 .overlay.open{opacity:1;pointer-events:all;}
 .drawer{position:fixed;top:0;right:-300px;bottom:0;width:280px;z-index:160;background:#fff;border-left:1.5px solid var(--border);box-shadow:-8px 0 40px rgba(26,92,53,.12);transition:right .32s cubic-bezier(.25,.46,.45,.94);display:flex;flex-direction:column;}
@@ -60,6 +84,14 @@ button{cursor:pointer;border:none;background:none;font-family:inherit;}
 .cart-empty i{font-size:3rem;display:block;margin-bottom:10px;opacity:.3;}
 .cart-empty p{font-size:.86rem;font-weight:500;color:#8aad96;}
 .cart-empty small{font-size:.72rem;color:#b0c8b8;}
+/* Info dist en carrito */
+.cart-dist-info{
+  background:var(--chip);border:1px solid var(--border);border-radius:9px;
+  padding:9px 12px;margin-bottom:12px;
+  display:flex;align-items:center;gap:8px;
+  font-size:.74rem;font-weight:600;color:var(--g1);
+}
+.cart-dist-info i{color:var(--g2);}
 .cart-item{display:flex;align-items:center;gap:11px;padding:11px;background:var(--chip);border-radius:12px;margin-bottom:9px;border:1px solid var(--border);animation:slideIn .22s ease;}
 @keyframes slideIn{from{opacity:0;transform:translateX(16px);}to{opacity:1;transform:translateX(0);}}
 .cart-item img{width:50px;height:50px;object-fit:cover;border-radius:9px;flex-shrink:0;}
@@ -160,6 +192,7 @@ button{cursor:pointer;border:none;background:none;font-family:inherit;}
 </style>
 </head>
 <body>
+
 <nav class="navbar">
   <a href="../../index.html" class="brand">CordyClub</a>
   <div class="nav-actions">
@@ -168,10 +201,17 @@ button{cursor:pointer;border:none;background:none;font-family:inherit;}
       <i class="bi bi-cart3"></i>
       <span class="cart-badge" id="cartBadge">0</span>
     </button>
-    <a href="https://wa.me/59163488086" target="_blank" class="nav-wa"><i class="bi bi-whatsapp"></i></a>
     <button class="nav-btn" id="menuBtn"><i class="bi bi-list" id="menuIcon"></i></button>
   </div>
 </nav>
+
+<!-- BANNER DISTRIBUIDOR ACTIVO -->
+<div class="dist-bar" id="distBar">
+  <i class="bi bi-person-check-fill"></i>
+  <span>Pedido a: <span class="db-name" id="distBarNombre">CordyClub</span></span>
+  <a href="distribuidores.html" id="distBarCambiar">Cambiar</a>
+</div>
+
 <div class="overlay" id="menuOverlay"></div>
 <aside class="drawer" id="drawer">
   <div class="drawer-head"><div class="drawer-brand">CordyClub Bolivia</div><button class="d-close" id="drawerClose"><i class="bi bi-x-lg"></i></button></div>
@@ -182,8 +222,11 @@ button{cursor:pointer;border:none;background:none;font-family:inherit;}
     <div class="d-sep"></div>
     <a href="#" class="d-link"><i class="bi bi-info-circle"></i> Sobre nosotros</a>
   </nav>
-  <div class="drawer-foot"><a href="https://wa.me/59163488086" target="_blank" class="d-wa-btn"><i class="bi bi-whatsapp"></i> Escribir por WhatsApp</a></div>
+  <div class="drawer-foot">
+    <a id="drawerWaBtn" href="#" target="_blank" class="d-wa-btn"><i class="bi bi-whatsapp"></i> Escribir por WhatsApp</a>
+  </div>
 </aside>
+
 <div class="overlay" id="cartOverlay" style="z-index:165;"></div>
 <aside class="cart-drawer" id="cartDrawer">
   <div class="cart-head">
@@ -198,11 +241,13 @@ button{cursor:pointer;border:none;background:none;font-family:inherit;}
     <button type="button" id="cartCheckout" class="checkout-btn"><i class="bi bi-whatsapp"></i> Pedir todo por WhatsApp</button>
   </div>
 </aside>
+
 <div class="lightbox" id="lightbox">
   <button class="lb-close" id="lbClose"><i class="bi bi-x-lg"></i></button>
   <img id="lbImg" src="" alt="" style="display:none;"/>
   <video id="lbVid" src="" muted controls style="display:none;max-width:92vw;max-height:88vh;border-radius:12px;"></video>
 </div>
+
 <div id="pageLoader" class="page-loader" style="margin-top:62px;">
   <div class="loader-ring"></div>
   <p style="color:var(--muted);font-size:.82rem;">Cargando producto…</p>
@@ -212,6 +257,7 @@ button{cursor:pointer;border:none;background:none;font-family:inherit;}
   <h3 style="font-size:1.2rem;font-weight:700;margin-bottom:6px;">Producto no encontrado</h3>
   <a href="catalogo.html" style="margin-top:14px;display:inline-flex;align-items:center;gap:7px;background:var(--g2);color:#fff;padding:12px 24px;border-radius:12px;font-weight:700;font-size:.88rem;"><i class="bi bi-arrow-left"></i> Ver catálogo</a>
 </div>
+
 <div id="contenido" style="display:none;margin-top:62px;">
   <div class="product-wrap">
     <nav class="breadcrumb">
@@ -224,6 +270,10 @@ button{cursor:pointer;border:none;background:none;font-family:inherit;}
       <div class="info-panel">
         <h1 class="product-name" id="pNombre"></h1>
         <div class="price-row"><span class="product-price" id="pPrecio"></span><span class="price-unit">bolivianos</span></div>
+
+        <!-- CHIP DISTRIBUIDOR ACTIVO -->
+        <div id="distChipWrap"></div>
+
         <div id="audioBox" style="display:none;">
           <div class="audio-box">
             <p class="audio-title"><i class="bi bi-volume-up-fill"></i> Escucha sobre este producto</p>
@@ -250,7 +300,7 @@ button{cursor:pointer;border:none;background:none;font-family:inherit;}
     <div id="videoSection" class="video-section" style="display:none;">
       <p class="sec-label">Video del producto</p>
       <div class="video-box" id="videoBox">
-        <video id="videoEl" preload="metadata" playsinline loop muted autoplay style="width:100%;display:block;max-height:480px;object-fit:contain;background:#000;">Tu navegador no soporta video HTML5.</video>
+        <video id="videoEl" preload="metadata" playsinline loop muted autoplay style="width:100%;display:block;max-height:480px;object-fit:contain;background:#000;"></video>
         <div class="video-overlay-play" id="videoOverlay"><div class="vplay-icon"><i class="bi bi-play-fill"></i></div></div>
       </div>
     </div>
@@ -262,37 +312,118 @@ button{cursor:pointer;border:none;background:none;font-family:inherit;}
     <div id="recetasGrid" class="recetas-grid"></div>
   </div>
 </div>
-<a id="waFloat" href="https://wa.me/59163488086" target="_blank" class="wa-float"><i class="bi bi-whatsapp"></i></a>
+
+<a id="waFloat" href="#" target="_blank" class="wa-float"><i class="bi bi-whatsapp"></i></a>
 <div class="toast" id="toast"></div>
+
 <script type="module">
-const SUPABASE_URL='https://iqloqrnaoxuldtinneqn.supabase.co';
-const SUPABASE_ANON_KEY='sb_publishable_fjYtclIYb_OeECjDf023Tw_DeeMCjXY';
-const WA='59163488086';
-function esVideo(u){return u&&/\.(mp4|webm|ogg)(\?|$)/i.test(u);}
+/* ══════════════════════════════════════
+   CONFIG
+══════════════════════════════════════ */
+const SUPABASE_URL      = 'https://iqloqrnaoxuldtinneqn.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_fjYtclIYb_OeECjDf023Tw_DeeMCjXY';
 
-const RECETAS={
-  1:[{titulo:'Batido de Calcio',tiempo:'5 min',icono:'🥛',ingredientes:['1 medida de Calcio Nutritivo TIENS','250 ml leche de almendras','1 plátano maduro'],pasos:['Añade todos los ingredientes a la licuadora.','Licúa 30 segundos a velocidad alta.','Sirve de inmediato, preferiblemente en ayunas.']},{titulo:'Yogur Enriquecido',tiempo:'3 min',icono:'🍦',ingredientes:['1 medida de Calcio Nutritivo TIENS','150 g yogur natural','Frutas de temporada'],pasos:['Mezcla el calcio con el yogur.','Añade las frutas cortadas encima.','Consume como desayuno o merienda.']},{titulo:'Agua Mineralizante',tiempo:'2 min',icono:'💧',ingredientes:['1 medida de Calcio Nutritivo TIENS','400 ml agua tibia','Jugo de medio limón'],pasos:['Disuelve el calcio en el agua tibia.','Agrega el jugo de limón y mezcla.','Toma en ayunas para máxima absorción.']}],
-  2:[{titulo:'Leche Infantil Especial',tiempo:'3 min',icono:'🍼',ingredientes:['1 medida de Calcio para Niños TIENS','200 ml leche entera tibia','1 cucharadita de miel'],pasos:['Calienta la leche sin hervir.','Disuelve el calcio revolviendo bien.','Sirve templado. Ideal como merienda.']},{titulo:'Pudín de Calcio',tiempo:'10 min',icono:'🍮',ingredientes:['1 medida de Calcio para Niños TIENS','200 ml leche','2 cucharadas de maicena','Canela'],pasos:['Mezcla todos en frío.','Cocina a fuego medio revolviendo.','Sirve frío con canela.']},{titulo:'Avena Enriquecida',tiempo:'8 min',icono:'🥣',ingredientes:['1 medida de Calcio para Niños TIENS','4 cucharadas avena','250 ml leche','Miel y frutas'],pasos:['Cocina la avena con la leche 5 min.','Retira y agrega el calcio.','Sirve con miel y frutas.']}],
-  3:[{titulo:'Té Frío Digestivo',tiempo:'10 min',icono:'🍵',ingredientes:['1 bolsita Té Tianshi','300 ml agua caliente','Hielo y limón'],pasos:['Infusiona 5 minutos.','Deja enfriar.','Sirve con hielo y limón.']},{titulo:'Té con Jengibre',tiempo:'8 min',icono:'🫚',ingredientes:['1 bolsita Té Tianshi','250 ml agua','2 rodajas jengibre'],pasos:['Hierve agua con jengibre 3 min.','Añade el té y apaga.','Infusiona 4 min y cuela.']},{titulo:'Infusión Detox',tiempo:'5 min',icono:'🌿',ingredientes:['1 bolsita Té Tianshi','200 ml agua caliente','1 cucharadita miel'],pasos:['Infusiona 5 min tapado.','Añade miel y mezcla.','Toma 30 min antes de comer.']}],
-  4:[{titulo:'Infusión Depurativa',tiempo:'6 min',icono:'🫖',ingredientes:['1 bolsita Té Milenario','300 ml agua caliente','Menta fresca'],pasos:['Vierte agua sobre el té.','Agrega menta y tapa.','Infusiona 5 min. Bebe caliente.']},{titulo:'Té Milenario Frío',tiempo:'15 min',icono:'🧊',ingredientes:['2 bolsitas Té Milenario','500 ml agua caliente','Hielo, limón y stevia'],pasos:['Infusiona 8 min.','Endulza y enfría.','Sirve con hielo.']},{titulo:'Mezcla Energizante',tiempo:'5 min',icono:'⚡',ingredientes:['1 bolsita Té Milenario','200 ml agua caliente','Jugo de naranja natural'],pasos:['Infusiona concentrado 5 min.','Mezcla con jugo de naranja.','Toma en ayunas.']}],
-  5:[{titulo:'CordyCafé Clásico',tiempo:'3 min',icono:'☕',ingredientes:['1 sobre CordyCafé TIENS','180 ml agua caliente','Leche al gusto'],pasos:['Vierte el sobre en la taza.','Agrega agua a 85°C.','Mezcla y añade leche si deseas.']},{titulo:'Frappé de Cordyceps',tiempo:'5 min',icono:'🧋',ingredientes:['1 sobre CordyCafé TIENS','150 ml leche fría','4 cubos de hielo'],pasos:['Disuelve el café en 50 ml agua caliente.','Enfría 2 min.','Licúa con leche y hielo.']},{titulo:'Café Pre-Entreno',tiempo:'4 min',icono:'💪',ingredientes:['1 sobre CordyCafé TIENS','200 ml agua caliente','1 cucharadita miel'],pasos:['Prepara el café.','Disuelve la miel.','Toma 20 min antes de ejercitar.']}],
-  6:[{titulo:'Shot de Colágeno',tiempo:'2 min',icono:'✨',ingredientes:['1 medida Colágeno Forte TIENS','100 ml jugo de naranja','Hielo opcional'],pasos:['Mezcla con el jugo de naranja.','Agita bien hasta disolver.','Toma en ayunas cada mañana.']},{titulo:'Batido de Belleza',tiempo:'5 min',icono:'🌸',ingredientes:['1 medida Colágeno Forte TIENS','1 taza frutos rojos','200 ml agua de coco'],pasos:['Licúa los frutos con agua de coco.','Agrega el colágeno y licúa 10 seg.','Consume de inmediato.']},{titulo:'Limonada de Colágeno',tiempo:'3 min',icono:'🍋',ingredientes:['1 medida Colágeno Forte TIENS','250 ml agua con gas','Jugo de 1 limón y miel'],pasos:['Exprime el limón en el agua.','Agrega miel y mezcla.','Añade el colágeno y sirve con hielo.']}]
+/* Master por defecto (tú) */
+const MASTER = { id:0, nombre:'CordyClub Bolivia', whatsapp:'59163488086', isMaster:true };
+
+const KEY_FAV  = 'cc_fav_dist';
+const KEY_CART = 'cc_cart';
+
+function esVideo(u){ return u&&/\.(mp4|webm|ogg)(\?|$)/i.test(u); }
+
+/* ══════════════════════════════════════
+   DISTRIBUIDOR ACTIVO
+   Prioridad: ?dist= en URL > favorito guardado > master
+══════════════════════════════════════ */
+const urlParams = new URLSearchParams(location.search);
+const prodId    = Number(urlParams.get('id'));
+const distParam = urlParams.get('dist');    // viene de distribuidor.html
+
+function getFav(){
+  try{ return JSON.parse(localStorage.getItem(KEY_FAV))||null; }catch{ return null; }
+}
+
+let DIST_ACTIVO = MASTER;  // se sobreescribe abajo
+
+async function resolverDistribuidor(){
+  // 1. ?dist= en la URL → máxima prioridad
+  if(distParam){
+    try{
+      const {createClient}=await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+      const sb=createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+      const {data}=await sb.from('distribuidores').select('id,nombre,whatsapp,whatsapp_publico,ciudad').eq('id',distParam).eq('activo',true).single();
+      if(data){
+        DIST_ACTIVO={id:data.id,nombre:data.nombre,whatsapp:data.whatsapp_publico||data.whatsapp,ciudad:data.ciudad};
+        /* Lo guardamos como favorito automáticamente */
+        localStorage.setItem(KEY_FAV,JSON.stringify(DIST_ACTIVO));
+        return;
+      }
+    }catch(e){ console.warn('dist param lookup:',e); }
+  }
+  // 2. Favorito guardado en localStorage
+  const fav = getFav();
+  if(fav && fav.id) { DIST_ACTIVO = fav; return; }
+  // 3. Master por defecto
+  DIST_ACTIVO = MASTER;
+}
+
+/* ══════════════════════════════════════
+   WA URL CON NOMBRE DEL DISTRIBUIDOR
+══════════════════════════════════════ */
+function buildWaUrl(prod){
+  const nom = DIST_ACTIVO.nombre.split(' ')[0];
+  const sufijo = DIST_ACTIVO.isMaster ? '' : ` — pedido a ${DIST_ACTIVO.nombre}`;
+  const msg = `Hola ${nom}! Me interesa *${prod.nombre}* (${prod.codigo||''}) — ${prod.precio} Bs${sufijo}. ¿Tienes disponibilidad?`;
+  return `https://wa.me/${DIST_ACTIVO.whatsapp}?text=${encodeURIComponent(msg)}`;
+}
+
+function buildWaMsgCarrito(items){
+  const total=items.reduce((s,c)=>s+c.precio*c.qty,0);
+  const lines=items.map(c=>`• ${c.nombre} (${c.codigo||''}) ×${c.qty} = ${c.precio*c.qty} Bs`).join('\n');
+  const nom=DIST_ACTIVO.nombre.split(' ')[0];
+  const sufijo=DIST_ACTIVO.isMaster?'':` — solicitud a ${DIST_ACTIVO.nombre}`;
+  return `Hola ${nom}! Quiero hacer este pedido${sufijo}:\n\n${lines}\n\n*Total: ${total} Bs*`;
+}
+
+/* ══════════════════════════════════════
+   UI DISTRIBUIDOR ACTIVO
+══════════════════════════════════════ */
+function mostrarDistActivo(prod){
+  /* Barra superior */
+  const bar=document.getElementById('distBar');
+  document.getElementById('distBarNombre').textContent=DIST_ACTIVO.nombre;
+  bar.style.display='flex';
+
+  /* Chip debajo del precio */
+  const wrap=document.getElementById('distChipWrap');
+  const esMaster=DIST_ACTIVO.isMaster;
+  const href=esMaster?'distribuidores.html':`distribuidor.html?id=${DIST_ACTIVO.id}`;
+  wrap.innerHTML=`<a href="${href}" class="dist-chip ${esMaster?'master':''}">
+    <i class="bi bi-${esMaster?'shop':'person-check-fill'}"></i>
+    ${esMaster?'Elige tu distribuidor':'Distribuidor: <strong>'+DIST_ACTIVO.nombre+'</strong>'}
+    <i class="bi bi-chevron-right" style="margin-left:2px;font-size:.65rem;opacity:.6;"></i>
+  </a>`;
+
+  /* Botón WA sidebar */
+  document.getElementById('drawerWaBtn').href=buildWaUrl(prod);
+}
+
+/* ══════════════════════════════════════
+   CARRITO
+══════════════════════════════════════ */
+let cart=JSON.parse(localStorage.getItem(KEY_CART)||'[]');
+function saveCart(){ localStorage.setItem(KEY_CART,JSON.stringify(cart)); }
+
+window._addCart=function(p){
+  const ex=cart.find(c=>c.id===p.id);
+  if(!ex) cart.push({...p,qty:1});
+  else ex.qty++;
+  saveCart();updateCartUI();showToast('bi-check-circle',p.nombre+' agregado al carrito');
 };
-function getRecetas(id){return RECETAS[id]||[{titulo:'Bebida Natural',tiempo:'3 min',icono:'🌿',ingredientes:['1 porción del producto TIENS','250 ml agua tibia','Limón al gusto'],pasos:['Disuelve el producto en el agua.','Agrega el limón.','Consume en ayunas.']},{titulo:'Batido Saludable',tiempo:'5 min',icono:'🥤',ingredientes:['1 porción del producto TIENS','200 ml leche vegetal','1 fruta de preferencia'],pasos:['Coloca todo en la licuadora.','Licúa 30 segundos.','Sirve de inmediato.']},{titulo:'Complemento Diario',tiempo:'2 min',icono:'💊',ingredientes:['1 porción del producto TIENS','Un vaso de agua','Horario de preferencia'],pasos:['Prepara según el envase.','Tómalo a la misma hora cada día.','Complementa con dieta balanceada.']}];}
+window._removeCart=function(id){
+  cart=cart.filter(c=>c.id!==id);saveCart();updateCartUI();
+};
 
-const FALLBACK=[
-  {id:1,codigo:'A01',nombre:'Calcio Nutritivo en Polvo',descripcion:'Fórmula avanzada con calcio altamente biodisponible y vitamina D para el fortalecimiento de huesos, dientes y una mejora en el metabolismo general.',precio:210,categoria:'Suplementos',imagen:'https://res.cloudinary.com/dv6d41ect/image/upload/v1758840051/A01_zf5hc8.png',audio:'https://res.cloudinary.com/dv6d41ect/video/upload/v1765067251/calcio_q6bih1.mp3',pdf:'https://drive.google.com/file/d/1vPhHwGwj9pO8eRecVejQtPWtEpHLmxhU/view',beneficios:['Fortalece huesos y dientes','Previene osteoporosis','Apoya músculos y corazón','Rica en vitamina D']},
-  {id:2,codigo:'A03',nombre:'Calcio para Niños',descripcion:'Apoya el crecimiento saludable y refuerza el sistema inmune para una etapa de desarrollo óptimo.',precio:210,categoria:'Suplementos',imagen:'https://res.cloudinary.com/dv6d41ect/image/upload/v1758840051/A03_huuq0n.png',audio:'https://res.cloudinary.com/dv6d41ect/video/upload/v1765079654/nene_qqbq5j.mp3',beneficios:['Apoya el crecimiento','Refuerza defensas','Huesos fuertes']},
-  {id:3,codigo:'A05',nombre:'Té Tianshi',descripcion:'Mezcla herbal que mejora la digestión, ayuda a controlar el peso y aporta antioxidantes naturales.',precio:300,categoria:'Tés',imagen:'https://res.cloudinary.com/dv6d41ect/image/upload/v1758840052/A05_eazlgz.png',audio:'https://res.cloudinary.com/dv6d41ect/video/upload/v1765079654/tianshi_wxcf0a.mp3',beneficios:['Ayuda a la digestión','Reduce el colesterol','Control de peso natural']},
-  {id:4,codigo:'A39',nombre:'Té Milenario',descripcion:'Fórmula depurativa basada en plantas ancestrales. Limpia, desintoxica y acelera el metabolismo.',precio:300,categoria:'Tés',imagen:'https://res.cloudinary.com/dv6d41ect/image/upload/v1758840053/A39_ot9ewl.png',audio:'https://res.cloudinary.com/dv6d41ect/video/upload/v1765079654/milenario_xldvxi.mp3',beneficios:['Acelera el metabolismo','Desintoxica el organismo','Favorece la pérdida de peso']},
-  {id:5,codigo:'A75',nombre:'CordyCafé',descripcion:'Café premium con extracto de cordyceps que aumenta la energía, mejora la concentración y cuida la digestión.',precio:180,categoria:'Cafés',imagen:'https://res.cloudinary.com/dv6d41ect/image/upload/v1758840055/A75_vzmmrq.png',audio:'https://res.cloudinary.com/dv6d41ect/video/upload/v1765079654/cafe_or8wt1.mp3',video:'https://res.cloudinary.com/dv6d41ect/video/upload/v1774966537/video-1005263159337962_zpdaac.mp4',beneficios:['Estimula la concentración','Reduce la fatiga','Energía sostenida','Cordyceps natural']},
-  {id:6,codigo:'A93',nombre:'Colágeno Forte + Ginseng',descripcion:'Combinación de colágeno marino y ginseng para piel radiante, articulaciones saludables y músculos tonificados.',precio:400,categoria:'Suplementos',imagen:'https://res.cloudinary.com/dv6d41ect/image/upload/v1758840055/A93_g8qawb.png',audio:'https://res.cloudinary.com/dv6d41ect/video/upload/v1765079655/colageno_q0f0pj.mp3',beneficios:['Mejora la piel y elasticidad','Fortalece articulaciones','Recuperación muscular','Acción antioxidante']},
-];
-
-let cart=JSON.parse(localStorage.getItem('cc_cart')||'[]');
-function saveCart(){localStorage.setItem('cc_cart',JSON.stringify(cart));}
-window._addCart=function(p){const ex=cart.find(c=>c.id===p.id);if(!ex)cart.push({...p,qty:1});else ex.qty++;saveCart();updateCartUI();showToast('bi-check-circle',p.nombre+' agregado');};
-window._removeCart=function(id){cart=cart.filter(c=>c.id!==id);saveCart();updateCartUI();};
 function updateCartUI(){
   const total=cart.reduce((s,c)=>s+c.precio*c.qty,0);
   const count=cart.reduce((s,c)=>s+c.qty,0);
@@ -301,21 +432,44 @@ function updateCartUI(){
   const body=document.getElementById('cartBody');
   const foot=document.getElementById('cartFoot');
   document.getElementById('cartTotal').textContent=total+' Bs';
-  if(!cart.length){body.innerHTML='<div class="cart-empty"><i class="bi bi-cart3"></i><p>Tu carrito está vacío</p><small>Agrega productos para pedirlos por WhatsApp</small></div>';foot.style.display='none';return;}
+  if(!cart.length){
+    body.innerHTML='<div class="cart-empty"><i class="bi bi-cart3"></i><p>Tu carrito está vacío</p><small>Agrega productos para pedirlos por WhatsApp</small></div>';
+    foot.style.display='none';return;
+  }
   foot.style.display='block';
-  body.innerHTML=cart.map(c=>'<div class="cart-item"><img src="'+((c.imagen_portada || c.imagen)&&!esVideo(c.imagen_portada || c.imagen)?c.imagen_portada || c.imagen:'https://placehold.co/50x50/e8f7ee/2E8B57?text=+')+'" alt="'+c.nombre+'" onerror="this.src=\'https://placehold.co/50x50/e8f7ee/2E8B57?text=+\'"/><div class="cart-item-info"><h4>'+c.nombre+'</h4><span>'+c.precio+' Bs × '+c.qty+' = '+(c.precio*c.qty)+' Bs</span></div><button class="cart-item-del" onclick="window._removeCart('+c.id+')"><i class="bi bi-trash3"></i></button></div>').join('');
-  document.getElementById('cartCheckout').onclick = () => {
-    const total = cart.reduce((a,c)=>a+c.precio*c.qty,0);
-    const lines = cart.map(c => '• ' + c.nombre + ' (' + c.codigo + ') x' + c.qty + ' = ' + (c.precio * c.qty) + ' Bs').join('\n');
-    const msg = encodeURIComponent('Hola! Quiero hacer este pedido:\n\n' + lines + '\n\nTotal: ' + total + ' Bs\n\ninfotiens43');
-    window.location.href = 'https://wa.me/' + WA + '?text=' + msg;
-    cart = [];
-    saveCart();
-    updateCartUI();
+  /* Info distribuidor en el carrito */
+  const distInfo=DIST_ACTIVO.isMaster
+    ?`<div class="cart-dist-info"><i class="bi bi-shop"></i> Enviando a CordyClub Bolivia (general)</div>`
+    :`<div class="cart-dist-info"><i class="bi bi-person-check-fill"></i> Pedido para: <strong style="margin-left:3px;">${DIST_ACTIVO.nombre}</strong></div>`;
+
+  body.innerHTML=distInfo+cart.map(c=>`
+    <div class="cart-item">
+      <img src="${(c.imagen_portada||c.imagen)&&!esVideo(c.imagen_portada||c.imagen)?c.imagen_portada||c.imagen:'https://placehold.co/50x50/e8f7ee/2E8B57?text=+'}" alt="${c.nombre}" onerror="this.src='https://placehold.co/50x50/e8f7ee/2E8B57?text=+'"/>
+      <div class="cart-item-info"><h4>${c.nombre}</h4><span>${c.precio} Bs × ${c.qty} = ${c.precio*c.qty} Bs</span></div>
+      <button class="cart-item-del" onclick="window._removeCart(${c.id})"><i class="bi bi-trash3"></i></button>
+    </div>`).join('');
+
+  document.getElementById('cartCheckout').onclick=()=>{
+    const msg=buildWaMsgCarrito(cart);
+    window.open(`https://wa.me/${DIST_ACTIVO.whatsapp}?text=${encodeURIComponent(msg)}`,'_blank');
+    cart=[];saveCart();updateCartUI();
   };
 }
+
+/* ══════════════════════════════════════
+   TOAST
+══════════════════════════════════════ */
 let toastTimer;
-function showToast(icon,text){const t=document.getElementById('toast');t.innerHTML='<i class="bi '+icon+'"></i> '+text;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2400);}
+function showToast(icon,text){
+  const t=document.getElementById('toast');
+  t.innerHTML=`<i class="bi ${icon}"></i> ${text}`;
+  t.classList.add('show');clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'),2400);
+}
+
+/* ══════════════════════════════════════
+   DRAWER / CART UI
+══════════════════════════════════════ */
 const drawer=document.getElementById('drawer');
 const menuOverlay=document.getElementById('menuOverlay');
 const menuIcon=document.getElementById('menuIcon');
@@ -331,11 +485,19 @@ function closeCart(){cartDrawer.classList.remove('open');cartOverlay.classList.r
 document.getElementById('cartBtn').addEventListener('click',openCart);
 document.getElementById('cartClose').addEventListener('click',closeCart);
 cartOverlay.addEventListener('click',closeCart);
+
+/* ══════════════════════════════════════
+   LIGHTBOX
+══════════════════════════════════════ */
 const lightbox=document.getElementById('lightbox');
 const lbImg=document.getElementById('lbImg');
 const lbVid=document.getElementById('lbVid');
 document.getElementById('lbClose').addEventListener('click',()=>{lightbox.classList.remove('open');lbVid.pause();});
 lightbox.addEventListener('click',e=>{if(e.target===lightbox){lightbox.classList.remove('open');lbVid.pause();}});
+
+/* ══════════════════════════════════════
+   AUDIO
+══════════════════════════════════════ */
 function fmtTime(s){if(!s||isNaN(s))return'0:00';return Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0');}
 function initAudio(url){
   document.getElementById('audioBox').style.display='block';
@@ -349,6 +511,10 @@ function initAudio(url){
   audio.addEventListener('timeupdate',()=>{document.getElementById('timeCur').textContent=fmtTime(audio.currentTime);prog.value=Math.floor(audio.currentTime);});
   prog.addEventListener('input',()=>{audio.currentTime=prog.value;});
 }
+
+/* ══════════════════════════════════════
+   VIDEO
+══════════════════════════════════════ */
 function initVideo(url){
   if(esVideo(url)){
     const section=document.getElementById('videoSection');const vid=document.getElementById('videoEl');const overlay=document.getElementById('videoOverlay');
@@ -357,63 +523,129 @@ function initVideo(url){
     vid.addEventListener('click',()=>{if(vid.paused)vid.play();else vid.pause();});
   }else{const btnV=document.getElementById('btnVideoExt');btnV.href=url;btnV.style.display='flex';}
 }
+
+/* ══════════════════════════════════════
+   RECETAS (datos locales)
+══════════════════════════════════════ */
+const RECETAS={1:[{titulo:'Batido de Calcio',tiempo:'5 min',icono:'🥛',ingredientes:['1 medida Calcio Nutritivo TIENS','250 ml leche de almendras','1 plátano maduro'],pasos:['Añade todo a la licuadora.','Licúa 30 segundos.','Sirve de inmediato.']},{titulo:'Yogur Enriquecido',tiempo:'3 min',icono:'🍦',ingredientes:['1 medida Calcio Nutritivo TIENS','150 g yogur natural','Frutas de temporada'],pasos:['Mezcla el calcio con el yogur.','Añade frutas cortadas.','Consume como desayuno.']}],2:[{titulo:'Leche Infantil',tiempo:'3 min',icono:'🍼',ingredientes:['1 medida Calcio Niños TIENS','200 ml leche tibia','1 cucharadita miel'],pasos:['Calienta la leche.','Disuelve el calcio.','Sirve templado.']}],3:[{titulo:'Té Frío Digestivo',tiempo:'10 min',icono:'🍵',ingredientes:['1 bolsita Té Tianshi','300 ml agua caliente','Hielo y limón'],pasos:['Infusiona 5 min.','Deja enfriar.','Sirve con hielo.']}],4:[{titulo:'Infusión Depurativa',tiempo:'6 min',icono:'🫖',ingredientes:['1 bolsita Té Milenario','300 ml agua','Menta fresca'],pasos:['Infusiona 5 min tapado.','Endulza al gusto.','Bebe caliente.']}],5:[{titulo:'CordyCafé Clásico',tiempo:'3 min',icono:'☕',ingredientes:['1 sobre CordyCafé TIENS','180 ml agua caliente','Leche al gusto'],pasos:['Vierte el sobre.','Agrega agua a 85°C.','Mezcla y sirve.']}],6:[{titulo:'Shot de Colágeno',tiempo:'2 min',icono:'✨',ingredientes:['1 medida Colágeno Forte','100 ml jugo naranja','Hielo opcional'],pasos:['Mezcla con el jugo.','Agita hasta disolver.','Toma en ayunas.']}]};
+function getRecetas(id){return RECETAS[id]||[{titulo:'Bebida Natural',tiempo:'3 min',icono:'🌿',ingredientes:['1 porción del producto','250 ml agua tibia','Limón al gusto'],pasos:['Disuelve en el agua.','Agrega limón.','Consume en ayunas.']}];}
+
 function renderRecetas(p){
   const grid=document.getElementById('recetasGrid');
-  const recetas=getRecetas(p.id);
-  grid.innerHTML='';
-  recetas.forEach((r,i)=>{
+  getRecetas(p.id).forEach((r,i)=>{
     const card=document.createElement('div');card.className='receta-card';card.style.animationDelay=i*0.09+'s';
-    card.innerHTML='<div class="receta-head"><span class="receta-icon">'+(r.icono||'🌿')+'</span><div class="receta-head-info"><h3>'+r.titulo+'</h3><p><i class="bi bi-clock"></i> '+r.tiempo+'</p></div></div><div class="receta-body"><p class="sec-label-sm">Ingredientes</p><ul class="ingr-list">'+(r.ingredientes||[]).map(i=>'<li>'+i+'</li>').join('')+'</ul><p class="sec-label-sm">Preparación</p><ol class="steps-list">'+(r.pasos||[]).map(s=>'<li>'+s+'</li>').join('')+'</ol><button class="receta-wa-btn" onclick="window._pedirReceta(\''+p.nombre.replace(/'/g,"\\'")+'\',' +'\''+r.titulo.replace(/'/g,"\\'")+'\')"><i class="bi bi-whatsapp"></i> Pedir y recibir receta completa</button></div>';
+    card.innerHTML=`<div class="receta-head"><span class="receta-icon">${r.icono||'🌿'}</span><div class="receta-head-info"><h3>${r.titulo}</h3><p><i class="bi bi-clock"></i> ${r.tiempo}</p></div></div><div class="receta-body"><p class="sec-label-sm">Ingredientes</p><ul class="ingr-list">${(r.ingredientes||[]).map(x=>`<li>${x}</li>`).join('')}</ul><p class="sec-label-sm">Preparación</p><ol class="steps-list">${(r.pasos||[]).map(x=>`<li>${x}</li>`).join('')}</ol><button class="receta-wa-btn" onclick="window._pedirReceta('${p.nombre.replace(/'/g,"\\'")}','${r.titulo.replace(/'/g,"\\'")}')"><i class="bi bi-whatsapp"></i> Pedir y recibir receta</button></div>`;
     grid.appendChild(card);
   });
 }
-window._pedirReceta=function(prod,receta){const msg=encodeURIComponent('Hola! Me interesa '+prod+' y quiero más info de la receta: "'+receta+'". infotiens43');window.open('https://wa.me/'+WA+'?text='+msg,'_blank');};
+
+window._pedirReceta=function(prod,receta){
+  const nom=DIST_ACTIVO.nombre.split(' ')[0];
+  const msg=encodeURIComponent(`Hola ${nom}! Me interesa *${prod}* y quiero la receta: "${receta}".`);
+  window.open(`https://wa.me/${DIST_ACTIVO.whatsapp}?text=${msg}`,'_blank');
+};
+
+/* ══════════════════════════════════════
+   RENDER PRODUCTO
+══════════════════════════════════════ */
 function renderProducto(p){
-  document.title=p.nombre+' – CordyClub Bolivia | infotiens43';
+  document.title=p.nombre+' – CordyClub Bolivia';
   document.getElementById('pageDesc').content=p.descripcion||'';
   document.getElementById('bcNombre').textContent=p.nombre;
   document.getElementById('pNombre').textContent=p.nombre;
   document.getElementById('pPrecio').textContent=p.precio+' Bs';
   document.getElementById('pDesc').textContent=p.descripcion||'';
+
+  /* Imagen/video */
   const imgPanel=document.getElementById('imgPanel');
   if(esVideo(p.imagen)){
-    imgPanel.innerHTML='<video src="'+p.imagen+'" autoplay muted loop playsinline style="width:100%;aspect-ratio:1/1;object-fit:cover;display:block;"></video><span class="img-badge-cat">'+(p.categoria||'TIENS')+'</span><span class="img-badge-code">'+p.codigo+'</span><span class="zoom-hint"><i class="bi bi-play-circle"></i> Toca para ver con sonido</span>';
+    imgPanel.innerHTML=`<video src="${p.imagen}" autoplay muted loop playsinline style="width:100%;aspect-ratio:1/1;object-fit:cover;display:block;"></video><span class="img-badge-cat">${p.categoria||p.categorias?.nombre||'TIENS'}</span><span class="img-badge-code">${p.codigo||''}</span><span class="zoom-hint"><i class="bi bi-play-circle"></i> Toca para ver</span>`;
     imgPanel.style.cursor='pointer';
     imgPanel.addEventListener('click',()=>{lbImg.style.display='none';lbVid.src=p.imagen;lbVid.style.display='block';lbVid.muted=false;lbVid.loop=false;lbVid.controls=true;lightbox.classList.add('open');lbVid.play();});
-  }else{
-    imgPanel.innerHTML='<img src="'+p.imagen+'" alt="'+p.nombre+' TIENS Bolivia infotiens43" width="480" height="480" loading="eager" onerror="this.src=\'https://placehold.co/480x480/e8f7ee/2E8B57?text='+encodeURIComponent(p.nombre)+'\'"/><span class="img-badge-cat">'+(p.categoria||'TIENS')+'</span><span class="img-badge-code">'+p.codigo+'</span><span class="zoom-hint"><i class="bi bi-zoom-in"></i> Ampliar</span>';
+  } else {
+    const img=p.imagen_portada||p.imagen||'';
+    imgPanel.innerHTML=`<img src="${img}" alt="${p.nombre}" loading="eager" onerror="this.src='https://placehold.co/480x480/e8f7ee/2E8B57?text=${encodeURIComponent(p.nombre)}'"/><span class="img-badge-cat">${p.categoria||p.categorias?.nombre||'TIENS'}</span><span class="img-badge-code">${p.codigo||''}</span><span class="zoom-hint"><i class="bi bi-zoom-in"></i> Ampliar</span>`;
     imgPanel.style.cursor='zoom-in';
-    imgPanel.addEventListener('click',()=>{lbVid.style.display='none';lbImg.src=p.imagen;lbImg.style.display='block';lightbox.classList.add('open');});
+    imgPanel.addEventListener('click',()=>{lbVid.style.display='none';lbImg.src=img;lbImg.style.display='block';lightbox.classList.add('open');});
   }
+
+  /* Beneficios */
   const bens=Array.isArray(p.beneficios)?p.beneficios:[];
-  if(bens.length){document.getElementById('beneficiosBox').style.display='block';document.getElementById('pBeneficios').innerHTML=bens.map((b,i)=>'<li class="benefit-item" style="animation-delay:'+(i*0.06)+'s"><i class="bi bi-check-circle-fill"></i>'+b+'</li>').join('');}
-  if(p.audio)initAudio(p.audio);
-  if(p.video)initVideo(p.video);
+  if(bens.length){document.getElementById('beneficiosBox').style.display='block';document.getElementById('pBeneficios').innerHTML=bens.map((b,i)=>`<li class="benefit-item" style="animation-delay:${i*0.06}s"><i class="bi bi-check-circle-fill"></i>${b}</li>`).join('');}
+
+  if(p.audio) initAudio(p.audio);
+  if(p.video) initVideo(p.video);
   if(p.pdf){const el=document.getElementById('btnPDF');el.href=p.pdf;el.style.display='flex';}
-  const msg=encodeURIComponent('Hola! Me interesa '+p.nombre+' ('+p.codigo+') - '+p.precio+' Bs. infotiens43');
-  document.getElementById('btnWA').href='https://wa.me/'+WA+'?text='+msg;
-  document.getElementById('waFloat').href='https://wa.me/'+WA+'?text='+msg;
+
+  /* WA URLs con distribuidor activo */
+  const waUrl=buildWaUrl(p);
+  document.getElementById('btnWA').href=waUrl;
+  document.getElementById('waFloat').href=waUrl;
+
+  /* Chip distribuidor */
+  mostrarDistActivo(p);
+
   document.getElementById('btnAddCart').addEventListener('click',()=>window._addCart(p));
   document.getElementById('recetaTitle').textContent='Recetas con '+p.nombre;
   document.getElementById('recetaSub').textContent='Formas prácticas de aprovechar '+p.nombre+' cada día';
+
   document.getElementById('pageLoader').style.display='none';
   document.getElementById('contenido').style.display='block';
   renderRecetas(p);
 }
+
+/* ══════════════════════════════════════
+   FALLBACK LOCAL
+══════════════════════════════════════ */
+const FALLBACK=[
+  {id:1,codigo:'A01',nombre:'Calcio Nutritivo en Polvo',descripcion:'Fórmula avanzada con calcio altamente biodisponible y vitamina D.',precio:210,categoria:'Suplementos',imagen:'https://res.cloudinary.com/dv6d41ect/image/upload/v1758840051/A01_zf5hc8.png',audio:'https://res.cloudinary.com/dv6d41ect/video/upload/v1765067251/calcio_q6bih1.mp3',pdf:'https://drive.google.com/file/d/1vPhHwGwj9pO8eRecVejQtPWtEpHLmxhU/view',beneficios:['Fortalece huesos y dientes','Previene osteoporosis','Apoya músculos y corazón','Rica en vitamina D']},
+  {id:2,codigo:'A03',nombre:'Calcio para Niños',descripcion:'Apoya el crecimiento saludable y refuerza el sistema inmune.',precio:210,categoria:'Suplementos',imagen:'https://res.cloudinary.com/dv6d41ect/image/upload/v1758840051/A03_huuq0n.png',audio:'https://res.cloudinary.com/dv6d41ect/video/upload/v1765079654/nene_qqbq5j.mp3',beneficios:['Apoya el crecimiento','Refuerza defensas','Huesos fuertes']},
+  {id:3,codigo:'A05',nombre:'Té Tianshi',descripcion:'Mezcla herbal que mejora la digestión y aporta antioxidantes.',precio:300,categoria:'Tés',imagen:'https://res.cloudinary.com/dv6d41ect/image/upload/v1758840052/A05_eazlgz.png',audio:'https://res.cloudinary.com/dv6d41ect/video/upload/v1765079654/tianshi_wxcf0a.mp3',beneficios:['Ayuda a la digestión','Reduce el colesterol','Control de peso']},
+  {id:4,codigo:'A39',nombre:'Té Milenario',descripcion:'Fórmula depurativa basada en plantas ancestrales.',precio:300,categoria:'Tés',imagen:'https://res.cloudinary.com/dv6d41ect/image/upload/v1758840053/A39_ot9ewl.png',audio:'https://res.cloudinary.com/dv6d41ect/video/upload/v1765079654/milenario_xldvxi.mp3',beneficios:['Acelera el metabolismo','Desintoxica el organismo','Favorece la pérdida de peso']},
+  {id:5,codigo:'A75',nombre:'CordyCafé',descripcion:'Café premium con extracto de cordyceps.',precio:180,categoria:'Cafés',imagen:'https://res.cloudinary.com/dv6d41ect/image/upload/v1758840055/A75_vzmmrq.png',audio:'https://res.cloudinary.com/dv6d41ect/video/upload/v1765079654/cafe_or8wt1.mp3',video:'https://res.cloudinary.com/dv6d41ect/video/upload/v1774966537/video-1005263159337962_zpdaac.mp4',beneficios:['Estimula la concentración','Reduce la fatiga','Energía sostenida','Cordyceps natural']},
+  {id:6,codigo:'A93',nombre:'Colágeno Forte + Ginseng',descripcion:'Colágeno marino y ginseng para piel radiante y articulaciones.',precio:400,categoria:'Suplementos',imagen:'https://res.cloudinary.com/dv6d41ect/image/upload/v1758840055/A93_g8qawb.png',audio:'https://res.cloudinary.com/dv6d41ect/video/upload/v1765079655/colageno_q0f0pj.mp3',beneficios:['Mejora la piel','Fortalece articulaciones','Recuperación muscular','Antioxidante']},
+];
+
+/* ══════════════════════════════════════
+   INIT
+══════════════════════════════════════ */
 async function init(){
   updateCartUI();
-  const id=Number(new URLSearchParams(location.search).get('id'));
+
+  /* 1. Resolver distribuidor activo */
+  await resolverDistribuidor();
+  updateCartUI(); // re-render carrito con dist correcto
+
+  /* 2. Cargar producto */
   let producto=null;
-  try{
-    const {createClient}=await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
-    const sb=createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
-    const {data}=await sb.from('productos').select('*').eq('id',id).single();
-    if(data)producto=data;
-  }catch(e){console.warn('Supabase:',e);}
-  if(!producto)producto=FALLBACK.find(p=>p.id===id);
-  if(!producto){document.getElementById('pageLoader').style.display='none';document.getElementById('pageError').style.display='flex';return;}
+  if(prodId){
+    try{
+      const {createClient}=await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+      const sb=createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+      const {data}=await sb.from('productos')
+        .select('*,categorias(nombre),beneficios(descripcion)')
+        .eq('id',prodId).single();
+      if(data){
+        /* Normalizar beneficios desde tabla relacional */
+        if(data.beneficios?.length && !Array.isArray(data.beneficios[0])){
+          data.beneficios=data.beneficios.map(b=>b.descripcion);
+        }
+        producto=data;
+      }
+    } catch(e){ console.warn('Supabase producto:',e); }
+  }
+
+  if(!producto) producto=FALLBACK.find(p=>p.id===prodId);
+
+  if(!producto){
+    document.getElementById('pageLoader').style.display='none';
+    document.getElementById('pageError').style.display='flex';
+    return;
+  }
+
   renderProducto(producto);
 }
+
 init();
 </script>
 </body>
