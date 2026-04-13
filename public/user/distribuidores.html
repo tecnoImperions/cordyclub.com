@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<title>Distribuidores – CordyClub Bolivia</title>
+<meta name="description" content="Encuentra tu distribuidor CordyClub Bolivia más cercano. Atención personalizada, entrega a domicilio."/>
+<meta name="theme-color" content="#052e16"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet"/>
+<style>
+/* ══════════════════════════════
+   TOKENS
+══════════════════════════════ */
+:root{
+  --g1:#052e16;--g2:#14532d;--g3:#16a34a;--g4:#4ade80;--g5:#bbf7d0;
+  --lime:#a3e635;--amber:#d97706;--rose:#f43f5e;--blue:#3b82f6;
+  --bg:#f0fdf4;--bg2:#e8faf0;--surface:#ffffff;
+  --border:#bbf7d0;--border2:#d1fae5;
+  --text:#052e16;--muted:#4d7c5d;--subtle:#86b89a;
+  --chip:#dcfce7;--gold:#d97706;--gold-lt:#fef3c7;
+  --sh:0 1px 12px rgba(5,46,22,.07);
+  --sh2:0 6px 32px rgba(5,46,22,.13);
+  --sh3:0 16px 56px rgba(5,46,22,.18);
+  --r:16px;--tr:all .22s cubic-bezier(.4,0,.2,1);
+  --font:'Outfit',sans-serif;
+  --mono:'JetBrains Mono',monospace;
+  --nav:64px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;-webkit-tap-highlight-color:transparent;}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+a{text-decoration:none;color:inherit;}
+button{cursor:pointer;border:none;background:none;font-family:var(--font);}
+img{display:block;max-width:100%;}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
+
+/* ══════════════════════════════
+   NAVBAR
+══════════════════════════════ */
+.navbar{
+  position:fixed;top:0;left:0;right:0;z-index:300;
+  height:var(--nav);
+  background:var(--g1);
+  display:flex;align-items:center;padding:0 20px;gap:12px;
+  border-bottom:1px solid rgba(74,222,128,.12);
+  backdrop-filter:blur(20px);
+}
+.nav-brand{
+  display:flex;align-items:center;gap:9px;
+  color:#fff;font-weight:800;font-size:1rem;letter-spacing:-.02em;flex:1;
+}
+.nav-brand-dot{
+  width:34px;height:34px;border-radius:10px;
+  background:linear-gradient(135deg,var(--g3),var(--lime));
+  display:flex;align-items:center;justify-content:center;
+  font-size:.95rem;color:#fff;flex-shrink:0;
+}
+.nav-ico{
+  width:38px;height:38px;border-radius:10px;
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);
+  color:rgba(255,255,255,.7);font-size:1rem;
+  display:flex;align-items:center;justify-content:center;transition:var(--tr);
+}
+.nav-ico:hover{background:rgba(255,255,255,.15);color:#fff;}
+
+/* ══════════════════════════════
+   HERO
+══════════════════════════════ */
+.hero{
+  margin-top:var(--nav);
+  background:var(--g1);
+  padding:48px 20px 56px;
+  position:relative;overflow:hidden;
+}
+.hero-grid{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(74,222,128,.06) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(74,222,128,.06) 1px,transparent 1px);
+  background-size:32px 32px;
+}
+.hero-orb1{
+  position:absolute;top:-60px;right:-80px;
+  width:320px;height:320px;border-radius:50%;
+  background:radial-gradient(circle,rgba(22,163,74,.18),transparent 70%);
+  pointer-events:none;
+}
+.hero-orb2{
+  position:absolute;bottom:-40px;left:-60px;
+  width:240px;height:240px;border-radius:50%;
+  background:radial-gradient(circle,rgba(163,230,53,.1),transparent 70%);
+  pointer-events:none;
+}
+.hero-inner{max-width:1100px;margin:0 auto;position:relative;z-index:1;}
+.hero-label{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.2);
+  color:var(--g4);font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  padding:5px 13px;border-radius:20px;margin-bottom:18px;
+}
+.hero h1{
+  font-size:clamp(1.8rem,5vw,3rem);font-weight:900;color:#fff;
+  line-height:1.1;letter-spacing:-.04em;margin-bottom:12px;
+}
+.hero h1 span{color:var(--g4);}
+.hero-sub{font-size:clamp(.85rem,2.5vw,1rem);color:rgba(255,255,255,.5);line-height:1.65;max-width:500px;margin-bottom:28px;}
+
+/* SEARCH EN HERO */
+.hero-search{
+  display:flex;align-items:center;gap:0;
+  background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.12);
+  border-radius:14px;overflow:hidden;max-width:520px;
+  transition:var(--tr);
+}
+.hero-search:focus-within{background:rgba(255,255,255,.12);border-color:rgba(74,222,128,.4);}
+.hero-search i{padding:0 14px;color:rgba(255,255,255,.4);font-size:1rem;flex-shrink:0;}
+.hero-search input{
+  flex:1;border:none;background:transparent;
+  color:#fff;font-size:.9rem;font-family:var(--font);
+  padding:14px 0;outline:none;
+}
+.hero-search input::placeholder{color:rgba(255,255,255,.28);}
+.hero-search .hs-btn{
+  background:var(--g3);color:#fff;border:none;
+  font-size:.8rem;font-weight:700;font-family:var(--font);
+  padding:0 20px;height:100%;cursor:pointer;
+  transition:var(--tr);white-space:nowrap;
+}
+.hero-search .hs-btn:hover{background:var(--g2);}
+
+/* HERO STATS */
+.hero-stats{
+  display:flex;gap:28px;margin-top:28px;flex-wrap:wrap;
+}
+.hs{color:rgba(255,255,255,.55);font-size:.78rem;}
+.hs strong{display:block;font-size:1.4rem;font-weight:800;color:#fff;font-family:var(--mono);line-height:1;}
+
+/* ══════════════════════════════
+   FILTROS
+══════════════════════════════ */
+.filters-bar{
+  background:var(--surface);border-bottom:1.5px solid var(--border2);
+  position:sticky;top:var(--nav);z-index:200;
+}
+.filters-inner{
+  max-width:1100px;margin:0 auto;
+  padding:12px 20px;
+  display:flex;align-items:center;gap:10px;
+  overflow-x:auto;scrollbar-width:none;
+}
+.filters-inner::-webkit-scrollbar{display:none;}
+.filter-label{
+  font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;
+  color:var(--muted);white-space:nowrap;flex-shrink:0;
+}
+.ftab{
+  flex-shrink:0;padding:7px 15px;border-radius:20px;
+  font-size:.76rem;font-weight:700;
+  border:1.5px solid var(--border);background:#fff;color:var(--muted);
+  cursor:pointer;transition:var(--tr);white-space:nowrap;
+  display:flex;align-items:center;gap:5px;
+}
+.ftab:hover{border-color:var(--g2);color:var(--g2);}
+.ftab.active{background:var(--g2);color:#fff;border-color:var(--g2);}
+.ftab .fc{
+  background:rgba(255,255,255,.25);color:inherit;
+  font-size:.62rem;font-weight:800;font-family:var(--mono);
+  padding:1px 6px;border-radius:10px;margin-left:2px;
+}
+.ftab:not(.active) .fc{background:var(--chip);color:var(--g2);}
+.sort-wrap{margin-left:auto;flex-shrink:0;}
+.sort-select{
+  padding:7px 12px;border-radius:10px;border:1.5px solid var(--border);
+  font-size:.75rem;font-weight:600;font-family:var(--font);color:var(--text);
+  background:#fff;outline:none;cursor:pointer;transition:var(--tr);
+}
+.sort-select:focus{border-color:var(--g2);}
+
+/* ══════════════════════════════
+   FAVORITO ACTIVO BANNER
+══════════════════════════════ */
+.fav-active-bar{
+  display:none;
+  background:linear-gradient(135deg,#052e16,#0d4a22);
+  border-bottom:1px solid rgba(74,222,128,.15);
+  padding:10px 20px;
+}
+.fav-active-inner{
+  max-width:1100px;margin:0 auto;
+  display:flex;align-items:center;gap:10px;
+  font-size:.78rem;color:rgba(255,255,255,.7);
+}
+.fav-active-inner i{color:var(--g4);font-size:.9rem;}
+.fav-active-inner strong{color:#fff;font-weight:700;}
+.fav-clear{margin-left:auto;font-size:.7rem;color:rgba(255,255,255,.4);cursor:pointer;text-decoration:underline;font-weight:600;transition:color .2s;}
+.fav-clear:hover{color:rgba(255,255,255,.7);}
+
+/* ══════════════════════════════
+   MAIN LAYOUT
+══════════════════════════════ */
+.page-wrap{max-width:1100px;margin:0 auto;padding:28px 20px 80px;}
+
+/* GRID */
+.dist-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+  gap:18px;
+}
+@media(max-width:640px){.dist-grid{grid-template-columns:1fr;gap:14px;}}
+@media(min-width:960px){.dist-grid{grid-template-columns:repeat(3,1fr);}}
+
+/* ══════════════════════════════
+   DIST CARD
+══════════════════════════════ */
+.dist-card{
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:20px;overflow:hidden;box-shadow:var(--sh);
+  transition:transform .22s cubic-bezier(.4,0,.2,1),box-shadow .22s;
+  cursor:pointer;position:relative;
+  animation:cardIn .35s ease both;
+}
+@keyframes cardIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.dist-card:hover{transform:translateY(-4px);box-shadow:var(--sh3);}
+.dist-card.fav-card{border-color:var(--gold);box-shadow:0 0 0 3px rgba(217,119,6,.12),var(--sh2);}
+
+/* PORTADA */
+.card-cover{
+  height:90px;position:relative;overflow:hidden;
+  background:linear-gradient(135deg,var(--g1),var(--g2));
+  flex-shrink:0;
+}
+.card-cover img{width:100%;height:100%;object-fit:cover;}
+.card-cover-pattern{
+  position:absolute;inset:0;
+  background-image:radial-gradient(circle,rgba(255,255,255,.06) 1px,transparent 1px);
+  background-size:18px 18px;
+}
+.fav-crown{
+  position:absolute;top:8px;right:8px;
+  background:var(--gold);color:#fff;
+  font-size:.6rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;
+  padding:3px 9px;border-radius:6px;
+  display:flex;align-items:center;gap:4px;
+}
+
+/* AVATAR + INFO */
+.card-body{padding:0 16px 16px;}
+.card-avatar-row{
+  display:flex;align-items:flex-end;justify-content:space-between;
+  margin-top:-26px;margin-bottom:11px;
+}
+.card-avatar{
+  width:54px;height:54px;border-radius:14px;flex-shrink:0;
+  border:3px solid #fff;box-shadow:var(--sh2);
+  background:linear-gradient(135deg,var(--g2),var(--g3));
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.2rem;font-weight:800;color:#fff;overflow:hidden;
+}
+.card-avatar img{width:100%;height:100%;object-fit:cover;}
+.card-actions{display:flex;gap:6px;padding-bottom:4px;}
+
+/* Action buttons en la card */
+.ca-btn{
+  width:34px;height:34px;border-radius:9px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.85rem;transition:var(--tr);flex-shrink:0;
+}
+.ca-wa{background:#25d366;color:#fff;box-shadow:0 3px 10px rgba(37,211,102,.28);}
+.ca-wa:hover{background:#1aad50;transform:scale(1.08);}
+.ca-fav{background:var(--chip);color:var(--muted);border:1.5px solid var(--border);}
+.ca-fav:hover{background:var(--gold-lt);color:var(--gold);border-color:#fde68a;}
+.ca-fav.active{background:var(--gold-lt);color:var(--gold);border-color:#fde68a;}
+.ca-profile{background:var(--chip);color:var(--g2);border:1.5px solid var(--border);}
+.ca-profile:hover{background:var(--border);}
+
+.card-name{font-size:.96rem;font-weight:800;color:var(--text);line-height:1.2;margin-bottom:2px;}
+.card-handle{font-size:.68rem;color:var(--muted);font-family:var(--mono);margin-bottom:7px;}
+.card-bio{font-size:.77rem;color:var(--muted);line-height:1.6;margin-bottom:10px;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+
+/* CHIPS */
+.card-chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:11px;}
+.cchip{
+  display:inline-flex;align-items:center;gap:3px;
+  font-size:.64rem;font-weight:700;
+  padding:3px 9px;border-radius:20px;
+  border:1px solid var(--border);background:var(--chip);color:var(--g2);
+}
+.cchip.city{background:#f0f9ff;color:#0369a1;border-color:#bae6fd;}
+.cchip.verified{background:#dbeafe;color:#1e40af;border-color:#bfdbfe;}
+.cchip.delivery{background:#fef9c3;color:#854d0e;border-color:#fde68a;}
+
+/* RATING */
+.card-rating{
+  display:flex;align-items:center;gap:6px;
+  padding:8px 0;border-top:1px solid var(--border2);
+}
+.rating-stars{display:flex;gap:1px;}
+.rs{color:#d1d5db;font-size:.72rem;}
+.rs.on{color:var(--gold);}
+.rating-val{font-size:.8rem;font-weight:800;color:var(--gold);font-family:var(--mono);}
+.rating-cnt{font-size:.68rem;color:var(--muted);}
+.card-rating .btn-ver{
+  margin-left:auto;
+  font-size:.72rem;font-weight:700;color:var(--g2);
+  background:var(--chip);padding:5px 11px;border-radius:8px;
+  border:1.5px solid var(--border);transition:var(--tr);
+}
+.card-rating .btn-ver:hover{background:var(--border);}
+
+/* STOCK BADGES */
+.card-stock{
+  display:flex;align-items:center;gap:6px;
+  padding:7px 0;border-top:1px solid var(--border2);
+  font-size:.7rem;color:var(--muted);
+}
+.card-stock i{font-size:.75rem;color:var(--g3);}
+
+/* ══════════════════════════════
+   EMPTY STATE
+══════════════════════════════ */
+.empty-state{
+  text-align:center;padding:64px 20px;
+  grid-column:1/-1;
+}
+.empty-ico{
+  width:80px;height:80px;border-radius:20px;
+  background:var(--chip);border:2px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:2rem;color:var(--muted);
+  margin:0 auto 16px;
+}
+.empty-state h3{font-size:1.1rem;font-weight:800;color:var(--text);margin-bottom:6px;}
+.empty-state p{font-size:.82rem;color:var(--muted);}
+
+/* ══════════════════════════════
+   SKELETON LOADER
+══════════════════════════════ */
+@keyframes shimmer{0%{background-position:-600px 0}100%{background-position:600px 0}}
+.skel{
+  background:linear-gradient(90deg,#e8f5ee 25%,#d4eddf 50%,#e8f5ee 75%);
+  background-size:600px 100%;
+  animation:shimmer 1.4s infinite;
+  border-radius:8px;
+}
+.skel-card{
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:20px;overflow:hidden;
+}
+.skel-cover{height:90px;}
+.skel-body{padding:16px;}
+.skel-av{width:54px;height:54px;border-radius:14px;margin-top:-27px;margin-bottom:12px;border:3px solid #fff;}
+.skel-line{height:14px;margin-bottom:8px;border-radius:6px;}
+.skel-line.sm{height:11px;}
+
+/* ══════════════════════════════
+   SECTION HEADER
+══════════════════════════════ */
+.sec-hdr{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:18px;gap:12px;flex-wrap:wrap;
+}
+.sec-hdr h2{font-size:1.05rem;font-weight:800;color:var(--text);display:flex;align-items:center;gap:8px;}
+.sec-hdr h2 i{color:var(--g3);}
+.sec-hdr .count{font-size:.78rem;color:var(--muted);font-family:var(--mono);}
+
+/* ══════════════════════════════
+   LISTA (vista alternativa desktop)
+══════════════════════════════ */
+.view-toggle{display:flex;gap:4px;}
+.vt-btn{
+  width:34px;height:34px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.85rem;background:var(--chip);color:var(--muted);
+  border:1.5px solid var(--border);transition:var(--tr);cursor:pointer;
+}
+.vt-btn.active{background:var(--g2);color:#fff;border-color:var(--g2);}
+
+/* Vista lista */
+.dist-list{display:flex;flex-direction:column;gap:11px;}
+.dist-list-item{
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:14px;overflow:hidden;box-shadow:var(--sh);
+  display:flex;align-items:stretch;transition:var(--tr);
+  animation:cardIn .3s ease both;cursor:pointer;
+}
+.dist-list-item:hover{box-shadow:var(--sh2);border-color:var(--border2);transform:translateX(3px);}
+.dist-list-item.fav-item{border-color:var(--gold);}
+.dli-color{width:6px;flex-shrink:0;}
+.dli-body{flex:1;padding:14px 16px;display:flex;align-items:center;gap:14px;}
+.dli-av{
+  width:50px;height:50px;border-radius:13px;flex-shrink:0;
+  background:linear-gradient(135deg,var(--g2),var(--g3));
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.1rem;font-weight:800;color:#fff;overflow:hidden;
+}
+.dli-av img{width:100%;height:100%;object-fit:cover;}
+.dli-info{flex:1;min-width:0;}
+.dli-name{font-size:.9rem;font-weight:800;margin-bottom:2px;
+  display:flex;align-items:center;gap:7px;}
+.dli-handle{font-size:.65rem;color:var(--muted);font-family:var(--mono);margin-bottom:4px;}
+.dli-chips{display:flex;flex-wrap:wrap;gap:4px;}
+.dli-right{display:flex;flex-direction:column;align-items:flex-end;gap:7px;flex-shrink:0;padding:14px 14px 14px 0;}
+.dli-rating{display:flex;align-items:center;gap:4px;font-size:.78rem;font-weight:800;color:var(--gold);font-family:var(--mono);}
+.dli-rating i{font-size:.7rem;}
+.dli-actions{display:flex;gap:5px;}
+
+/* ══════════════════════════════
+   CTA BOTTOM FIXED (mobile)
+══════════════════════════════ */
+.mob-cta{
+  display:none;
+  position:fixed;bottom:0;left:0;right:0;z-index:200;
+  background:rgba(255,255,255,.95);border-top:1.5px solid var(--border);
+  padding:10px 18px;padding-bottom:calc(10px + env(safe-area-inset-bottom,0));
+  backdrop-filter:blur(20px);box-shadow:0 -4px 20px rgba(5,46,22,.09);
+}
+.mob-cta-inner{display:flex;gap:9px;align-items:center;}
+.mob-cta-txt{flex:1;}
+.mob-cta-txt strong{display:block;font-size:.8rem;font-weight:800;color:var(--text);}
+.mob-cta-txt span{font-size:.68rem;color:var(--muted);}
+.mob-cta-btn{
+  display:flex;align-items:center;gap:6px;
+  background:var(--g2);color:#fff;
+  font-weight:700;font-size:.8rem;
+  padding:11px 16px;border-radius:11px;
+  white-space:nowrap;transition:var(--tr);
+}
+.mob-cta-btn:hover{background:var(--g1);}
+@media(max-width:640px){.mob-cta{display:block;}}
+
+/* ══════════════════════════════
+   TOAST
+══════════════════════════════ */
+.toast-wrap{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:9000;pointer-events:none;}
+.toast-item{
+  background:var(--g1);color:#fff;
+  padding:9px 18px;border-radius:50px;
+  font-size:.76rem;font-weight:700;
+  box-shadow:0 6px 24px rgba(0,0,0,.25);
+  display:flex;align-items:center;gap:7px;
+  opacity:0;transform:translateY(10px);transition:all .25s;
+  white-space:nowrap;
+}
+.toast-item.show{opacity:1;transform:translateY(0);}
+
+/* ══════════════════════════════
+   RESPONSIVE
+══════════════════════════════ */
+@media(max-width:640px){
+  .hero{padding:32px 18px 40px;}
+  .hero h1{font-size:1.7rem;}
+  .hero-stats{gap:20px;}
+  .page-wrap{padding:20px 14px 100px;}
+  .filters-inner{padding:10px 14px;}
+  .sort-wrap{display:none;}
+}
+@media(min-width:641px){
+  .mob-cta{display:none!important;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a href="index.html" class="nav-brand">
+    <div class="nav-brand-dot"><i class="bi bi-leaf-fill"></i></div>
+    CordyClub Bolivia
+  </a>
+  <div style="display:flex;gap:7px;">
+    <a href="catalogo.html" class="nav-ico" title="Catálogo">
+      <i class="bi bi-grid-3x3-gap"></i>
+    </a>
+    <a href="catalogo.html" class="nav-ico" title="Catálogo" style="display:none;" id="navCart">
+      <i class="bi bi-cart3"></i>
+    </a>
+  </div>
+</nav>
+
+<!-- FAVORITO ACTIVO BANNER -->
+<div class="fav-active-bar" id="favActiveBanner">
+  <div class="fav-active-inner">
+    <i class="bi bi-heart-fill"></i>
+    Tu distribuidor favorito: <strong id="favActiveName">—</strong>
+    <span class="fav-clear" onclick="limpiarFav()">Quitar favorito</span>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-orb1"></div>
+  <div class="hero-orb2"></div>
+  <div class="hero-inner">
+    <div class="hero-label"><i class="bi bi-geo-alt-fill"></i> Bolivia</div>
+    <h1>Encuentra tu<br/><span>distribuidor ideal</span></h1>
+    <p class="hero-sub">Atención personalizada, entrega a domicilio y asesoría directa. Elige el distribuidor más cercano a ti.</p>
+    <div class="hero-search">
+      <i class="bi bi-search"></i>
+      <input type="text" id="heroSearch" placeholder="Buscar por nombre o ciudad..." oninput="filtrar()"/>
+      <button class="hs-btn" onclick="filtrar()">Buscar</button>
+    </div>
+    <div class="hero-stats">
+      <div class="hs"><strong id="hsTotalDist">—</strong> Distribuidores</div>
+      <div class="hs"><strong id="hsTotalCiud">—</strong> Ciudades</div>
+      <div class="hs"><strong id="hsPromRating">—</strong> Puntuación prom.</div>
+    </div>
+  </div>
+</section>
+
+<!-- FILTROS -->
+<div class="filters-bar">
+  <div class="filters-inner">
+    <span class="filter-label">Ciudad:</span>
+    <div class="ftabs" id="ftabs">
+      <div class="ftab active" data-ciudad="" onclick="setCiudad('',this)">Todos <span class="fc" id="fcTodos">0</span></div>
+    </div>
+    <div class="sort-wrap">
+      <select class="sort-select" id="sortSel" onchange="filtrar()">
+        <option value="rating">Mejor puntuación</option>
+        <option value="nombre">Nombre A-Z</option>
+        <option value="resenas">Más reseñas</option>
+        <option value="reciente">Más reciente</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main class="page-wrap">
+
+  <div class="sec-hdr">
+    <h2><i class="bi bi-people-fill"></i> Distribuidores activos</h2>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span class="count" id="contadorLabel">Cargando...</span>
+      <div class="view-toggle">
+        <button class="vt-btn active" id="vGrid" onclick="setView('grid')" title="Vista cuadrícula">
+          <i class="bi bi-grid-3x3-gap-fill"></i>
+        </button>
+        <button class="vt-btn" id="vList" onclick="setView('list')" title="Vista lista">
+          <i class="bi bi-list-ul"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SKELETONS -->
+  <div class="dist-grid" id="skeletonWrap">
+    ${Array(6).fill(0).map((_,i)=>`
+    <div class="skel-card" style="animation-delay:${i*.07}s">
+      <div class="skel skel-cover"></div>
+      <div class="skel-body">
+        <div class="skel skel-av"></div>
+        <div class="skel skel-line" style="width:70%"></div>
+        <div class="skel skel-line sm" style="width:45%"></div>
+        <div class="skel skel-line sm" style="width:90%"></div>
+      </div>
+    </div>`).join('')}
+  </div>
+
+  <!-- CONTENIDO REAL -->
+  <div id="gridWrap" class="dist-grid" style="display:none;"></div>
+  <div id="listWrap" class="dist-list" style="display:none;"></div>
+
+</main>
+
+<!-- MOBILE CTA -->
+<div class="mob-cta" id="mobCta" style="display:none;">
+  <div class="mob-cta-inner">
+    <div class="mob-cta-txt">
+      <strong id="mobCtaNombre">CordyClub</strong>
+      <span>Tu distribuidor favorito</span>
+    </div>
+    <a class="mob-cta-btn" id="mobCtaWa" href="#" target="_blank">
+      <i class="bi bi-whatsapp"></i> Contactar
+    </a>
+  </div>
+</div>
+
+<div class="toast-wrap"><div class="toast-item" id="toastEl"></div></div>
+
+<script type="module">
+/* ══════════════════════════════════════
+   CONFIG
+══════════════════════════════════════ */
+const SB_URL = 'https://iqloqrnaoxuldtinneqn.supabase.co';
+const SB_KEY = 'sb_publishable_fjYtclIYb_OeECjDf023Tw_DeeMCjXY';
+const KEY_FAV  = 'cc_fav_dist';
+const MASTER_WA = '59163488086';
+
+/* ══════════════════════════════════════
+   ESTADO
+══════════════════════════════════════ */
+let allDist   = [];   // todos los distribuidores cargados (con resenas)
+let ciudadFiltro = '';
+let vistaActual  = 'grid';
+
+/* ══════════════════════════════════════
+   FAVORITO
+══════════════════════════════════════ */
+function getFav(){
+  try{ return JSON.parse(localStorage.getItem(KEY_FAV))||null; }catch{ return null; }
+}
+function setFav(d){
+  const data={id:d.id,nombre:d.nombre,whatsapp:d.whatsapp_publico||d.whatsapp,ciudad:d.ciudad||''};
+  localStorage.setItem(KEY_FAV,JSON.stringify(data));
+  return data;
+}
+function clearFav(){ localStorage.removeItem(KEY_FAV); }
+function esFav(id){ const f=getFav(); return f?f.id===id:false; }
+
+window.limpiarFav=function(){
+  clearFav();
+  toast('bi-heart','Favorito eliminado');
+  actualizarFavBanner();
+  render();
+};
+
+function actualizarFavBanner(){
+  const fav=getFav();
+  const banner=document.getElementById('favActiveBanner');
+  const mobCta=document.getElementById('mobCta');
+  if(fav){
+    document.getElementById('favActiveName').textContent=fav.nombre;
+    banner.style.display='block';
+    document.getElementById('mobCtaNombre').textContent=fav.nombre;
+    const wa=fav.whatsapp||MASTER_WA;
+    const msg=encodeURIComponent(`Hola ${fav.nombre.split(' ')[0]}! Vi tu perfil en CordyClub y me gustaría información sobre los productos.`);
+    document.getElementById('mobCtaWa').href=`https://wa.me/${wa}?text=${msg}`;
+    mobCta.style.display='block';
+  } else {
+    banner.style.display='none';
+    mobCta.style.display='none';
+  }
+}
+
+window.toggleFav=function(d,e){
+  e.stopPropagation();
+  if(esFav(d.id)){
+    clearFav();
+    toast('bi-heart','Removido de favoritos');
+  } else {
+    const anterior=getFav();
+    setFav(d);
+    if(anterior&&anterior.id!==d.id){
+      toast('bi-heart-fill',`Cambiaste tu favorito a ${d.nombre.split(' ')[0]}`);
+    } else {
+      toast('bi-heart-fill',`¡${d.nombre.split(' ')[0]} es tu favorito!`);
+    }
+  }
+  actualizarFavBanner();
+  render();
+};
+
+/* ══════════════════════════════════════
+   STARS HTML
+══════════════════════════════════════ */
+function starsHTML(val, cls='rs'){
+  let h='';
+  for(let i=1;i<=5;i++){
+    if(val>=i) h+=`<i class="bi bi-star-fill ${cls} on"></i>`;
+    else if(val>=i-.5) h+=`<i class="bi bi-star-half ${cls} on"></i>`;
+    else h+=`<i class="bi bi-star ${cls}"></i>`;
+  }
+  return h;
+}
+
+/* ══════════════════════════════════════
+   COLORES PORTADA
+══════════════════════════════════════ */
+const COVER_COLORS={
+  verde:  'linear-gradient(135deg,#052e16,#14532d)',
+  teal:   'linear-gradient(135deg,#0d7377,#14a085)',
+  azul:   'linear-gradient(135deg,#1e3a8a,#3b82f6)',
+  morado: 'linear-gradient(135deg,#4c1d95,#8b5cf6)',
+  naranja:'linear-gradient(135deg,#92400e,#f59e0b)',
+  rojo:   'linear-gradient(135deg,#7f1d1d,#ef4444)',
+  rosa:   'linear-gradient(135deg,#831843,#ec4899)',
+  gris:   'linear-gradient(135deg,#1e293b,#64748b)',
+};
+const COVER_ACCENT={
+  verde:'#16a34a',teal:'#14a085',azul:'#3b82f6',morado:'#8b5cf6',
+  naranja:'#f59e0b',rojo:'#ef4444',rosa:'#ec4899',gris:'#64748b',
+};
+
+function getCoverStyle(d){
+  if(d.portada_imagen) return `background:url('${d.portada_imagen}') center/cover no-repeat`;
+  return `background:${COVER_COLORS[d.portada_color]||COVER_COLORS.verde}`;
+}
+
+function getAccentColor(d){
+  return COVER_ACCENT[d.portada_color]||'#16a34a';
+}
+
+/* ══════════════════════════════════════
+   RENDER GRID CARD
+══════════════════════════════════════ */
+function renderGridCard(d, idx){
+  const inits=(d.nombre||'D').split(' ').map(x=>x[0]||'').join('').slice(0,2).toUpperCase();
+  const foto=d.avatar_url;
+  const avHTML=foto
+    ?`<img src="${foto}" alt="${d.nombre}" onerror="this.style.display='none';this.parentElement.textContent='${inits}'"/>`
+    :inits;
+
+  const fav=esFav(d.id);
+  const avgRating=d._avgRating||0;
+  const totalRes=d._totalResenas||0;
+
+  const waNum=d.whatsapp_publico||d.whatsapp||MASTER_WA;
+  const nom=d.nombre.split(' ')[0];
+  const waUrl=`https://wa.me/${waNum}?text=${encodeURIComponent(`Hola ${nom}! Vi tu perfil en CordyClub y me gustaría más información.`)}`;
+
+  const stockCount=d._stockCount||0;
+
+  return `<div class="dist-card ${fav?'fav-card':''}" style="animation-delay:${idx*.05}s"
+    onclick="irPerfil(${d.id})">
+    <div class="card-cover" style="${getCoverStyle(d)}">
+      <div class="card-cover-pattern"></div>
+      ${fav?`<div class="fav-crown"><i class="bi bi-heart-fill"></i> Tu favorito</div>`:''}
+    </div>
+    <div class="card-body">
+      <div class="card-avatar-row">
+        <div class="card-avatar">${avHTML}</div>
+        <div class="card-actions">
+          <a href="${waUrl}" target="_blank" class="ca-btn ca-wa" onclick="event.stopPropagation();guardarAlContactar(${JSON.stringify(d).replace(/"/g,'&quot;')})" title="WhatsApp">
+            <i class="bi bi-whatsapp"></i>
+          </a>
+          <button class="ca-btn ca-fav ${fav?'active':''}" onclick="toggleFav(${JSON.stringify(d).replace(/"/g,'&quot;')},event)" title="${fav?'Quitar favorito':'Elegir como favorito'}">
+            <i class="bi bi-heart${fav?'-fill':''}"></i>
+          </button>
+          <button class="ca-btn ca-profile" onclick="event.stopPropagation();irPerfil(${d.id})" title="Ver perfil">
+            <i class="bi bi-person-circle"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="card-name">${d.nombre}</div>
+      <div class="card-handle">${d.usuario?'@'+d.usuario:'distribuidor #'+d.id}</div>
+      ${d.bio?`<div class="card-bio">${d.bio}</div>`:''}
+
+      <div class="card-chips">
+        ${d.ciudad?`<span class="cchip city"><i class="bi bi-geo-alt-fill"></i>${d.ciudad}</span>`:''}
+        ${d.activo?`<span class="cchip verified"><i class="bi bi-patch-check-fill"></i>Verificado</span>`:''}
+        ${d.delivery!==false?`<span class="cchip delivery"><i class="bi bi-truck"></i>Entrega</span>`:''}
+        ${d.tiempo_respuesta?`<span class="cchip"><i class="bi bi-clock"></i>${d.tiempo_respuesta}</span>`:''}
+      </div>
+
+      ${totalRes>0?`
+      <div class="card-rating">
+        <div class="rating-stars">${starsHTML(avgRating)}</div>
+        <span class="rating-val">${avgRating}</span>
+        <span class="rating-cnt">(${totalRes} reseña${totalRes!==1?'s':''})</span>
+        <button class="btn-ver" onclick="event.stopPropagation();irPerfil(${d.id})">Ver perfil</button>
+      </div>`:`
+      <div class="card-rating">
+        <span style="font-size:.72rem;color:var(--muted);">Sin reseñas aún</span>
+        <button class="btn-ver" onclick="event.stopPropagation();irPerfil(${d.id})">Ver perfil</button>
+      </div>`}
+
+      ${stockCount>0?`
+      <div class="card-stock">
+        <i class="bi bi-boxes"></i>
+        <span>${stockCount} producto${stockCount!==1?'s':''} en inventario</span>
+      </div>`:''}
+    </div>
+  </div>`;
+}
+
+/* ══════════════════════════════════════
+   RENDER LIST ITEM
+══════════════════════════════════════ */
+function renderListItem(d, idx){
+  const inits=(d.nombre||'D').split(' ').map(x=>x[0]||'').join('').slice(0,2).toUpperCase();
+  const foto=d.avatar_url;
+  const avHTML=foto
+    ?`<img src="${foto}" alt="${d.nombre}" onerror="this.style.display='none';this.parentElement.textContent='${inits}'"/>`
+    :inits;
+
+  const fav=esFav(d.id);
+  const avgRating=d._avgRating||0;
+  const totalRes=d._totalResenas||0;
+  const accent=getAccentColor(d);
+
+  const waNum=d.whatsapp_publico||d.whatsapp||MASTER_WA;
+  const nom=d.nombre.split(' ')[0];
+  const waUrl=`https://wa.me/${waNum}?text=${encodeURIComponent(`Hola ${nom}! Vi tu perfil en CordyClub y quiero más información.`)}`;
+
+  return `<div class="dist-list-item ${fav?'fav-item':''}" style="animation-delay:${idx*.04}s"
+    onclick="irPerfil(${d.id})">
+    <div class="dli-color" style="background:${accent}"></div>
+    <div class="dli-body">
+      <div class="dli-av">${avHTML}</div>
+      <div class="dli-info">
+        <div class="dli-name">
+          ${d.nombre}
+          ${fav?`<span style="background:var(--gold-lt);color:var(--gold);font-size:.6rem;font-weight:800;padding:2px 7px;border-radius:6px;border:1px solid #fde68a;">★ Favorito</span>`:''}
+        </div>
+        <div class="dli-handle">${d.usuario?'@'+d.usuario:'#'+d.id}</div>
+        <div class="dli-chips">
+          ${d.ciudad?`<span class="cchip city"><i class="bi bi-geo-alt-fill"></i>${d.ciudad}</span>`:''}
+          ${d.delivery!==false?`<span class="cchip delivery"><i class="bi bi-truck"></i>Entrega</span>`:''}
+          ${totalRes>0?`<span class="cchip"><i class="bi bi-star-fill" style="color:var(--gold);"></i>${avgRating} (${totalRes})</span>`:''}
+        </div>
+      </div>
+    </div>
+    <div class="dli-right">
+      <div class="dli-actions">
+        <a href="${waUrl}" target="_blank" class="ca-btn ca-wa" onclick="event.stopPropagation();guardarAlContactar(${JSON.stringify(d).replace(/"/g,'&quot;')})" title="WhatsApp">
+          <i class="bi bi-whatsapp"></i>
+        </a>
+        <button class="ca-btn ca-fav ${fav?'active':''}" onclick="toggleFav(${JSON.stringify(d).replace(/"/g,'&quot;')},event)" title="Favorito">
+          <i class="bi bi-heart${fav?'-fill':''}"></i>
+        </button>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ══════════════════════════════════════
+   RENDER PRINCIPAL
+══════════════════════════════════════ */
+function render(){
+  const q=(document.getElementById('heroSearch')?.value||'').toLowerCase().trim();
+  const sort=document.getElementById('sortSel')?.value||'rating';
+
+  let items=[...allDist];
+
+  /* Filtro ciudad */
+  if(ciudadFiltro) items=items.filter(d=>(d.ciudad||'').toLowerCase()===ciudadFiltro.toLowerCase());
+
+  /* Búsqueda */
+  if(q) items=items.filter(d=>
+    (d.nombre||'').toLowerCase().includes(q)||
+    (d.ciudad||'').toLowerCase().includes(q)||
+    (d.usuario||'').toLowerCase().includes(q)||
+    (d.bio||'').toLowerCase().includes(q)
+  );
+
+  /* Orden */
+  if(sort==='rating') items.sort((a,b)=>(b._avgRating||0)-(a._avgRating||0));
+  else if(sort==='nombre') items.sort((a,b)=>a.nombre.localeCompare(b.nombre));
+  else if(sort==='resenas') items.sort((a,b)=>(b._totalResenas||0)-(a._totalResenas||0));
+  else if(sort==='reciente') items.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
+
+  /* Favorito siempre primero */
+  const fav=getFav();
+  if(fav) items.sort((a,b)=>(esFav(b.id)?1:0)-(esFav(a.id)?1:0));
+
+  document.getElementById('contadorLabel').textContent=
+    `${items.length} distribuidor${items.length!==1?'es':''} encontrado${items.length!==1?'s':''}`;
+
+  if(vistaActual==='grid'){
+    document.getElementById('gridWrap').style.display='grid';
+    document.getElementById('listWrap').style.display='none';
+    if(!items.length){
+      document.getElementById('gridWrap').innerHTML=`<div class="empty-state"><div class="empty-ico"><i class="bi bi-search"></i></div><h3>Sin resultados</h3><p>Prueba con otro nombre o ciudad</p></div>`;
+    } else {
+      document.getElementById('gridWrap').innerHTML=items.map((d,i)=>renderGridCard(d,i)).join('');
+    }
+  } else {
+    document.getElementById('gridWrap').style.display='none';
+    document.getElementById('listWrap').style.display='flex';
+    if(!items.length){
+      document.getElementById('listWrap').innerHTML=`<div class="empty-state"><div class="empty-ico"><i class="bi bi-search"></i></div><h3>Sin resultados</h3><p>Prueba con otro nombre o ciudad</p></div>`;
+    } else {
+      document.getElementById('listWrap').innerHTML=items.map((d,i)=>renderListItem(d,i)).join('');
+    }
+  }
+}
+
+/* ══════════════════════════════════════
+   FILTROS / TABS
+══════════════════════════════════════ */
+function buildCiudadTabs(){
+  const ciudades={};
+  allDist.forEach(d=>{
+    const c=d.ciudad||'Sin ciudad';
+    ciudades[c]=(ciudades[c]||0)+1;
+  });
+
+  const sorted=Object.entries(ciudades).sort((a,b)=>b[1]-a[1]);
+  const container=document.getElementById('ftabs');
+  document.getElementById('fcTodos').textContent=allDist.length;
+
+  sorted.forEach(([ciudad, count])=>{
+    const tab=document.createElement('div');
+    tab.className='ftab';
+    tab.dataset.ciudad=ciudad;
+    tab.innerHTML=`${ciudad} <span class="fc">${count}</span>`;
+    tab.onclick=()=>setCiudad(ciudad,tab);
+    container.appendChild(tab);
+  });
+}
+
+window.setCiudad=function(ciudad,el){
+  ciudadFiltro=ciudad;
+  document.querySelectorAll('.ftab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  render();
+};
+
+window.filtrar=render;
+
+/* ══════════════════════════════════════
+   VISTA GRID / LIST
+══════════════════════════════════════ */
+window.setView=function(v){
+  vistaActual=v;
+  document.getElementById('vGrid').classList.toggle('active',v==='grid');
+  document.getElementById('vList').classList.toggle('active',v==='list');
+  render();
+};
+
+/* ══════════════════════════════════════
+   NAVEGACIÓN
+══════════════════════════════════════ */
+window.irPerfil=function(id){
+  window.location.href=`distribuidor.html?id=${id}`;
+};
+
+/* Guardar como favorito al contactar por WA */
+window.guardarAlContactar=function(d){
+  if(!esFav(d.id)){
+    setFav(d);
+    actualizarFavBanner();
+    render();
+  }
+};
+
+/* ══════════════════════════════════════
+   HERO STATS
+══════════════════════════════════════ */
+function actualizarHeroStats(){
+  document.getElementById('hsTotalDist').textContent=allDist.length;
+  const ciudadesUnicas=new Set(allDist.map(d=>d.ciudad||'')).size;
+  document.getElementById('hsTotalCiud').textContent=ciudadesUnicas;
+  const conRating=allDist.filter(d=>d._avgRating>0);
+  if(conRating.length){
+    const prom=conRating.reduce((s,d)=>s+d._avgRating,0)/conRating.length;
+    document.getElementById('hsPromRating').textContent=(Math.round(prom*10)/10)+'★';
+  } else {
+    document.getElementById('hsPromRating').textContent='—';
+  }
+}
+
+/* ══════════════════════════════════════
+   TOAST
+══════════════════════════════════════ */
+let toastTimer;
+window.toast=function(icon,text){
+  const el=document.getElementById('toastEl');
+  el.innerHTML=`<i class="bi ${icon}"></i> ${text}`;
+  el.classList.add('show');clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>el.classList.remove('show'),2600);
+};
+
+/* ══════════════════════════════════════
+   CARGAR DATOS
+══════════════════════════════════════ */
+async function cargar(){
+  try{
+    const {createClient}=await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+    const sb=createClient(SB_URL,SB_KEY);
+
+    /* 1. Distribuidores activos */
+    const {data:dists,error}=await sb.from('distribuidores')
+      .select('*')
+      .eq('activo',true)
+      .order('nombre');
+
+    if(error) throw error;
+
+    /* 2. Reseñas agrupadas */
+    const {data:resenas}=await sb.from('resenas')
+      .select('distribuidor_id,puntuacion')
+      .eq('aprobada',true);
+
+    /* 3. Stock count por distribuidor */
+    const {data:stocks}=await sb.from('stock_distribuidores')
+      .select('distribuidor_id,stock')
+      .gt('stock',0);
+
+    /* Calcular métricas */
+    const resMap={};
+    (resenas||[]).forEach(r=>{
+      if(!resMap[r.distribuidor_id]) resMap[r.distribuidor_id]={sum:0,cnt:0};
+      resMap[r.distribuidor_id].sum+=r.puntuacion;
+      resMap[r.distribuidor_id].cnt++;
+    });
+
+    const stockMap={};
+    (stocks||[]).forEach(s=>{
+      stockMap[s.distribuidor_id]=(stockMap[s.distribuidor_id]||0)+1;
+    });
+
+    allDist=(dists||[]).map(d=>({
+      ...d,
+      _avgRating: resMap[d.id]
+        ? Math.round(resMap[d.id].sum/resMap[d.id].cnt*10)/10
+        : 0,
+      _totalResenas: resMap[d.id]?.cnt||0,
+      _stockCount: stockMap[d.id]||0,
+    }));
+
+    /* Ocultar skeleton, mostrar contenido */
+    document.getElementById('skeletonWrap').style.display='none';
+    document.getElementById('gridWrap').style.display='grid';
+
+    buildCiudadTabs();
+    actualizarHeroStats();
+    actualizarFavBanner();
+    render();
+
+  } catch(e){
+    console.error(e);
+    document.getElementById('skeletonWrap').style.display='none';
+    document.getElementById('gridWrap').style.display='grid';
+    document.getElementById('gridWrap').innerHTML=`
+      <div class="empty-state">
+        <div class="empty-ico"><i class="bi bi-wifi-off"></i></div>
+        <h3>Error de conexión</h3>
+        <p>No se pudieron cargar los distribuidores. Intenta de nuevo.</p>
+      </div>`;
+  }
+}
+
+cargar();
+</script>
+</body>
+</html>
